@@ -2,8 +2,8 @@ import crypto from 'crypto';
 import { redirect } from '@sveltejs/kit';
 import { env } from '$env/dynamic/private';
 
-const SECRET_KEY = env.JWT_SECRET || 'nexora_super_secret_key_2026_safe';
-const REFRESH_SECRET = env.JWT_REFRESH_SECRET || 'nx_refresh_token_very_secure_99';
+const SECRET_KEY = env.JWT_SECRET;
+const REFRESH_SECRET = env.JWT_REFRESH_SECRET;
 
 // Hash verification
 export function verifyPassword(password, stored) {

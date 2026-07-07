@@ -2,15 +2,17 @@ import { initializeApp, getApps, getApp } from "firebase/app";
 import { getAuth, GoogleAuthProvider } from "firebase/auth";
 import { getStorage } from "firebase/storage";
 
+import { env } from '$env/dynamic/public';
+
 const firebaseConfig = {
-  apiKey: "AIzaSyDPr1lV-ChuWz91HhfReg8L21WKqmH0s-g",
-  authDomain: "internship-portal-705f1.firebaseapp.com",
-  databaseURL: "https://internship-portal-705f1-default-rtdb.firebaseio.com",
-  projectId: "internship-portal-705f1",
-  storageBucket: "internship-portal-705f1.firebasestorage.app",
-  messagingSenderId: "784418638868",
-  appId: "1:784418638868:web:bbddff4d4780fd758d2b01",
-  measurementId: "G-3M6J8P7Y4G"
+  apiKey: env.PUBLIC_FIREBASE_API_KEY,
+  authDomain: env.PUBLIC_FIREBASE_AUTH_DOMAIN,
+  databaseURL: env.PUBLIC_FIREBASE_DATABASE_URL,
+  projectId: env.PUBLIC_FIREBASE_PROJECT_ID,
+  storageBucket: env.PUBLIC_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: env.PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+  appId: env.PUBLIC_FIREBASE_APP_ID,
+  measurementId: env.PUBLIC_FIREBASE_MEASUREMENT_ID
 };
 
 // Initialize Firebase only once
