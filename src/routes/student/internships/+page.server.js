@@ -39,12 +39,19 @@ export async function load({ cookies, url }) {
 
 			// Search query (titles, description, skills, company name)
 			if (searchQuery) {
-				const titleMatch = internship.title.toLowerCase().includes(searchQuery);
-				const descMatch = internship.description.toLowerCase().includes(searchQuery);
-				const skillMatch = internship.skillsRequired.some(s => s.toLowerCase().includes(searchQuery));
-				const companyMatch = company.companyName.toLowerCase().includes(searchQuery);
+				const queryTokens = searchQuery.split(/\s+/).filter(Boolean);
 				
-				if (!titleMatch && !descMatch && !skillMatch && !companyMatch) {
+				// Ensure every token matches AT LEAST one field
+				const matchesAllTokens = queryTokens.every(token => {
+					const titleMatch = internship.title.toLowerCase().includes(token);
+					const descMatch = internship.description.toLowerCase().includes(token);
+					const skillMatch = internship.skillsRequired.some(s => s.toLowerCase().includes(token));
+					const companyMatch = company.companyName.toLowerCase().includes(token);
+					
+					return titleMatch || descMatch || skillMatch || companyMatch;
+				});
+
+				if (!matchesAllTokens) {
 					return false;
 				}
 			}
@@ -86,6 +93,7 @@ export async function load({ cookies, url }) {
 
 			return true;
 		})
+		.slice(0, 60)
 		.map(internship => {
 			const company = companyMap.get(internship.companyId);
 			const hasApplied = db.applications.some(a => a.studentId === student.id && a.internshipId === internship.id);

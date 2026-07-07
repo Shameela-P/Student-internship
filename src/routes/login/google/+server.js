@@ -1,6 +1,6 @@
 import { json } from '@sveltejs/kit';
 import { getCollection, updateEntireDatabase, logAction } from '$lib/db';
-import jwt from 'jsonwebtoken';
+import { createToken } from '$lib/auth';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'fallback-secret-key-for-jwt-signing';
 
@@ -101,12 +101,8 @@ export async function POST({ request, cookies }) {
 			}
 		}
 
-		// 3. Generate JWT Token
-		const token = jwt.sign(
-			{ id: user.id, role: user.role, email: user.email, name: name },
-			JWT_SECRET,
-			{ expiresIn: '24h' }
-		);
+		// 3. Generate Token
+		const token = createToken({ id: user.id, role: user.role, email: user.email, name: name });
 
 		// 4. Set Session Cookie
 		cookies.set('nexora_session', token, {
@@ -118,7 +114,8 @@ export async function POST({ request, cookies }) {
 		});
 		
 		const roleFormatted = user.role.charAt(0).toUpperCase() + user.role.slice(1);
-		logAction(`${user.role.toUpperCase()}_LOGIN`, `${roleFormatted} ${name} (${email}) logged in via Google.`);
+		const ip = request.headers.get('x-forwarded-for') || 'Unknown IP';
+		logAction(`${user.role.toUpperCase()}_LOGIN`, `Logged in via Google`, name, roleFormatted, email, 'Dashboard', ip);
 
 		return json({ success: true, redirect: redirectPath });
 

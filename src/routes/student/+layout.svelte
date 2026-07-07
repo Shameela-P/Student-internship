@@ -15,8 +15,8 @@
 
 	function getLinkClass(path) {
 		const baseClass = "flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition duration-200 cursor-pointer ";
-		const activeClass = "bg-indigo-600 text-slate-900 dark:text-white shadow-lg shadow-indigo-500/15";
-		const inactiveClass = "text-slate-600 hover:bg-slate-200/50 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-white dark:bg-slate-900/50 dark:hover:text-slate-900 dark:text-white";
+		const activeClass = "bg-indigo-600 text-primary dark:text-primary-dark shadow-lg shadow-indigo-500/15";
+		const inactiveClass = "text-slate-600 hover:bg-slate-200/50 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-surface dark:bg-surface-dark/50 dark:hover:text-primary dark:text-primary-dark";
 		
 		if (page.url.pathname === path) {
 			return baseClass + activeClass;
@@ -30,7 +30,7 @@
 	<aside class="hidden md:flex flex-col w-64 border-r border-slate-200/20 dark:border-slate-800/40 bg-white/40 dark:bg-slate-950/40 backdrop-blur-lg fixed top-0 bottom-0 left-0 z-20">
 		<!-- Brand Logo -->
 		<div class="p-6 border-b border-slate-200/10 dark:border-slate-800/40 flex items-center gap-3">
-			<img src={logo} alt="Nexora Logo" class="h-10 w-10 drop-shadow-md" />
+			<img loading="lazy" src={logo} alt="Nexora Logo" class="h-10 w-10 drop-shadow-md" />
 			<span class="font-display font-extrabold text-xl bg-gradient-to-r from-slate-900 to-slate-700 dark:from-white dark:to-slate-300 text-gradient">
 				Nexora
 			</span>
@@ -55,7 +55,7 @@
 					<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
 					<span>Chat Messages</span>
 					{#if unreadMsgs > 0}
-						<span class="absolute right-0 h-5 w-5 bg-blue-500 text-slate-900 dark:text-white rounded-full flex items-center justify-center text-[10px] font-bold">
+						<span class="absolute right-0 h-5 w-5 bg-blue-500 text-primary dark:text-primary-dark rounded-full flex items-center justify-center text-[10px] font-bold">
 							{unreadMsgs}
 						</span>
 					{/if}
@@ -66,7 +66,7 @@
 					<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
 					<span>Notifications</span>
 					{#if unread > 0}
-						<span class="absolute right-0 h-5 w-5 bg-rose-500 text-slate-900 dark:text-white rounded-full flex items-center justify-center text-[10px] font-bold animate-pulse">
+						<span class="absolute right-0 h-5 w-5 bg-rose-500 text-primary dark:text-primary-dark rounded-full flex items-center justify-center text-[10px] font-bold animate-pulse">
 							{unread}
 						</span>
 					{/if}
@@ -83,7 +83,7 @@
 			<div class="flex items-center gap-3">
 				<div class="h-10 w-10 rounded-full bg-indigo-500/15 text-indigo-500 flex items-center justify-center font-bold font-display uppercase border border-indigo-500/10">
 					{#if student.profilePhoto}
-						<img src={student.profilePhoto} alt={student.fullName} class="h-10 w-10 rounded-full object-cover" />
+						<img loading="lazy" src={student.profilePhoto} alt={student.fullName} class="h-10 w-10 rounded-full object-cover" />
 					{:else}
 						{student.fullName.charAt(0)}
 					{/if}
@@ -106,7 +106,7 @@
 	<!-- Mobile Header Navbar -->
 	<header class="md:hidden w-full flex items-center justify-between py-4 px-6 border-b border-slate-200/10 dark:border-slate-800/40 bg-white/40 dark:bg-slate-950/40 backdrop-blur-lg sticky top-0 z-30">
 		<div class="flex items-center gap-3">
-			<img src={logo} alt="Nexora Logo" class="h-8 w-8 drop-shadow-sm" />
+			<img loading="lazy" src={logo} alt="Nexora Logo" class="h-8 w-8 drop-shadow-sm" />
 			<span class="font-display font-extrabold text-lg dark:text-white">Nexora</span>
 		</div>
 		<div class="flex items-center gap-3">
@@ -135,7 +135,7 @@
 		<div class="md:hidden fixed inset-x-0 top-[69px] bottom-0 bg-slate-950/30 backdrop-blur-md z-40" onclick={toggleMobileMenu}>
 			<!-- svelte-ignore a11y_click_events_have_key_events -->
 			<!-- svelte-ignore a11y_no_static_element_interactions -->
-			<div class="w-64 h-full bg-white dark:bg-slate-900 border-r border-slate-200/10 p-4 space-y-2 flex flex-col justify-between" onclick={(e) => e.stopPropagation()}>
+			<div class="w-64 h-full bg-surface dark:bg-surface-dark border-r border-slate-200/10 p-4 space-y-2 flex flex-col justify-between" onclick={(e) => e.stopPropagation()}>
 				<nav class="space-y-1">
 					<a href="/student" class={getLinkClass('/student')} onclick={toggleMobileMenu}>Dashboard</a>
 					<a href="/student/internships" class={getLinkClass('/student/internships')} onclick={toggleMobileMenu}>Explore Internships</a>

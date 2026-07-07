@@ -2,8 +2,8 @@ import crypto from 'crypto';
 import { redirect } from '@sveltejs/kit';
 import { env } from '$env/dynamic/private';
 
-const SECRET_KEY = env.JWT_SECRET || 'nexora_super_secret_key_2026_safe';
-const REFRESH_SECRET = env.JWT_REFRESH_SECRET || 'nx_refresh_token_very_secure_99';
+const SECRET_KEY = env.JWT_SECRET;
+const REFRESH_SECRET = env.JWT_REFRESH_SECRET;
 
 // Hash verification
 export function verifyPassword(password, stored) {
@@ -11,7 +11,10 @@ export function verifyPassword(password, stored) {
 		if (!stored || !stored.includes(':')) return false;
 		const [salt, hash] = stored.split(':');
 		const verify = crypto.scryptSync(password, salt, 64).toString('hex');
-		return hash === verify;
+		const hashBuf = Buffer.from(hash, 'hex');
+		const verifyBuf = Buffer.from(verify, 'hex');
+		if (hashBuf.length !== verifyBuf.length) return false;
+		return crypto.timingSafeEqual(hashBuf, verifyBuf);
 	} catch (e) {
 		console.error('Password verification failed:', e);
 		return false;

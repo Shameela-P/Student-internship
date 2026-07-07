@@ -9,13 +9,21 @@ export async function GET({ params }) {
 		return new Response('Invalid filename', { status: 400 });
 	}
 
-	const filePath = path.resolve('uploads/resumes', filename);
+	const isServerless = !!(process.env.VERCEL || process.env.AWS_REGION || process.env.AWS_EXECUTION_ENV);
+	const resumesDir = isServerless ? '/tmp/resumes' : path.resolve('uploads/resumes');
+	const filePath = path.join(resumesDir, filename);
 
 	if (!fs.existsSync(filePath)) {
 		return new Response('Not Found', { status: 404 });
 	}
 
-	const fileBuffer = fs.readFileSync(filePath);
+	let fileBuffer;
+	try {
+		fileBuffer = fs.readFileSync(filePath);
+	} catch (err) {
+		console.error('Error reading resume file:', err);
+		return new Response('Internal Server Error', { status: 500 });
+	}
 	
 	// Determine content type
 	let contentType = 'application/octet-stream';

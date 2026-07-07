@@ -10,10 +10,10 @@
 <!-- Greeting Section -->
 <div class="mb-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
 	<div>
-		<h1 class="font-display font-black text-3xl md:text-4xl text-slate-900 dark:text-white tracking-tight">
+		<h1 class="font-display font-black text-3xl md:text-4xl text-primary dark:text-primary-dark tracking-tight">
 			Welcome, {student.fullName}!
 		</h1>
-		<p class="text-sm text-slate-500 dark:text-slate-400 mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-1">
+		<p class="text-sm text-muted dark:text-muted-dark mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-1">
 			<span>{student.degreeCourse} in {student.department}</span>
 			<span class="h-1.5 w-1.5 rounded-full bg-slate-300 dark:bg-slate-700"></span>
 			<span>{student.collegeName}</span>
@@ -36,28 +36,28 @@
 <div class="grid grid-cols-2 lg:grid-cols-4 gap-5 mb-10">
 	<!-- Card 1 -->
 	<div class="p-6 rounded-2xl glass-card border border-slate-200/15 dark:border-slate-800/40 hover:scale-[1.01] transition duration-200">
-		<span class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Applied</span>
+		<span class="text-xs font-bold text-muted dark:text-muted-dark uppercase tracking-wider">Applied</span>
 		<h2 class="font-display font-black text-3xl text-indigo-600 dark:text-indigo-400 mt-3">{stats.totalApplied}</h2>
 		<p class="text-xs text-slate-600 dark:text-slate-400 mt-1">Total applications submitted</p>
 	</div>
 
 	<!-- Card 2 -->
 	<div class="p-6 rounded-2xl glass-card border border-slate-200/15 dark:border-slate-800/40 hover:scale-[1.01] transition duration-200">
-		<span class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Approved</span>
+		<span class="text-xs font-bold text-muted dark:text-muted-dark uppercase tracking-wider">Approved</span>
 		<h2 class="font-display font-black text-3xl text-emerald-500 mt-3">{stats.approvedCount}</h2>
 		<p class="text-xs text-slate-600 dark:text-slate-400 mt-1">Hired & active contracts</p>
 	</div>
 
 	<!-- Card 3 -->
 	<div class="p-6 rounded-2xl glass-card border border-slate-200/15 dark:border-slate-800/40 hover:scale-[1.01] transition duration-200">
-		<span class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Pending</span>
+		<span class="text-xs font-bold text-muted dark:text-muted-dark uppercase tracking-wider">Pending</span>
 		<h2 class="font-display font-black text-3xl text-amber-500 mt-3">{stats.pendingCount}</h2>
 		<p class="text-xs text-slate-600 dark:text-slate-400 mt-1">Under review / Shortlisted</p>
 	</div>
 
 	<!-- Card 4 -->
 	<div class="p-6 rounded-2xl glass-card border border-slate-200/15 dark:border-slate-800/40 hover:scale-[1.01] transition duration-200">
-		<span class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Certificates</span>
+		<span class="text-xs font-bold text-muted dark:text-muted-dark uppercase tracking-wider">Certificates</span>
 		<h2 class="font-display font-black text-3xl text-pink-500 mt-3">{stats.certificatesCount}</h2>
 		<p class="text-xs text-slate-600 dark:text-slate-400 mt-1">Issued completion documents</p>
 	</div>
@@ -66,7 +66,7 @@
 <!-- Recommendation System Block -->
 <div class="mb-10">
 	<div class="flex items-center justify-between mb-6">
-		<h2 class="font-display font-bold text-xl text-slate-900 dark:text-white">
+		<h2 class="font-display font-bold text-xl text-primary dark:text-primary-dark">
 			Recommended for Your Skill Set
 		</h2>
 		<a href="/student/internships" class="text-xs font-bold text-indigo-500 dark:text-indigo-400 hover:underline">
@@ -76,10 +76,10 @@
 
 	{#if recommendations.length === 0}
 		<div class="p-8 rounded-2xl glass border border-slate-200/10 dark:border-slate-800/40 text-center">
-			<p class="text-sm text-slate-500 dark:text-slate-400">
+			<p class="text-sm text-muted dark:text-muted-dark">
 				No matching active recommendations found. Try adding more skills to your profile.
 			</p>
-			<a href="/student/profile" class="mt-4 inline-block px-4 py-2 bg-indigo-600 text-slate-900 dark:text-white rounded-xl text-xs font-bold">
+			<a href="/student/profile" class="mt-4 inline-block px-4 py-2 bg-indigo-600 text-primary dark:text-primary-dark rounded-xl text-xs font-bold">
 				Update Skills
 			</a>
 		</div>
@@ -95,12 +95,12 @@
 
 					<div class="pt-4">
 						<span class="text-xs text-slate-600 dark:text-slate-400 block truncate">{intern.domain}</span>
-						<h3 class="font-display font-bold text-base text-slate-900 dark:text-white mt-2 group-hover:text-indigo-500 dark:group-hover:text-indigo-400 transition truncate">
+						<h3 class="font-display font-bold text-base text-primary dark:text-primary-dark mt-2 group-hover:text-indigo-500 dark:group-hover:text-indigo-400 transition truncate">
 							{intern.title}
 						</h3>
 						<span class="text-xs font-semibold text-slate-500 block mt-1">{intern.companyName}</span>
 
-						<div class="flex items-center gap-4 mt-5 text-[11px] font-bold text-slate-500 dark:text-slate-400">
+						<div class="flex items-center gap-4 mt-5 text-[11px] font-bold text-muted dark:text-muted-dark">
 							<span class="bg-slate-200/50 dark:bg-slate-800/50 px-2 py-1 rounded">{intern.mode}</span>
 							{#if intern.stipendAmount > 0}
 								<span class="text-emerald-500">₹{intern.stipendAmount}/mo</span>
@@ -128,7 +128,7 @@
 
 <!-- My Applications section -->
 <div>
-	<h2 class="font-display font-bold text-xl text-slate-900 dark:text-white mb-6">
+	<h2 class="font-display font-bold text-xl text-primary dark:text-primary-dark mb-6">
 		My Internship Applications
 	</h2>
 
@@ -141,7 +141,7 @@
 			<p class="text-xs text-slate-600 dark:text-slate-400 mt-1">Explore our listings and kickstart your career today!</p>
 			<a
 				href="/student/internships"
-				class="mt-6 px-6 py-3 rounded-xl bg-indigo-600 text-slate-900 dark:text-white font-bold text-sm hover:bg-indigo-500 shadow-md shadow-indigo-500/10 transition"
+				class="mt-6 px-6 py-3 rounded-xl bg-indigo-600 text-primary dark:text-primary-dark font-bold text-sm hover:bg-indigo-500 shadow-md shadow-indigo-500/10 transition"
 			>
 				Explore Internships
 			</a>
@@ -158,7 +158,7 @@
 							<span class="h-1 w-1 rounded-full bg-slate-300 dark:bg-slate-700"></span>
 							<span class="text-xs text-slate-600 dark:text-slate-400">{app.mode} • {app.duration}</span>
 						</div>
-						<h3 class="font-display font-bold text-lg text-slate-900 dark:text-white mt-1.5 truncate">
+						<h3 class="font-display font-bold text-lg text-primary dark:text-primary-dark mt-1.5 truncate">
 							{app.internshipTitle}
 						</h3>
 						<span class="text-xs font-semibold text-slate-500 block mt-0.5">{app.companyName}</span>
@@ -173,32 +173,32 @@
 
 							<!-- Step 1: Submitted -->
 							<div class="flex flex-col items-center z-10 text-center">
-								<span class="h-4.5 w-4.5 rounded-full flex items-center justify-center text-[9px] font-black bg-indigo-600 text-slate-900 dark:text-white ring-4 ring-indigo-500/10">✓</span>
-								<span class="text-[9px] font-bold text-slate-500 dark:text-slate-400 mt-1.5">Submitted</span>
+								<span class="h-4.5 w-4.5 rounded-full flex items-center justify-center text-[9px] font-black bg-indigo-600 text-primary dark:text-primary-dark ring-4 ring-indigo-500/10">✓</span>
+								<span class="text-[9px] font-bold text-muted dark:text-muted-dark mt-1.5">Submitted</span>
 							</div>
 
 							<!-- Step 2: Under Review / Shortlisted -->
 							<div class="flex flex-col items-center z-10 text-center">
 								{#if app.status === 'Shortlisted' || app.status === 'Approved' || app.status === 'Rejected'}
-									<span class="h-4.5 w-4.5 rounded-full flex items-center justify-center text-[9px] font-black bg-indigo-600 text-slate-900 dark:text-white ring-4 ring-indigo-500/10">✓</span>
+									<span class="h-4.5 w-4.5 rounded-full flex items-center justify-center text-[9px] font-black bg-indigo-600 text-primary dark:text-primary-dark ring-4 ring-indigo-500/10">✓</span>
 								{:else}
 									<span class="h-4.5 w-4.5 rounded-full flex items-center justify-center text-[9px] font-bold bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400 dark:text-slate-500">2</span>
 								{/if}
-								<span class="text-[9px] font-bold text-slate-500 dark:text-slate-400 mt-1.5">Review</span>
+								<span class="text-[9px] font-bold text-muted dark:text-muted-dark mt-1.5">Review</span>
 							</div>
 
 							<!-- Step 3: Outcome -->
 							<div class="flex flex-col items-center z-10 text-center">
 								{#if app.status === 'Approved'}
-									<span class="h-4.5 w-4.5 rounded-full flex items-center justify-center text-[9px] font-black bg-emerald-500 text-slate-900 dark:text-white ring-4 ring-emerald-500/10">✓</span>
+									<span class="h-4.5 w-4.5 rounded-full flex items-center justify-center text-[9px] font-black bg-emerald-500 text-primary dark:text-primary-dark ring-4 ring-emerald-500/10">✓</span>
 									<span class="text-[9px] font-bold text-emerald-500 mt-1.5">Hired</span>
 								{:else}
 									{#if app.status === 'Rejected'}
-										<span class="h-4.5 w-4.5 rounded-full flex items-center justify-center text-[9px] font-black bg-rose-500 text-slate-900 dark:text-white ring-4 ring-rose-500/10">✕</span>
+										<span class="h-4.5 w-4.5 rounded-full flex items-center justify-center text-[9px] font-black bg-rose-500 text-primary dark:text-primary-dark ring-4 ring-rose-500/10">✕</span>
 										<span class="text-[9px] font-bold text-rose-500 mt-1.5">Closed</span>
 									{:else}
 										<span class="h-4.5 w-4.5 rounded-full flex items-center justify-center text-[9px] font-bold bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400 dark:text-slate-500">3</span>
-										<span class="text-[9px] font-bold text-slate-500 dark:text-slate-400 mt-1.5">Outcome</span>
+										<span class="text-[9px] font-bold text-muted dark:text-muted-dark mt-1.5">Outcome</span>
 									{/if}
 								{/if}
 							</div>

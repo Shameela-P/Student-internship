@@ -14,18 +14,8 @@ export async function load({ cookies }) {
 		n => n.recipientEmail.toLowerCase() === company.companyEmail.toLowerCase()
 	);
 
-	// Mark all as read
-	let changed = false;
-	companyNotifications.forEach(n => {
-		if (!n.read) {
-			n.read = true;
-			changed = true;
-		}
-	});
-
-	if (changed) {
-		await updateEntireDatabase(db);
-	}
+	// Do NOT mark all as read immediately.
+	// Notifications will be marked as read when the user opens them.
 
 	return {
 		notifications: companyNotifications

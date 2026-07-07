@@ -1,7 +1,7 @@
 import { logAction, getCollection, updateEntireDatabase } from '$lib/db';
 import { requireRole } from '$lib/auth';
 import { fail } from '@sveltejs/kit';
-import fs from 'fs';
+import { uploadFileBuffer } from '$lib/storageHelper';
 import path from 'path';
 
 export async function load({ cookies }) {
@@ -86,29 +86,22 @@ export const actions = {
 		}
 
 		const ext = path.extname(resumeFile.name) || '.pdf';
-		const filename = `resume_${Date.now()}_${Math.random().toString(36).substr(2, 6)}${ext}`;
-		const dest = path.resolve('uploads/resumes', filename);
+		const filename = `resumes/resume_${Date.now()}_${Math.random().toString(36).substr(2, 6)}${ext}`;
 
 		try {
-			const buffer = Buffer.from(await resumeFile.arrayBuffer());
-			fs.writeFileSync(dest, buffer);
-			
-			const oldResume = db.students[studentIndex].resumePath;
-			if (oldResume && oldResume !== 'mock-resume.pdf' && oldResume !== 'mock-resume-2.pdf') {
-				const oldPath = path.resolve('uploads/resumes', oldResume);
-				if (fs.existsSync(oldPath)) {
-					fs.unlinkSync(oldPath);
-				}
-			}
+			const buffer = await resumeFile.arrayBuffer();
+			const resumePath = await uploadFileBuffer(buffer, filename, resumeFile.type || 'application/pdf');
 
-			db.students[studentIndex].resumePath = filename;
+			// We won't delete the old file from Firebase for now to avoid data loss, 
+			// but we will update the DB with the new Firebase URL.
+			db.students[studentIndex].resumePath = resumePath;
 			await updateEntireDatabase(db);
 			
 			logAction('STUDENT_UPDATE_RESUME', `Student ${db.students[studentIndex].fullName} uploaded a new resume.`);
 			return { success: true, message: 'Resume file updated successfully' };
 		} catch (err) {
 			console.error('Resume swap error:', err);
-			return fail(500, { success: false, error: 'Failed to save resume. Please try again.' });
+			return fail(500, { success: false, error: 'Failed to save resume to storage. Please try again.' });
 		}
 	}
 };
