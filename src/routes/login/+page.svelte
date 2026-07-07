@@ -44,7 +44,7 @@
 			}
 		} catch (error) {
 			console.error("Google Auth Error", error);
-			googleError = "Google authentication was cancelled or failed.";
+			googleError = error?.code === 'auth/popup-blocked' ? 'Popup was blocked by your browser. Please allow popups and try again.' : 'Google authentication was cancelled or failed.';
 		} finally {
 			googleLoading = false;
 		}
@@ -123,7 +123,7 @@
 			<input type="hidden" name="role" value={activeRole} />
 
 			<div>
-				<label for="email" class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">
+				<label for="email" class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2" aria-label="Email address">
 					{#if activeRole === 'company'}
 						Company Email Address
 					{:else}
@@ -142,7 +142,7 @@
 
 			<div>
 				<div class="flex items-center justify-between mb-2">
-					<label for="password" class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+					<label for="password" class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider" aria-label="Password">
 						Password
 					</label>
 				</div>
@@ -170,16 +170,16 @@
 			</button>
 
 			<div class="relative flex items-center py-2">
-				<div class="flex-grow border-t border-slate-200 dark:border-slate-800"></div>
-				<span class="flex-shrink-0 mx-4 text-xs text-slate-600 dark:text-slate-400 dark:text-slate-500">or</span>
-				<div class="flex-grow border-t border-slate-200 dark:border-slate-800"></div>
+				<div class="grow border-t border-slate-200 dark:border-slate-800"></div>
+				<span class="shrink-0 mx-4 text-xs text-slate-600 dark:text-slate-500">or</span>
+				<div class="grow border-t border-slate-200 dark:border-slate-800"></div>
 			</div>
 
 			<div>
-				<label class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">
+				<label for="googleRole" class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2" aria-label="Google sign-in role">
 					ROLE (ONLY FOR FIRST-TIME GOOGLE SIGN-UP)
 				</label>
-				<select bind:value={googleRole} class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-950/30 focus:border-indigo-500 dark:focus:border-indigo-400 focus:outline-none transition text-sm text-slate-900 dark:text-white cursor-pointer">
+				<select id="googleRole" bind:value={googleRole} class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-950/30 focus:border-indigo-500 dark:focus:border-indigo-400 focus:outline-none transition text-sm text-slate-900 dark:text-white cursor-pointer">
 					<option value="student">Student / Intern</option>
 					<option value="company">Company / Employer</option>
 				</select>

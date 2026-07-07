@@ -1,18 +1,30 @@
-import { i as updateEntireDatabase, n as getCollection, r as logAction, t as DOMAINS } from "../../../../chunks/db.js";
+import { i as logAction, o as updateEntireDatabase, r as getCollection, t as DOMAINS } from "../../../../chunks/db.js";
 import { a as requireRole } from "../../../../chunks/auth.js";
 import { fail } from "@sveltejs/kit";
 //#region src/routes/student/internships/+page.server.js
 async function load({ cookies, url }) {
 	const sessionUser = requireRole(cookies, ["student"]);
+	const [studentsData, companiesData, internshipsData, applicationsData, notificationsData, emailTemplatesData] = await Promise.all([
+		getCollection("students"),
+		getCollection("companies"),
+		getCollection("internships"),
+		getCollection("applications"),
+		getCollection("notifications"),
+		getCollection("emailTemplates")
+	]);
 	const db = {
-		students: await getCollection("students"),
-		companies: await getCollection("companies"),
-		internships: await getCollection("internships"),
-		applications: await getCollection("applications"),
-		notifications: await getCollection("notifications"),
-		emailTemplates: await getCollection("emailTemplates")
+		students: studentsData,
+		companies: companiesData,
+		internships: internshipsData,
+		applications: applicationsData,
+		notifications: notificationsData,
+		emailTemplates: emailTemplatesData
 	};
 	const student = db.students.find((s) => s.id === sessionUser.id);
+	if (!student) {
+		cookies.delete("nexora_session", { path: "/" });
+		throw new Error("Student session not found");
+	}
 	const searchQuery = url.searchParams.get("query")?.toLowerCase().trim() || "";
 	const filterDomain = url.searchParams.get("domain") || "";
 	const filterLocation = url.searchParams.get("location")?.toLowerCase().trim() || "";
@@ -22,45 +34,27 @@ async function load({ cookies, url }) {
 	const filterJobOpp = url.searchParams.get("jobOpportunity") || "";
 	const filterCert = url.searchParams.get("certificateAvailable") || "";
 	const companyMap = new Map(db.companies.map((c) => [c.id, c]));
-	const filteredInternships = db.internships.filter((internship) => {
-		if (internship.status !== "Active") return false;
-		const company = companyMap.get(internship.companyId);
-		if (!company || company.isSuspended || company.status !== "Approved") return false;
-		if (searchQuery) {
-			const titleMatch = internship.title.toLowerCase().includes(searchQuery);
-			const descMatch = internship.description.toLowerCase().includes(searchQuery);
-			const skillMatch = internship.skillsRequired.some((s) => s.toLowerCase().includes(searchQuery));
-			const companyMatch = company.companyName.toLowerCase().includes(searchQuery);
-			if (!titleMatch && !descMatch && !skillMatch && !companyMatch) return false;
-		}
-		if (filterDomain && internship.domain !== filterDomain) return false;
-		if (filterLocation && !internship.location.toLowerCase().includes(filterLocation)) return false;
-		if (filterMode && internship.mode !== filterMode) return false;
-		if (filterType && internship.type !== filterType) return false;
-		if (filterDuration && internship.duration !== filterDuration) return false;
-		if (filterJobOpp && internship.jobOpportunity !== filterJobOpp) return false;
-		if (filterCert && internship.certificateAvailable !== filterCert) return false;
-		return true;
-	}).map((internship) => {
-		const company = companyMap.get(internship.companyId);
-		const hasApplied = db.applications.some((a) => a.studentId === student.id && a.internshipId === internship.id);
-		return {
-			...internship,
-			companyName: company ? company.companyName : "Unknown Company",
-			companyLogo: company ? company.companyLogo : "",
-			hasApplied
-		};
-	});
-	if (filteredInternships.length < 15 && (searchQuery || filterDomain || filterLocation || filterMode || filterType)) {
-		const relaxedInternships = db.internships.filter((internship) => {
+	return {
+		student,
+		internships: db.internships.filter((internship) => {
 			if (internship.status !== "Active") return false;
 			const company = companyMap.get(internship.companyId);
 			if (!company || company.isSuspended || company.status !== "Approved") return false;
 			if (searchQuery) {
-				if (internship.title.toLowerCase().includes(searchQuery) || internship.skillsRequired.some((s) => s.toLowerCase().includes(searchQuery))) return true;
+				const titleMatch = internship.title.toLowerCase().includes(searchQuery);
+				const descMatch = internship.description.toLowerCase().includes(searchQuery);
+				const skillMatch = internship.skillsRequired.some((s) => s.toLowerCase().includes(searchQuery));
+				const companyMatch = company.companyName.toLowerCase().includes(searchQuery);
+				if (!titleMatch && !descMatch && !skillMatch && !companyMatch) return false;
 			}
-			if (filterDomain && internship.domain === filterDomain) return true;
-			return false;
+			if (filterDomain && internship.domain !== filterDomain) return false;
+			if (filterLocation && !internship.location.toLowerCase().includes(filterLocation)) return false;
+			if (filterMode && internship.mode !== filterMode) return false;
+			if (filterType && internship.type !== filterType) return false;
+			if (filterDuration && internship.duration !== filterDuration) return false;
+			if (filterJobOpp && internship.jobOpportunity !== filterJobOpp) return false;
+			if (filterCert && internship.certificateAvailable !== filterCert) return false;
+			return true;
 		}).map((internship) => {
 			const company = companyMap.get(internship.companyId);
 			const hasApplied = db.applications.some((a) => a.studentId === student.id && a.internshipId === internship.id);
@@ -70,13 +64,7 @@ async function load({ cookies, url }) {
 				companyLogo: company ? company.companyLogo : "",
 				hasApplied
 			};
-		});
-		const existingIds = new Set(filteredInternships.map((i) => i.id));
-		for (const ri of relaxedInternships) if (!existingIds.has(ri.id)) filteredInternships.push(ri);
-	}
-	return {
-		student,
-		internships: filteredInternships.slice(0, 50),
+		}).slice(0, 50),
 		domains: DOMAINS,
 		filters: {
 			query: searchQuery,
@@ -97,13 +85,21 @@ var actions = { apply: async ({ request, cookies }) => {
 		success: false,
 		error: "Internship reference is missing"
 	});
+	const [studentsData, companiesData, internshipsData, applicationsData, notificationsData, emailTemplatesData] = await Promise.all([
+		getCollection("students"),
+		getCollection("companies"),
+		getCollection("internships"),
+		getCollection("applications"),
+		getCollection("notifications"),
+		getCollection("emailTemplates")
+	]);
 	const db = {
-		students: await getCollection("students"),
-		companies: await getCollection("companies"),
-		internships: await getCollection("internships"),
-		applications: await getCollection("applications"),
-		notifications: await getCollection("notifications"),
-		emailTemplates: await getCollection("emailTemplates")
+		students: studentsData,
+		companies: companiesData,
+		internships: internshipsData,
+		applications: applicationsData,
+		notifications: notificationsData,
+		emailTemplates: emailTemplatesData
 	};
 	const student = db.students.find((s) => s.id === sessionUser.id);
 	const internship = db.internships.find((i) => i.id === internshipId);

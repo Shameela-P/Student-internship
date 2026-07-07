@@ -26,11 +26,12 @@ export const actions = {
 			return fail(400, { success: false, error: 'All fields are required' });
 		}
 
-		const db = {
-		students: await getCollection('students'),
-		companies: await getCollection('companies'),
-		admins: await getCollection('admins')
-	};
+		const [studentsData, companiesData, adminsData] = await Promise.all([
+		getCollection('students'),
+		getCollection('companies'),
+		getCollection('admins')
+	]);
+	const db = { students: studentsData, companies: companiesData, admins: adminsData };
 
 		const setAuthCookies = (payload) => {
 			const token = createToken(payload);

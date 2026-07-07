@@ -2,6 +2,7 @@
 	import { onMount } from 'svelte';
 	import './layout.css';
 	import favicon from '$lib/assets/favicon.svg';
+	import CookieConsent from '$lib/components/CookieConsent.svelte';
 
 	let { data, children } = $props();
 
@@ -64,4 +65,6 @@
 	<main class="flex-grow flex flex-col relative z-10">
 		{@render children()}
 	</main>
+	
+	<CookieConsent />
 </div>

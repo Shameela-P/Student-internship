@@ -1,16 +1,18 @@
-import { i as updateEntireDatabase, n as getCollection, r as logAction } from "../../../../chunks/db.js";
+import { i as logAction, o as updateEntireDatabase, r as getCollection } from "../../../../chunks/db.js";
 import { a as requireRole } from "../../../../chunks/auth.js";
 //#region src/routes/admin/companies/+page.server.js
 async function load({ cookies }) {
 	requireRole(cookies, ["admin"]);
-	return { companies: [...{ companies: await getCollection("companies") }.companies].reverse() };
+	const [companiesData] = await Promise.all([getCollection("companies")]);
+	return { companies: [...{ companies: companiesData }.companies].reverse() };
 }
 var actions = { updateStatus: async ({ request, cookies }) => {
 	requireRole(cookies, ["admin"]);
 	const data = await request.formData();
 	const companyId = data.get("companyId");
 	const newStatus = data.get("status");
-	const db = { companies: await getCollection("companies") };
+	const [companiesData] = await Promise.all([getCollection("companies")]);
+	const db = { companies: companiesData };
 	const companyIndex = db.companies.findIndex((c) => c.id === companyId);
 	if (companyIndex > -1) {
 		const oldStatus = db.companies[companyIndex].status;

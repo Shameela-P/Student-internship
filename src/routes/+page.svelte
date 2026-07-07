@@ -1,5 +1,6 @@
 <script>
 	import logo from '$lib/assets/logo.svg';
+	import FloatingLines from '$lib/components/FloatingLines.svelte';
 	let { data } = $props();
 	const stats = $derived(data.stats);
 	const featured = $derived(data.featured);
@@ -11,7 +12,7 @@
 	<div class="flex items-center gap-3">
 		<!-- Dynamic Logo -->
 		<img src={logo} alt="Nexora Logo" class="h-10 w-10 drop-shadow-md" />
-		<span class="font-display font-extrabold text-2xl tracking-wide bg-gradient-to-r from-slate-900 to-slate-700 dark:from-white dark:to-slate-300 text-gradient">
+		<span class="font-display font-extrabold text-2xl tracking-wide bg-linear-to-r from-slate-900 to-slate-700 dark:from-white dark:to-slate-300 text-gradient">
 			Nexora
 		</span>
 	</div>
@@ -21,7 +22,7 @@
 		{#if data.user}
 			<a
 				href={`/${data.user.role}`}
-				class="px-5 py-2.5 rounded-xl text-sm font-semibold text-slate-900 dark:text-white bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 hover:shadow-lg hover:shadow-indigo-500/10 transition-all duration-300 transform hover:-translate-y-0.5 active:translate-y-0"
+				class="px-5 py-2.5 rounded-xl text-sm font-semibold text-slate-900 dark:text-white bg-linear-to-r from-blue-600 via-indigo-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 hover:shadow-lg hover:shadow-indigo-500/10 transition-all duration-300 transform hover:-translate-y-0.5 active:translate-y-0"
 			>
 				Go to Dashboard ({data.user.role.toUpperCase()})
 			</a>
@@ -43,36 +44,30 @@
 </header>
 
 <!-- Hero Section -->
-<section class="max-w-7xl mx-auto px-6 md:px-12 pt-20 pb-16 flex flex-col items-center text-center relative">
-	<!-- Decorative Glowing Spheres -->
-	<div class="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 h-80 rounded-full bg-purple-600/15 blur-[120px] pointer-events-none animate-pulse-slow"></div>
+<section class="max-w-7xl mx-auto px-6 md:px-12 pt-20 pb-16 flex flex-col items-center text-center relative overflow-hidden">
+	<FloatingLines />
 
-	<!-- Badge -->
 	<div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-400 text-xs font-semibold mb-6 select-none animate-float">
 		<span class="h-2 w-2 rounded-full bg-emerald-500 animate-ping"></span>
-		Empowering 10,000+ Students Nationwide
+		Trusted by 10,000+ students and 500+ companies
 	</div>
 
-	<!-- Main Title -->
 	<h1 class="font-display font-black text-4xl md:text-6xl lg:text-7xl leading-tight max-w-5xl tracking-tight text-slate-900 dark:text-white">
-		Connect, Collaborate & <br class="hidden md:inline" />
-		<span class="bg-gradient-to-r from-blue-400 via-purple-400 to-cyan-400 text-gradient">
-			Build the Future
+		Launch your next opportunity with <br class="hidden md:inline" />
+		<span class="bg-linear-to-r from-blue-400 via-purple-400 to-cyan-400 text-gradient">
+			clarity and momentum
 		</span>
-		With Nexora
 	</h1>
 
-	<!-- Description -->
 	<p class="mt-6 text-lg text-slate-600 dark:text-slate-400 max-w-3xl leading-relaxed">
-		The centralized internship management network bridging the gap between top-tier academic candidates and verified global enterprises. Secure your placement across 150+ domains.
+		Discover vetted internships, manage applications, and connect with verified employers in one focused platform built for modern student career growth.
 	</p>
 
-	<!-- Action CTAs -->
 	<div class="mt-10 flex flex-wrap items-center justify-center gap-4">
 		{#if !data.user}
 			<a
 				href="/register?role=student"
-				class="px-8 py-4 rounded-2xl text-base font-bold text-slate-900 dark:text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 hover:shadow-lg hover:shadow-blue-500/20 transition-all duration-300 transform hover:-translate-y-1"
+				class="px-8 py-4 rounded-2xl text-base font-bold text-slate-900 dark:text-white bg-linear-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 hover:shadow-lg hover:shadow-blue-500/20 transition-all duration-300 transform hover:-translate-y-1"
 			>
 				Register as Student
 			</a>
@@ -85,7 +80,7 @@
 		{:else}
 			<a
 				href={`/${data.user.role}`}
-				class="px-8 py-4 rounded-2xl text-base font-bold text-slate-900 dark:text-white bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 hover:shadow-lg hover:shadow-blue-500/10 transition-all duration-300 transform hover:-translate-y-1"
+				class="px-8 py-4 rounded-2xl text-base font-bold text-slate-900 dark:text-white bg-linear-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 hover:shadow-lg hover:shadow-blue-500/10 transition-all duration-300 transform hover:-translate-y-1"
 			>
 				Enter Dashboard
 			</a>
@@ -203,7 +198,7 @@
 	<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
 		{#each featured as internship}
 			<div class="p-8 rounded-2xl bg-white dark:bg-slate-900/40 hover:bg-slate-900/60 border border-slate-200 dark:border-slate-800/50 hover:border-blue-500/20 hover:shadow-blue-500/5 transition duration-300 relative group overflow-hidden">
-				<div class="absolute top-0 right-0 w-24 h-24 rounded-full bg-gradient-to-bl from-blue-500/5 to-transparent blur-md pointer-events-none group-hover:scale-150 transition duration-500"></div>
+				<div class="absolute top-0 right-0 w-24 h-24 rounded-full bg-linear-to-bl from-blue-500/5 to-transparent blur-md pointer-events-none group-hover:scale-150 transition duration-500"></div>
 
 				<div>
 					<div class="flex items-start justify-between">
@@ -263,20 +258,69 @@
 	</div>
 </section>
 
+
 <!-- Footer -->
-<footer class="w-full py-12 px-6 md:px-12 border-t border-slate-200 dark:border-slate-800/50 bg-slate-950/20">
-	<div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
-		<div class="flex items-center gap-3">
-			<img src={logo} alt="Nexora Logo" class="h-8 w-8 drop-shadow-sm" />
-			<span class="font-display font-extrabold text-xl text-slate-900 dark:text-white">
-				Nexora
-			</span>
+<footer class="w-full pt-16 pb-8 px-6 md:px-12 border-t border-slate-200 dark:border-slate-800/50 bg-slate-950/20">
+	<div class="max-w-7xl mx-auto">
+		<div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
+			<!-- Brand Statement -->
+			<div class="md:col-span-1">
+				<div class="flex items-center gap-3 mb-4">
+					<img src={logo} alt="Nexora Logo" class="h-8 w-8 drop-shadow-sm" />
+					<span class="font-display font-extrabold text-xl text-slate-900 dark:text-white">
+						Nexora
+					</span>
+				</div>
+				<p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed mb-6">
+					The premier internship management network bridging the gap between top-tier academic candidates and verified global enterprises. Built by Team Shameela.
+				</p>
+			</div>
+
+			<!-- Quick Links -->
+			<div>
+				<h4 class="font-display font-bold text-sm text-slate-900 dark:text-white mb-4">Quick Links</h4>
+				<ul class="space-y-3">
+					<li><a href="/" class="text-xs text-slate-500 hover:text-blue-500 transition">Home</a></li>
+					<li><a href="/login" class="text-xs text-slate-500 hover:text-blue-500 transition">Dashboard Login</a></li>
+					<li><a href="/student/companies" class="text-xs text-slate-500 hover:text-blue-500 transition">Verified Companies</a></li>
+					<li><a href="/student/internships" class="text-xs text-slate-500 hover:text-blue-500 transition">Find Internships</a></li>
+				</ul>
+			</div>
+
+			<!-- Resources -->
+			<div>
+				<h4 class="font-display font-bold text-sm text-slate-900 dark:text-white mb-4">Resources</h4>
+				<ul class="space-y-3">
+					<li><a href="/help" class="text-xs text-slate-500 hover:text-blue-500 transition">Help Center</a></li>
+					<li><a href="/privacy-policy" class="text-xs text-slate-500 hover:text-blue-500 transition">Privacy Policy</a></li>
+					<li><a href="/terms" class="text-xs text-slate-500 hover:text-blue-500 transition">Terms of Service</a></li>
+					<li><a href="/register?role=company" class="text-xs text-slate-500 hover:text-blue-500 transition">Partner With Us</a></li>
+				</ul>
+			</div>
+
+			<!-- Contact Us -->
+			<div>
+				<h4 class="font-display font-bold text-sm text-slate-900 dark:text-white mb-4">Contact Us</h4>
+				<ul class="space-y-3">
+					<li class="flex items-center gap-2 text-xs text-slate-500">
+						<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
+						<a href="mailto:admin@nexora.com" class="hover:text-blue-500 transition">admin@nexora.com</a>
+					</li>
+					<li class="flex items-center gap-2 text-xs text-slate-500">
+						<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+						<span>Global HQ, Tech Hub</span>
+					</li>
+				</ul>
+			</div>
 		</div>
-		<p class="text-xs text-slate-500">
-			© 2026 Nexora Portal. All rights reserved. Developed for corporate-student engagement.
-		</p>
-		<div class="flex items-center gap-4">
-			<a href="/login" class="text-xs font-bold text-slate-500 hover:text-blue-400 transition">Admin Entrance</a>
+
+		<div class="pt-8 border-t border-slate-200 dark:border-slate-800/80 flex flex-col md:flex-row items-center justify-between gap-4">
+			<p class="text-[10px] text-slate-500">
+				&copy; {new Date().getFullYear()} Nexora Portal. All rights reserved. Developed for corporate-student engagement.
+			</p>
+			<div class="flex items-center gap-4 text-[10px] text-slate-500">
+				<a href="/login" class="hover:text-blue-400 transition font-bold">Admin Entrance</a>
+			</div>
 		</div>
 	</div>
 </footer>

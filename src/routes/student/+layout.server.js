@@ -1,30 +1,28 @@
 import { requireRole } from '$lib/auth';
 import { getCollection } from '$lib/db';
+import { redirect } from '@sveltejs/kit';
 
 export async function load({ cookies }) {
 	const sessionUser = requireRole(cookies, ['student']);
-	const db = {
-		students: await getCollection('students'),
-		notifications: await getCollection('notifications'),
-		messages: await getCollection('messages')
-	};
-	const student = db.students.find(s => s.id === sessionUser.id);
-	
+	const [studentsData, notificationsData, messagesData] = await Promise.all([
+		getCollection('students'),
+		getCollection('notifications'),
+		getCollection('messages')
+	]);
+	const student = studentsData.find(s => s.id === sessionUser.id);
+
 	if (!student) {
-		// Just in case student was deleted/blocked since session creation
 		cookies.delete('nexora_session', { path: '/' });
 		throw redirect(303, '/login');
 	}
 
-	// Count unread notifications
-	const unreadNotifications = db.notifications.filter(
-		n => n.recipientEmail.toLowerCase() === student.email.toLowerCase() && !n.read
+	const unreadNotifications = (notificationsData || []).filter(
+		n => n?.recipientEmail?.toLowerCase() === student.email?.toLowerCase() && !n.read
 	).length;
 
-	// Count unread messages
-	const unreadMessages = db.messages ? db.messages.filter(
-		m => m.recipientEmail === student.email && !m.read
-	).length : 0;
+	const unreadMessages = (messagesData || []).filter(
+		m => m?.recipientEmail?.toLowerCase() === student.email?.toLowerCase() && !m.read
+	).length;
 
 	return {
 		user: sessionUser,
@@ -33,5 +31,3 @@ export async function load({ cookies }) {
 		unreadMessages
 	};
 }
-
-import { redirect } from '@sveltejs/kit';

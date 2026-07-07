@@ -5,8 +5,6 @@ import { child, get, getDatabase, ref, set, update } from "firebase/database";
 import "crypto";
 //#region src/lib/db.js
 var dbRef = ref(getDatabase(app), "/");
-var dbCache = {};
-var CACHE_TTL_MS = 5e3;
 var DOMAINS = [
 	{
 		id: 1,
@@ -765,34 +763,39 @@ var DOMAINS = [
 * We normalize it back to an array.
 */
 async function getCollection(collectionName) {
-	const now = Date.now();
-	const cached = dbCache[collectionName];
-	if (cached && now - cached.timestamp < CACHE_TTL_MS) {
-		const data = cached.data;
-		if (!data) return [];
-		if (Array.isArray(data)) return data.filter((item) => item !== null);
-		if (typeof data === "object") return Object.values(data).filter((item) => item !== null);
-		return [];
-	}
 	const snapshot = await get(child(dbRef, collectionName));
-	const data = snapshot.exists() ? snapshot.val() : null;
-	dbCache[collectionName] = {
-		data,
-		timestamp: Date.now()
-	};
-	if (!data) return [];
+	if (!snapshot.exists()) return [];
+	const data = snapshot.val();
 	if (Array.isArray(data)) return data.filter((item) => item !== null);
 	else if (typeof data === "object") return Object.values(data).filter((item) => item !== null);
 	return [];
 }
 /**
+* Add a new item to an array collection.
+*/
+async function addDocument(collectionName, data) {
+	const collection = await getCollection(collectionName);
+	collection.push(data);
+	await set(child(dbRef, collectionName), collection);
+}
+/**
+* Update an existing item in a collection.
+*/
+async function updateDocument(collectionName, id, updates) {
+	const collection = await getCollection(collectionName);
+	const index = collection.findIndex((item) => item && item.id === id);
+	if (index !== -1) {
+		collection[index] = {
+			...collection[index],
+			...updates
+		};
+		await set(child(dbRef, `${collectionName}/${index}`), collection[index]);
+	}
+}
+/**
 * Update multiple collections at once (used by refactored routes)
 */
 async function updateEntireDatabase(data) {
-	for (const key in data) dbCache[key] = {
-		data: data[key],
-		timestamp: Date.now()
-	};
 	await update(dbRef, data);
 }
 /**
@@ -824,4 +827,4 @@ function ensureMockResumes() {
 }
 ensureMockResumes();
 //#endregion
-export { updateEntireDatabase as i, getCollection as n, logAction as r, DOMAINS as t };
+export { updateDocument as a, logAction as i, addDocument as n, updateEntireDatabase as o, getCollection as r, DOMAINS as t };

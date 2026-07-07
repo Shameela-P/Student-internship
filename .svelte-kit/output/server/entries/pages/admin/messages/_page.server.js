@@ -1,20 +1,31 @@
-import { i as updateEntireDatabase, n as getCollection } from "../../../../chunks/db.js";
-import { n as markMessagesRead } from "../../../../chunks/messages.js";
+import { o as updateEntireDatabase, r as getCollection } from "../../../../chunks/db.js";
 import { a as requireRole } from "../../../../chunks/auth.js";
 import { fail } from "@sveltejs/kit";
+import fs from "fs";
+import path from "path";
 //#region src/routes/admin/messages/+page.server.js
 async function load({ cookies }) {
 	requireRole(cookies, ["admin"]);
+	const [studentsData, companiesData, messagesData] = await Promise.all([
+		getCollection("students"),
+		getCollection("companies"),
+		getCollection("messages")
+	]);
 	const db = {
-		students: await getCollection("students"),
-		companies: await getCollection("companies"),
-		messages: await getCollection("messages")
+		students: studentsData,
+		companies: companiesData,
+		messages: messagesData
 	};
 	if (!db.messages) db.messages = [];
 	const adminEmail = "admin@nexora.com";
 	const userMessages = db.messages.filter((m) => m.senderEmail.toLowerCase() === adminEmail.toLowerCase() || m.recipientEmail.toLowerCase() === adminEmail.toLowerCase());
 	let dbChanged = false;
-	if (markMessagesRead(db.messages, adminEmail)) dbChanged = true;
+	db.messages.forEach((m) => {
+		if (m.recipientEmail.toLowerCase() === adminEmail.toLowerCase() && !m.read) {
+			m.read = true;
+			dbChanged = true;
+		}
+	});
 	if (dbChanged) await updateEntireDatabase(db);
 	const companies = db.companies.filter((c) => c.status === "Approved" && !c.isSuspended).map((c) => ({
 		name: c.companyName,
@@ -33,36 +44,50 @@ async function load({ cookies }) {
 }
 var actions = { sendMessage: async ({ request, cookies }) => {
 	requireRole(cookies, ["admin"]);
+	const [studentsData, companiesData, messagesData] = await Promise.all([
+		getCollection("students"),
+		getCollection("companies"),
+		getCollection("messages")
+	]);
 	const db = {
-		students: await getCollection("students"),
-		companies: await getCollection("companies"),
-		messages: await getCollection("messages"),
-		notifications: await getCollection("notifications")
+		students: studentsData,
+		companies: companiesData,
+		messages: messagesData
 	};
-	const adminEmail = "admin@nexora.com";
 	const formData = await request.formData();
 	const recipientEmail = formData.get("recipientEmail")?.toString().trim();
 	const recipientRole = formData.get("recipientRole")?.toString().trim();
 	const recipientName = formData.get("recipientName")?.toString().trim();
 	const content = formData.get("content")?.toString().trim();
-	const attachmentUrl = formData.get("attachmentUrl")?.toString().trim();
-	const attachmentName = formData.get("attachmentName")?.toString().trim();
-	const attachmentSize = formData.get("attachmentSize")?.toString().trim();
-	const attachmentMimeType = formData.get("attachmentMimeType")?.toString().trim();
-	if (!recipientEmail || !recipientRole || !content && !attachmentUrl) return fail(400, {
+	const attachmentFile = formData.get("attachment");
+	if (!recipientEmail || !recipientRole || !content && (!attachmentFile || attachmentFile.size === 0)) return fail(400, {
 		success: false,
 		error: "Recipient details or content is required"
 	});
 	let attachmentPath = "";
 	let attachmentType = "";
-	if (attachmentUrl) {
-		attachmentPath = attachmentUrl;
-		attachmentType = attachmentMimeType?.startsWith("image/") ? "image" : "file";
+	if (attachmentFile && attachmentFile instanceof File && attachmentFile.size > 0) {
+		const ext = path.extname(attachmentFile.name) || ".pdf";
+		const filename = `attachment_${Date.now()}_${Math.random().toString(36).substr(2, 6)}${ext}`;
+		const dest = path.resolve("uploads/attachments", filename);
+		try {
+			if (!fs.existsSync(path.resolve("uploads/attachments"))) fs.mkdirSync(path.resolve("uploads/attachments"), { recursive: true });
+			const buffer = Buffer.from(await attachmentFile.arrayBuffer());
+			fs.writeFileSync(dest, buffer);
+			attachmentPath = filename;
+			attachmentType = ext.toLowerCase() === ".pdf" ? "resume" : "file";
+		} catch (err) {
+			console.error("Admin chat attachment upload error:", err);
+			return fail(500, {
+				success: false,
+				error: "Failed to upload attachment file"
+			});
+		}
 	}
 	if (!db.messages) db.messages = [];
 	const newMessage = {
 		id: `msg_${Date.now()}`,
-		senderEmail: adminEmail,
+		senderEmail: "admin@nexora.com",
 		senderRole: "admin",
 		senderName: "Nexora Admin",
 		recipientEmail,
@@ -72,22 +97,9 @@ var actions = { sendMessage: async ({ request, cookies }) => {
 		timestamp: (/* @__PURE__ */ new Date()).toISOString(),
 		read: false,
 		attachmentPath,
-		attachmentType,
-		attachmentName: attachmentName || "",
-		attachmentSize: parseInt(attachmentSize) || 0,
-		attachmentMimeType: attachmentMimeType || ""
+		attachmentType
 	};
 	db.messages.push(newMessage);
-	if (!db.notifications) db.notifications = [];
-	db.notifications.push({
-		id: `notif_${Date.now()}_${Math.floor(Math.random() * 1e3)}`,
-		recipientEmail,
-		recipientRole,
-		subject: `New Message from Nexora Admin`,
-		body: content ? `"${content.substring(0, 100)}${content.length > 100 ? "..." : ""}"` : `Sent an attachment: ${attachmentName || "File"}`,
-		date: (/* @__PURE__ */ new Date()).toISOString(),
-		read: false
-	});
 	await updateEntireDatabase(db);
 	return { success: true };
 } };

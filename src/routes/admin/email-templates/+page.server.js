@@ -3,9 +3,10 @@ import { requireRole } from '$lib/auth';
 
 export async function load({ cookies }) {
 	requireRole(cookies, ['admin']);
-	const db = {
-		emailTemplates: await getCollection('emailTemplates')
-	};
+	const [emailTemplatesData] = await Promise.all([
+		getCollection('emailTemplates')
+	]);
+	const db = { emailTemplates: emailTemplatesData };
 	
 	// Create default templates if none exist
 	let templates = db.emailTemplates || [];

@@ -3,10 +3,11 @@ import { requireRole } from '$lib/auth';
 
 export async function load({ cookies }) {
 	const sessionUser = requireRole(cookies, ['company']);
-	const db = {
-		companies: await getCollection('companies'),
-		notifications: await getCollection('notifications')
-	};
+	const [companiesData, notificationsData] = await Promise.all([
+		getCollection('companies'),
+		getCollection('notifications')
+	]);
+	const db = { companies: companiesData, notifications: notificationsData };
 	const company = db.companies.find(c => c.id === sessionUser.id);
 
 	// Load notifications matching company email

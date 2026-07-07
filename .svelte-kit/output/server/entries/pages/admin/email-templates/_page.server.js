@@ -1,9 +1,10 @@
-import { n as getCollection } from "../../../../chunks/db.js";
+import { r as getCollection } from "../../../../chunks/db.js";
 import { a as requireRole } from "../../../../chunks/auth.js";
 //#region src/routes/admin/email-templates/+page.server.js
 async function load({ cookies }) {
 	requireRole(cookies, ["admin"]);
-	let templates = { emailTemplates: await getCollection("emailTemplates") }.emailTemplates || [];
+	const [emailTemplatesData] = await Promise.all([getCollection("emailTemplates")]);
+	let templates = { emailTemplates: emailTemplatesData }.emailTemplates || [];
 	if (templates.length === 0) templates = [
 		{
 			id: "TEMP_STUDENT_REG",

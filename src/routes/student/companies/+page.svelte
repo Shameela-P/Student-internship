@@ -9,13 +9,16 @@
 	const domains = $derived(data.domains);
 	const stats = $derived(data.stats);
 	const filters = $derived(data.filters);
+	// svelte-ignore state_referenced_locally
+	const initialFilters = { ...data.filters };
 
-	let searchVal = $state(filters.query);
-	let selectedIndustry = $state(filters.industry);
-	let selectedDomain = $state(filters.domain);
-	let searchLocation = $state(filters.location);
-	let selectedMode = $state(filters.mode);
-	let selectedType = $state(filters.type);
+	// svelte-ignore state_referenced_locally
+	let searchVal = $state(initialFilters.query);
+	let selectedIndustry = $state(initialFilters.industry);
+	let selectedDomain = $state(initialFilters.domain);
+	let searchLocation = $state(initialFilters.location);
+	let selectedMode = $state(initialFilters.mode);
+	let selectedType = $state(initialFilters.type);
 
 	let savedCompanies = $state(new Set());
 	let selectedCompanyDetail = $state(null);
@@ -247,10 +250,10 @@
 </section>
 
 <!-- Auto Scrolling Recruiters Marquee -->
-<section class="mb-16 py-5 border-y border-slate-200 dark:border-slate-800/80 bg-slate-100 dark:bg-slate-900/30">
-	<div class="max-w-6xl mx-auto px-6 flex flex-col md:flex-row items-center gap-6">
+<section class="mb-16 py-5 border-y border-slate-200 dark:border-slate-800/80 bg-slate-100 dark:bg-slate-900/30 overflow-hidden w-full">
+	<div class="max-w-6xl mx-auto px-6 flex flex-col md:flex-row items-center gap-6 w-full">
 		<div class="shrink-0 text-xs font-bold text-slate-600 dark:text-slate-400 uppercase tracking-widest">Top Recruiters:</div>
-		<div class="marquee-container flex-grow">
+		<div class="marquee-container flex-grow w-full overflow-hidden">
 			<div class="marquee-track">
 				{#each [...featuredRecruiters, ...featuredRecruiters] as recruiter}
 					<span class="text-sm font-black font-display text-slate-600 dark:text-slate-400 hover:text-blue-400 transition-colors duration-200 cursor-default">
@@ -537,14 +540,14 @@
 {#if selectedCompanyDetail}
 	<!-- svelte-ignore a11y_click_events_have_key_events -->
 	<!-- svelte-ignore a11y_no_static_element_interactions -->
-	<div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm" onclick={() => selectedCompanyDetail = null}>
-		<!-- svelte-ignore a11y_click_events_have_key_events -->
-		<!-- svelte-ignore a11y_no_static_element_interactions -->
+	<div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm" onclick={() => selectedCompanyDetail = null} role="button" tabindex="0" onkeydown={(e) => { if(e.key === 'Escape' || e.key === 'Enter' || e.key === ' ') selectedCompanyDetail = null; }}>
 		<div
 			class="w-full max-w-md rounded-2xl bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 shadow-2xl relative"
 			onclick={(e) => e.stopPropagation()}
+			role="presentation"
+			onkeydown={(e) => e.stopPropagation()}
 		>
-			<button onclick={() => selectedCompanyDetail = null} class="absolute top-4 right-4 p-1.5 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:text-white cursor-pointer transition">
+			<button onclick={() => selectedCompanyDetail = null} aria-label="Close modal" class="absolute top-4 right-4 p-1.5 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:text-white cursor-pointer transition">
 				<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" x2="6" y1="6" y2="18"/><line x1="6" x2="18" y1="6" y2="18"/></svg>
 			</button>
 

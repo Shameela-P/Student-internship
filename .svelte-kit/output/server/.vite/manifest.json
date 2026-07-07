@@ -59,7 +59,6 @@
     "file": "chunks/forms.js",
     "name": "forms",
     "imports": [
-      "_navigation.js",
       "_client.js"
     ]
   },
@@ -81,25 +80,11 @@
       "_index-server.js",
       "_internal.js",
       "_server.js"
-    ],
-    "dynamicImports": [
-      "src/hooks.server.js"
     ]
   },
   "_logo.js": {
     "file": "chunks/logo.js",
     "name": "logo"
-  },
-  "_messages.js": {
-    "file": "chunks/messages.js",
-    "name": "messages"
-  },
-  "_navigation.js": {
-    "file": "chunks/navigation.js",
-    "name": "navigation",
-    "imports": [
-      "_client.js"
-    ]
   },
   "_server.js": {
     "file": "chunks/server.js",
@@ -167,18 +152,6 @@
       "_server.js"
     ]
   },
-  "src/hooks.server.js": {
-    "file": "entries/hooks.server.js",
-    "name": "entries/hooks.server",
-    "src": "src/hooks.server.js",
-    "isEntry": true
-  },
-  "src/instrumentation.server.js": {
-    "file": "instrumentation.server.js",
-    "name": "instrumentation.server",
-    "src": "src/instrumentation.server.js",
-    "isEntry": true
-  },
   "src/routes/+layout.server.js": {
     "file": "entries/pages/_layout.server.js",
     "name": "entries/pages/_layout.server",
@@ -198,7 +171,7 @@
       "_server.js"
     ],
     "css": [
-      "_app/immutable/assets/_layout.BDxUvMWL.css"
+      "_app/immutable/assets/_layout.D5tZNYwd.css"
     ]
   },
   "src/routes/+page.server.js": {
@@ -219,6 +192,9 @@
     "imports": [
       "_server.js",
       "_logo.js"
+    ],
+    "css": [
+      "_app/immutable/assets/_page.DGz9-cXD.css"
     ]
   },
   "src/routes/admin/+layout.server.js": {
@@ -308,8 +284,7 @@
     "isEntry": true,
     "imports": [
       "_auth.js",
-      "_db.js",
-      "_messages.js"
+      "_db.js"
     ]
   },
   "src/routes/admin/messages/+page.svelte": {
@@ -320,30 +295,6 @@
     "imports": [
       "_index-server.js",
       "_forms.js",
-      "_navigation.js",
-      "_client.js",
-      "_server.js",
-      "_messages.js"
-    ]
-  },
-  "src/routes/admin/notifications/+page.server.js": {
-    "file": "entries/pages/admin/notifications/_page.server.js",
-    "name": "entries/pages/admin/notifications/_page.server",
-    "src": "src/routes/admin/notifications/+page.server.js",
-    "isEntry": true,
-    "imports": [
-      "_auth.js",
-      "_db.js"
-    ]
-  },
-  "src/routes/admin/notifications/+page.svelte": {
-    "file": "entries/pages/admin/notifications/_page.svelte.js",
-    "name": "entries/pages/admin/notifications/_page.svelte",
-    "src": "src/routes/admin/notifications/+page.svelte",
-    "isEntry": true,
-    "imports": [
-      "_forms.js",
-      "_navigation.js",
       "_server.js"
     ]
   },
@@ -366,26 +317,10 @@
       "_server.js"
     ]
   },
-  "src/routes/api/attachments/[filename]/+server.js": {
-    "file": "entries/endpoints/api/attachments/_filename_/_server.js",
-    "name": "entries/endpoints/api/attachments/_filename_/_server",
-    "src": "src/routes/api/attachments/[filename]/+server.js",
-    "isEntry": true
-  },
-  "src/routes/api/messages/read/+server.js": {
-    "file": "entries/endpoints/api/messages/read/_server.js",
-    "name": "entries/endpoints/api/messages/read/_server",
-    "src": "src/routes/api/messages/read/+server.js",
-    "isEntry": true,
-    "imports": [
-      "_db.js",
-      "_messages.js"
-    ]
-  },
-  "src/routes/api/notifications/read/+server.js": {
-    "file": "entries/endpoints/api/notifications/read/_server.js",
-    "name": "entries/endpoints/api/notifications/read/_server",
-    "src": "src/routes/api/notifications/read/+server.js",
+  "src/routes/api/banners/[filename]/+server.js": {
+    "file": "entries/endpoints/api/banners/_filename_/_server.js",
+    "name": "entries/endpoints/api/banners/_filename_/_server",
+    "src": "src/routes/api/banners/[filename]/+server.js",
     "isEntry": true,
     "imports": [
       "_db.js"
@@ -404,7 +339,10 @@
     "file": "entries/endpoints/api/resumes/_filename_/_server.js",
     "name": "entries/endpoints/api/resumes/_filename_/_server",
     "src": "src/routes/api/resumes/[filename]/+server.js",
-    "isEntry": true
+    "isEntry": true,
+    "imports": [
+      "_db.js"
+    ]
   },
   "src/routes/company/+layout.server.js": {
     "file": "entries/pages/company/_layout.server.js",
@@ -493,8 +431,7 @@
     "isEntry": true,
     "imports": [
       "_auth.js",
-      "_db.js",
-      "_messages.js"
+      "_db.js"
     ]
   },
   "src/routes/company/messages/+page.svelte": {
@@ -505,10 +442,8 @@
     "imports": [
       "_index-server.js",
       "_forms.js",
-      "_navigation.js",
       "_client.js",
-      "_server.js",
-      "_messages.js"
+      "_server.js"
     ]
   },
   "src/routes/company/notifications/+page.server.js": {
@@ -527,7 +462,6 @@
     "src": "src/routes/company/notifications/+page.svelte",
     "isEntry": true,
     "imports": [
-      "_navigation.js",
       "_server.js"
     ]
   },
@@ -547,9 +481,9 @@
     "src": "src/routes/login/+page.svelte",
     "isEntry": true,
     "imports": [
+      "_firebase.js",
       "_forms.js",
-      "_server.js",
-      "_firebase.js"
+      "_server.js"
     ]
   },
   "src/routes/login/google/+server.js": {
@@ -558,6 +492,7 @@
     "src": "src/routes/login/google/+server.js",
     "isEntry": true,
     "imports": [
+      "_auth.js",
       "_db.js"
     ]
   },
@@ -569,6 +504,15 @@
     "imports": [
       "_auth.js",
       "_db.js"
+    ]
+  },
+  "src/routes/privacy-policy/+page.svelte": {
+    "file": "entries/pages/privacy-policy/_page.svelte.js",
+    "name": "entries/pages/privacy-policy/_page.svelte",
+    "src": "src/routes/privacy-policy/+page.svelte",
+    "isEntry": true,
+    "imports": [
+      "_server.js"
     ]
   },
   "src/routes/register/+page.server.js": {
@@ -651,7 +595,7 @@
       "_server.js"
     ],
     "css": [
-      "_app/immutable/assets/_page.B3BUJc5f.css"
+      "_app/immutable/assets/_page.BZ-c7YNf.css"
     ]
   },
   "src/routes/student/companies/+page.server.js": {
@@ -706,8 +650,7 @@
     "isEntry": true,
     "imports": [
       "_auth.js",
-      "_db.js",
-      "_messages.js"
+      "_db.js"
     ]
   },
   "src/routes/student/messages/+page.svelte": {
@@ -718,10 +661,8 @@
     "imports": [
       "_index-server.js",
       "_forms.js",
-      "_navigation.js",
       "_client.js",
-      "_server.js",
-      "_messages.js"
+      "_server.js"
     ]
   },
   "src/routes/student/notifications/+page.server.js": {
@@ -740,7 +681,6 @@
     "src": "src/routes/student/notifications/+page.svelte",
     "isEntry": true,
     "imports": [
-      "_navigation.js",
       "_server.js"
     ]
   },
@@ -785,26 +725,13 @@
       "_server.js"
     ]
   },
-  "src/routes/verify/+page.server.js": {
-    "file": "entries/pages/verify/_page.server.js",
-    "name": "entries/pages/verify/_page.server",
-    "src": "src/routes/verify/+page.server.js",
+  "src/routes/terms/+page.svelte": {
+    "file": "entries/pages/terms/_page.svelte.js",
+    "name": "entries/pages/terms/_page.svelte",
+    "src": "src/routes/terms/+page.svelte",
     "isEntry": true,
     "imports": [
-      "_db.js"
-    ]
-  },
-  "src/routes/verify/+page.svelte": {
-    "file": "entries/pages/verify/_page.svelte.js",
-    "name": "entries/pages/verify/_page.svelte",
-    "src": "src/routes/verify/+page.svelte",
-    "isEntry": true,
-    "imports": [
-      "_index-server.js",
       "_server.js"
-    ],
-    "css": [
-      "_app/immutable/assets/_page.BKXyy3lx.css"
     ]
   },
   "virtual:__sveltekit/env": {

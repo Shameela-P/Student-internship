@@ -3,7 +3,7 @@
 // (including user hooks) evaluates. In build it's inert.
 import.meta.hot;
 
-import * as client_hooks from '../../../src/hooks.client.js';
+
 
 
 export { matchers } from './matchers.js';
@@ -47,14 +47,14 @@ export const dictionary = {
 		"/admin/companies": [~7,[2]],
 		"/admin/email-templates": [~8,[2]],
 		"/admin/messages": [~9,[2]],
-		"/admin/notifications": [~10,[2]],
-		"/admin/students": [~11,[2]],
-		"/company": [~12,[3]],
-		"/company/applications": [~13,[3]],
-		"/company/internships": [~14,[3]],
-		"/company/messages": [~15,[3]],
-		"/company/notifications": [~16,[3]],
-		"/login": [~17],
+		"/admin/students": [~10,[2]],
+		"/company": [~11,[3]],
+		"/company/applications": [~12,[3]],
+		"/company/internships": [~13,[3]],
+		"/company/messages": [~14,[3]],
+		"/company/notifications": [~15,[3]],
+		"/login": [~16],
+		"/privacy-policy": [17],
 		"/register": [~18],
 		"/student": [~19,[4]],
 		"/student/certificates": [~20,[4]],
@@ -64,12 +64,12 @@ export const dictionary = {
 		"/student/notifications": [~24,[4]],
 		"/student/profile": [~25,[4]],
 		"/student/settings": [~26,[4]],
-		"/verify": [~27]
+		"/terms": [27]
 	};
 
 export const hooks = {
-	handleError: client_hooks.handleError || (({ error }) => { console.error(error) }),
-	init: client_hooks.init,
+	handleError: (({ error }) => { console.error(error) }),
+	
 	reroute: (() => {}),
 	transport: {}
 };

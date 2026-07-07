@@ -91,17 +91,14 @@ export const actions = {
 
 		try {
 			const buffer = Buffer.from(await resumeFile.arrayBuffer());
-			fs.writeFileSync(dest, buffer);
+			// Vercel Fix: Save as Base64 in Realtime Database instead of ephemeral filesystem
+			const base64Data = buffer.toString('base64');
 			
-			const oldResume = db.students[studentIndex].resumePath;
-			if (oldResume && oldResume !== 'mock-resume.pdf' && oldResume !== 'mock-resume-2.pdf') {
-				const oldPath = path.resolve('uploads/resumes', oldResume);
-				if (fs.existsSync(oldPath)) {
-					fs.unlinkSync(oldPath);
-				}
-			}
-
-			db.students[studentIndex].resumePath = filename;
+			db.students[studentIndex].resumeData = base64Data;
+			db.students[studentIndex].resumeName = resumeFile.name;
+			db.students[studentIndex].resumeMimeType = resumeFile.type || 'application/pdf';
+			db.students[studentIndex].resumePath = db.students[studentIndex].id; // Use ID for URL lookup
+			
 			await updateEntireDatabase(db);
 			
 			logAction('STUDENT_UPDATE_RESUME', `Student ${db.students[studentIndex].fullName} uploaded a new resume.`);

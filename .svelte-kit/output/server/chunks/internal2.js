@@ -573,7 +573,7 @@ function Root($$renderer, $$props) {
 var root_default = asClassComponent(Root);
 //#endregion
 //#region .svelte-kit/generated/shared/error-template.js
-var error_template_default = ({ status, message }) => "<!doctype html>\n<html lang=\"en\">\n	<head>\n		<meta charset=\"utf-8\" />\n		<title>" + message + "</title>\n\n		<style>\n			body {\n				--bg: white;\n				--fg: #222;\n				--divider: #ccc;\n				background: var(--bg);\n				color: var(--fg);\n				font-family:\n					system-ui,\n					-apple-system,\n					BlinkMacSystemFont,\n					'Segoe UI',\n					Roboto,\n					Oxygen,\n					Ubuntu,\n					Cantarell,\n					'Open Sans',\n					'Helvetica Neue',\n					sans-serif;\n				display: flex;\n				align-items: center;\n				justify-content: center;\n				height: 100vh;\n				margin: 0;\n			}\n\n			.error {\n				display: flex;\n				align-items: center;\n				max-width: 32rem;\n				margin: 0 1rem;\n			}\n\n			.status {\n				font-weight: 200;\n				font-size: 3rem;\n				line-height: 1;\n				position: relative;\n				top: -0.05rem;\n			}\n\n			.message {\n				border-left: 1px solid var(--divider);\n				padding: 0 0 0 1rem;\n				margin: 0 0 0 1rem;\n				min-height: 2.5rem;\n				display: flex;\n				align-items: center;\n			}\n\n			.message h1 {\n				font-weight: 400;\n				font-size: 1em;\n				margin: 0;\n			}\n\n			@media (prefers-color-scheme: dark) {\n				body {\n					--bg: #222;\n					--fg: #ddd;\n					--divider: #666;\n				}\n			}\n		</style>\n	</head>\n	<body>\n		<div class=\"error\">\n			<span class=\"status\">" + status + "</span>\n			<div class=\"message\">\n				<h1>" + message + "</h1>\n			</div>\n		</div>\n	</body>\n</html>\n";
+var error_template_default = ({ status, message }) => "<!doctype html>\r\n<html lang=\"en\">\r\n	<head>\r\n		<meta charset=\"utf-8\" />\r\n		<title>" + message + "</title>\r\n\r\n		<style>\r\n			body {\r\n				--bg: white;\r\n				--fg: #222;\r\n				--divider: #ccc;\r\n				background: var(--bg);\r\n				color: var(--fg);\r\n				font-family:\r\n					system-ui,\r\n					-apple-system,\r\n					BlinkMacSystemFont,\r\n					'Segoe UI',\r\n					Roboto,\r\n					Oxygen,\r\n					Ubuntu,\r\n					Cantarell,\r\n					'Open Sans',\r\n					'Helvetica Neue',\r\n					sans-serif;\r\n				display: flex;\r\n				align-items: center;\r\n				justify-content: center;\r\n				height: 100vh;\r\n				margin: 0;\r\n			}\r\n\r\n			.error {\r\n				display: flex;\r\n				align-items: center;\r\n				max-width: 32rem;\r\n				margin: 0 1rem;\r\n			}\r\n\r\n			.status {\r\n				font-weight: 200;\r\n				font-size: 3rem;\r\n				line-height: 1;\r\n				position: relative;\r\n				top: -0.05rem;\r\n			}\r\n\r\n			.message {\r\n				border-left: 1px solid var(--divider);\r\n				padding: 0 0 0 1rem;\r\n				margin: 0 0 0 1rem;\r\n				min-height: 2.5rem;\r\n				display: flex;\r\n				align-items: center;\r\n			}\r\n\r\n			.message h1 {\r\n				font-weight: 400;\r\n				font-size: 1em;\r\n				margin: 0;\r\n			}\r\n\r\n			@media (prefers-color-scheme: dark) {\r\n				body {\r\n					--bg: #222;\r\n					--fg: #ddd;\r\n					--divider: #666;\r\n				}\r\n			}\r\n		</style>\r\n	</head>\r\n	<body>\r\n		<div class=\"error\">\r\n			<span class=\"status\">" + status + "</span>\r\n			<div class=\"message\">\r\n				<h1>" + message + "</h1>\r\n			</div>\r\n		</div>\r\n	</body>\r\n</html>\r\n";
 //#endregion
 //#region .svelte-kit/generated/server/internal.js
 var options = {
@@ -603,10 +603,10 @@ var options = {
 	service_worker_options: void 0,
 	server_error_boundaries: false,
 	templates: {
-		app: ({ head, body, assets, nonce, env }) => "<!doctype html>\n<html lang=\"en\">\n	<head>\n		<meta charset=\"utf-8\" />\n		<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n		<meta name=\"text-scale\" content=\"scale\" />\n		" + head + "\n		<script>\n			(function () {\n				const storageKey = 'nexora-theme';\n				const stored = localStorage.getItem(storageKey);\n				const theme = stored === 'light' || stored === 'dark' || stored === 'system' ? stored : 'system';\n				const resolved = theme === 'dark' || theme === 'light' ? theme : (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');\n				document.documentElement.classList.remove('light', 'dark');\n				document.documentElement.classList.add(resolved);\n				document.documentElement.setAttribute('data-theme', resolved);\n				document.documentElement.style.colorScheme = resolved;\n			})();\n		<\/script>\n	</head>\n	<body data-sveltekit-preload-data=\"hover\">\n		<div style=\"display: contents\">" + body + "</div>\n	</body>\n</html>\n",
+		app: ({ head, body, assets, nonce, env }) => "<!doctype html>\r\n<html lang=\"en\">\r\n	<head>\r\n		<meta charset=\"utf-8\" />\r\n		<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\r\n		<meta name=\"text-scale\" content=\"scale\" />\r\n		" + head + "\r\n	</head>\r\n	<body data-sveltekit-preload-data=\"hover\">\r\n		<div style=\"display: contents\">" + body + "</div>\r\n	</body>\r\n</html>\r\n",
 		error: error_template_default
 	},
-	version_hash: "1pp1q8m"
+	version_hash: "17znwop"
 };
 async function get_hooks() {
 	let handle;
@@ -614,7 +614,6 @@ async function get_hooks() {
 	let handleError;
 	let handleValidationError;
 	let init;
-	({handle, handleFetch, handleError, handleValidationError, init} = await import("../entries/hooks.server.js"));
 	let reroute;
 	let transport;
 	return {

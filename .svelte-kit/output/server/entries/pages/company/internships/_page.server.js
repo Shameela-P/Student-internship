@@ -1,15 +1,60 @@
-import { i as updateEntireDatabase, n as getCollection, r as logAction, t as DOMAINS } from "../../../../chunks/db.js";
+import { i as logAction, o as updateEntireDatabase, r as getCollection, t as DOMAINS } from "../../../../chunks/db.js";
 import { a as requireRole } from "../../../../chunks/auth.js";
 import { fail } from "@sveltejs/kit";
 import fs from "fs";
 import path from "path";
+//#region src/lib/internship-utils.js
+function normalizeSkills(skillsRaw = "") {
+	return skillsRaw.split(",").map((skill) => skill.trim()).filter(Boolean);
+}
+function buildInternshipPayload({ companyId, formValues, bannerPath = "", existingId = null }) {
+	const normalizedType = formValues.type?.toString() ?? "";
+	const fee = Number.parseFloat(formValues.fee?.toString() || "0");
+	const stipendAmount = Number.parseFloat(formValues.stipendAmount?.toString() || "0");
+	const openings = Number.parseInt(formValues.openings?.toString() || "1", 10);
+	const safeOpenings = Number.isNaN(openings) || openings < 1 ? 1 : openings;
+	return {
+		...existingId ? { id: existingId } : { id: `intern_${Date.now()}` },
+		companyId,
+		title: formValues.title?.toString().trim() ?? "",
+		domain: formValues.domain?.toString() ?? "",
+		subCategory: formValues.subCategory?.toString().trim() ?? "",
+		skillsRequired: normalizeSkills(formValues.skillsRequired?.toString()),
+		description: formValues.description?.toString().trim() ?? "",
+		learningOutcomes: formValues.learningOutcomes?.toString().trim() ?? "",
+		responsibilities: formValues.responsibilities?.toString().trim() ?? "",
+		eligibilityCriteria: formValues.eligibilityCriteria?.toString().trim() ?? "",
+		duration: formValues.duration?.toString() ?? "",
+		startDate: formValues.startDate?.toString() ?? "",
+		lastDateToApply: formValues.lastDateToApply?.toString() ?? "",
+		mode: formValues.mode?.toString() ?? "",
+		type: normalizedType,
+		fee: normalizedType.includes("Paid") ? fee : 0,
+		stipendAmount: normalizedType.includes("Stipend") ? stipendAmount : 0,
+		openings: safeOpenings,
+		location: formValues.location?.toString().trim() ?? "",
+		certificateAvailable: formValues.certificateAvailable?.toString() ?? "No",
+		jobOpportunity: formValues.jobOpportunity?.toString() ?? "No",
+		bannerPath,
+		...existingId ? {} : {
+			status: "Active",
+			createdAt: (/* @__PURE__ */ new Date()).toISOString()
+		}
+	};
+}
+//#endregion
 //#region src/routes/company/internships/+page.server.js
 async function load({ cookies }) {
 	const sessionUser = requireRole(cookies, ["company"]);
+	const [companiesData, internshipsData, applicationsData] = await Promise.all([
+		getCollection("companies"),
+		getCollection("internships"),
+		getCollection("applications")
+	]);
 	const db = {
-		companies: await getCollection("companies"),
-		internships: await getCollection("internships"),
-		applications: await getCollection("applications")
+		companies: companiesData,
+		internships: internshipsData,
+		applications: applicationsData
 	};
 	const company = db.companies.find((c) => c.id === sessionUser.id);
 	return {
@@ -21,10 +66,15 @@ async function load({ cookies }) {
 var actions = {
 	postInternship: async ({ request, cookies }) => {
 		const sessionUser = requireRole(cookies, ["company"]);
+		const [companiesData, internshipsData, applicationsData] = await Promise.all([
+			getCollection("companies"),
+			getCollection("internships"),
+			getCollection("applications")
+		]);
 		const db = {
-			companies: await getCollection("companies"),
-			internships: await getCollection("internships"),
-			applications: await getCollection("applications")
+			companies: companiesData,
+			internships: internshipsData,
+			applications: applicationsData
 		};
 		const company = db.companies.find((c) => c.id === sessionUser.id);
 		if (company.status !== "Approved") return fail(403, {
@@ -49,8 +99,8 @@ var actions = {
 		const stipendAmount = parseFloat(formData.get("stipendAmount")?.toString() || "0");
 		const openings = parseInt(formData.get("openings")?.toString() || "1");
 		const location = formData.get("location")?.toString().trim();
-		const certificateAvailable = type.includes("Paid") ? "No" : formData.get("certificateAvailable")?.toString() || "No";
-		const jobOpportunity = type.includes("Paid") ? "No" : formData.get("jobOpportunity")?.toString() || "No";
+		const certificateAvailable = formData.get("certificateAvailable")?.toString() || "No";
+		const jobOpportunity = formData.get("jobOpportunity")?.toString() || "No";
 		const bannerFile = formData.get("banner");
 		if (!title || !domain || !subCategory || !skillsRaw || !description || !responsibilities || !eligibilityCriteria || !duration || !startDate || !lastDateToApply || !mode || !type || !location) return fail(400, {
 			success: false,
@@ -82,33 +132,31 @@ var actions = {
 				});
 			}
 		}
-		const skillsRequired = skillsRaw.split(",").map((s) => s.trim()).filter(Boolean);
-		const newInternship = {
-			id: `intern_${Date.now()}`,
+		const newInternship = buildInternshipPayload({
 			companyId: company.id,
-			title,
-			domain,
-			subCategory,
-			skillsRequired,
-			description,
-			learningOutcomes,
-			responsibilities,
-			eligibilityCriteria,
-			duration,
-			startDate,
-			lastDateToApply,
-			mode,
-			type,
-			fee: type.includes("Paid") ? fee : 0,
-			stipendAmount: type.includes("Stipend") ? stipendAmount : 0,
-			openings,
-			location,
-			certificateAvailable,
-			jobOpportunity,
 			bannerPath,
-			status: "Active",
-			createdAt: (/* @__PURE__ */ new Date()).toISOString()
-		};
+			formValues: {
+				title,
+				domain,
+				subCategory,
+				skillsRequired: skillsRaw,
+				description,
+				learningOutcomes,
+				responsibilities,
+				eligibilityCriteria,
+				duration,
+				startDate,
+				lastDateToApply,
+				mode,
+				type,
+				fee,
+				stipendAmount,
+				openings,
+				location,
+				certificateAvailable,
+				jobOpportunity
+			}
+		});
 		db.internships.push(newInternship);
 		await updateEntireDatabase(db);
 		logAction("INTERNSHIP_CREATE", `Company ${company.companyName} posted new internship: "${title}" (ID: ${newInternship.id})`);
@@ -119,10 +167,15 @@ var actions = {
 	},
 	editInternship: async ({ request, cookies }) => {
 		const sessionUser = requireRole(cookies, ["company"]);
+		const [companiesData, internshipsData, applicationsData] = await Promise.all([
+			getCollection("companies"),
+			getCollection("internships"),
+			getCollection("applications")
+		]);
 		const db = {
-			companies: await getCollection("companies"),
-			internships: await getCollection("internships"),
-			applications: await getCollection("applications")
+			companies: companiesData,
+			internships: internshipsData,
+			applications: applicationsData
 		};
 		const company = db.companies.find((c) => c.id === sessionUser.id);
 		const formData = await request.formData();
@@ -144,8 +197,8 @@ var actions = {
 		const stipendAmount = parseFloat(formData.get("stipendAmount")?.toString() || "0");
 		const openings = parseInt(formData.get("openings")?.toString() || "1");
 		const location = formData.get("location")?.toString().trim();
-		const certificateAvailable = type.includes("Paid") ? "No" : formData.get("certificateAvailable")?.toString() || "No";
-		const jobOpportunity = type.includes("Paid") ? "No" : formData.get("jobOpportunity")?.toString() || "No";
+		const certificateAvailable = formData.get("certificateAvailable")?.toString() || "No";
+		const jobOpportunity = formData.get("jobOpportunity")?.toString() || "No";
 		const bannerFile = formData.get("banner");
 		if (!id || !title || !domain || !subCategory || !skillsRaw || !description || !responsibilities || !eligibilityCriteria || !duration || !startDate || !lastDateToApply || !mode || !type || !location) return fail(400, {
 			success: false,
@@ -178,29 +231,34 @@ var actions = {
 				console.error("Banner upload error on edit:", err);
 			}
 		}
-		const skillsRequired = skillsRaw.split(",").map((s) => s.trim()).filter(Boolean);
 		db.internships[internshipIndex] = {
 			...db.internships[internshipIndex],
-			title,
-			domain,
-			subCategory,
-			skillsRequired,
-			description,
-			learningOutcomes,
-			responsibilities,
-			eligibilityCriteria,
-			duration,
-			startDate,
-			lastDateToApply,
-			mode,
-			type,
-			fee: type.includes("Paid") ? fee : 0,
-			stipendAmount: type.includes("Stipend") ? stipendAmount : 0,
-			openings,
-			location,
-			certificateAvailable,
-			jobOpportunity,
-			bannerPath
+			...buildInternshipPayload({
+				companyId: company.id,
+				bannerPath,
+				existingId: id,
+				formValues: {
+					title,
+					domain,
+					subCategory,
+					skillsRequired: skillsRaw,
+					description,
+					learningOutcomes,
+					responsibilities,
+					eligibilityCriteria,
+					duration,
+					startDate,
+					lastDateToApply,
+					mode,
+					type,
+					fee,
+					stipendAmount,
+					openings,
+					location,
+					certificateAvailable,
+					jobOpportunity
+				}
+			})
 		};
 		await updateEntireDatabase(db);
 		logAction("INTERNSHIP_EDIT", `Company ${company.companyName} updated internship details for "${title}" (ID: ${id})`);
@@ -216,10 +274,15 @@ var actions = {
 			success: false,
 			error: "Reference ID is missing"
 		});
+		const [companiesData, internshipsData, applicationsData] = await Promise.all([
+			getCollection("companies"),
+			getCollection("internships"),
+			getCollection("applications")
+		]);
 		const db = {
-			companies: await getCollection("companies"),
-			internships: await getCollection("internships"),
-			applications: await getCollection("applications")
+			companies: companiesData,
+			internships: internshipsData,
+			applications: applicationsData
 		};
 		const index = db.internships.findIndex((i) => i.id === id && i.companyId === sessionUser.id);
 		if (index === -1) return fail(404, {
@@ -243,10 +306,15 @@ var actions = {
 			success: false,
 			error: "Reference ID is missing"
 		});
+		const [companiesData, internshipsData, applicationsData] = await Promise.all([
+			getCollection("companies"),
+			getCollection("internships"),
+			getCollection("applications")
+		]);
 		const db = {
-			companies: await getCollection("companies"),
-			internships: await getCollection("internships"),
-			applications: await getCollection("applications")
+			companies: companiesData,
+			internships: internshipsData,
+			applications: applicationsData
 		};
 		const index = db.internships.findIndex((i) => i.id === id && i.companyId === sessionUser.id);
 		if (index === -1) return fail(404, {

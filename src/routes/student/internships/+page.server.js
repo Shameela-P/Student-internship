@@ -4,15 +4,20 @@ import { fail } from '@sveltejs/kit';
 
 export async function load({ cookies, url }) {
 	const sessionUser = requireRole(cookies, ['student']);
-	const db = {
-		students: await getCollection('students'),
-		companies: await getCollection('companies'),
-		internships: await getCollection('internships'),
-		applications: await getCollection('applications'),
-		notifications: await getCollection('notifications'),
-		emailTemplates: await getCollection('emailTemplates')
-	};
+	const [studentsData, companiesData, internshipsData, applicationsData, notificationsData, emailTemplatesData] = await Promise.all([
+		getCollection('students'),
+		getCollection('companies'),
+		getCollection('internships'),
+		getCollection('applications'),
+		getCollection('notifications'),
+		getCollection('emailTemplates')
+	]);
+	const db = { students: studentsData, companies: companiesData, internships: internshipsData, applications: applicationsData, notifications: notificationsData, emailTemplates: emailTemplatesData };
 	const student = db.students.find(s => s.id === sessionUser.id);
+	if (!student) {
+		cookies.delete('nexora_session', { path: '/' });
+		throw new Error('Student session not found');
+	}
 
 	// Get filter parameters from URL query string
 	const searchQuery = url.searchParams.get('query')?.toLowerCase().trim() || '';
@@ -98,37 +103,7 @@ export async function load({ cookies, url }) {
 			};
 		});
 
-	// Guarantee minimum 15 results by relaxing some filters if necessary
-	if (filteredInternships.length < 15 && (searchQuery || filterDomain || filterLocation || filterMode || filterType)) {
-		const relaxedInternships = db.internships
-			.filter(internship => {
-				if (internship.status !== 'Active') return false;
-				const company = companyMap.get(internship.companyId);
-				if (!company || company.isSuspended || company.status !== 'Approved') return false;
-				
-				// Relax: only require partial match on query or domain
-				if (searchQuery) {
-					const match = internship.title.toLowerCase().includes(searchQuery) || internship.skillsRequired.some(s => s.toLowerCase().includes(searchQuery));
-					if (match) return true;
-				}
-				if (filterDomain && internship.domain === filterDomain) return true;
-				
-				return false;
-			})
-			.map(internship => {
-				const company = companyMap.get(internship.companyId);
-				const hasApplied = db.applications.some(a => a.studentId === student.id && a.internshipId === internship.id);
-				return { ...internship, companyName: company ? company.companyName : 'Unknown Company', companyLogo: company ? company.companyLogo : '', hasApplied };
-			});
-			
-		// Merge unique
-		const existingIds = new Set(filteredInternships.map(i => i.id));
-		for (const ri of relaxedInternships) {
-			if (!existingIds.has(ri.id)) {
-				filteredInternships.push(ri);
-			}
-		}
-	}
+	// Removed the arbitrary 15 results minimum block because it broke strict filtering
 
 	return {
 		student,
@@ -157,14 +132,15 @@ export const actions = {
 			return fail(400, { success: false, error: 'Internship reference is missing' });
 		}
 
-		const db = {
-		students: await getCollection('students'),
-		companies: await getCollection('companies'),
-		internships: await getCollection('internships'),
-		applications: await getCollection('applications'),
-		notifications: await getCollection('notifications'),
-		emailTemplates: await getCollection('emailTemplates')
-	};
+		const [studentsData, companiesData, internshipsData, applicationsData, notificationsData, emailTemplatesData] = await Promise.all([
+		getCollection('students'),
+		getCollection('companies'),
+		getCollection('internships'),
+		getCollection('applications'),
+		getCollection('notifications'),
+		getCollection('emailTemplates')
+	]);
+	const db = { students: studentsData, companies: companiesData, internships: internshipsData, applications: applicationsData, notifications: notificationsData, emailTemplates: emailTemplatesData };
 		const student = db.students.find(s => s.id === sessionUser.id);
 		const internship = db.internships.find(i => i.id === internshipId);
 		

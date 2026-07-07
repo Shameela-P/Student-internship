@@ -1,6 +1,7 @@
 <script>
 	import { enhance } from '$app/forms';
-	import { onMount } from 'svelte';
+	import { invalidateAll } from '$app/navigation';
+	import { onMount, onDestroy } from 'svelte';
 
 	let { data, form } = $props();
 
@@ -56,6 +57,13 @@
 		if (threads.length > 0 && !activeEmail) {
 			selectThread(threads[0].email);
 		}
+
+		// Polling for real-time chat updates
+		const pollInterval = setInterval(() => {
+			invalidateAll();
+		}, 3000);
+
+		return () => clearInterval(pollInterval);
 	});
 
 	// Get active thread details
@@ -317,16 +325,15 @@
 
 <!-- Start Conversation Drawer / Modal -->
 {#if showNewChatModal}
-	<!-- svelte-ignore a11y_click_events_have_key_events -->
-	<!-- svelte-ignore a11y_no_static_element_interactions -->
-	<div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm" onclick={() => showNewChatModal = false}>
-		<!-- svelte-ignore a11y_click_events_have_key_events -->
-		<!-- svelte-ignore a11y_no_static_element_interactions -->
+
+	<div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm" onclick={() => showNewChatModal = false} role="button" tabindex="0" onkeydown={(e) => { if(e.key === 'Escape' || e.key === 'Enter' || e.key === ' ') showNewChatModal = false; }}>
 		<div
 			class="w-full max-w-md rounded-2xl bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 shadow-2xl relative max-h-[80vh] overflow-y-auto"
 			onclick={(e) => e.stopPropagation()}
+			role="presentation"
+			onkeydown={(e) => e.stopPropagation()}
 		>
-			<button onclick={() => showNewChatModal = false} class="absolute top-4 right-4 p-1.5 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:text-white cursor-pointer transition">
+			<button onclick={() => showNewChatModal = false} aria-label="Close modal" class="absolute top-4 right-4 p-1.5 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:text-white cursor-pointer transition">
 				<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" x2="6" y1="6" y2="18"/><line x1="6" x2="18" y1="6" y2="18"/></svg>
 			</button>
 

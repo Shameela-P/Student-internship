@@ -28,10 +28,10 @@
 <style>
 	@media print {
 		/* Hide everything except the print-section */
-		body * {
+		:global(body *) {
 			visibility: hidden;
 		}
-		.print-section, .print-section * {
+		:global(.print-section), :global(.print-section *) {
 			visibility: visible;
 		}
 		.print-section {

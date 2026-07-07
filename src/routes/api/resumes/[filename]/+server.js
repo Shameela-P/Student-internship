@@ -1,15 +1,30 @@
 import fs from 'fs';
 import path from 'path';
+import { getCollection } from '$lib/db';
 
 export async function GET({ params }) {
-	const filename = params.filename;
+	const filenameOrId = params.filename;
 	
-	// Ensure filename is safe and doesn't contain directory traversal sequences
-	if (filename.includes('..') || filename.includes('/')) {
+	if (filenameOrId.includes('..') || filenameOrId.includes('/')) {
 		return new Response('Invalid filename', { status: 400 });
 	}
 
-	const filePath = path.resolve('uploads/resumes', filename);
+	// 1. Try to find it in the Database (Vercel Fix)
+	const students = await getCollection('students');
+	const studentWithResume = students.find(s => s.id === filenameOrId || s.resumePath === filenameOrId);
+
+	if (studentWithResume && studentWithResume.resumeData) {
+		const buffer = Buffer.from(studentWithResume.resumeData, 'base64');
+		return new Response(buffer, {
+			headers: {
+				'Content-Type': studentWithResume.resumeMimeType || 'application/pdf',
+				'Content-Disposition': `inline; filename="${studentWithResume.resumeName || 'resume.pdf'}"`
+			}
+		});
+	}
+
+	// 2. Fallback to local file system (For mock resumes)
+	const filePath = path.resolve('uploads/resumes', filenameOrId);
 
 	if (!fs.existsSync(filePath)) {
 		return new Response('Not Found', { status: 404 });
@@ -17,18 +32,17 @@ export async function GET({ params }) {
 
 	const fileBuffer = fs.readFileSync(filePath);
 	
-	// Determine content type
 	let contentType = 'application/octet-stream';
-	if (filename.endsWith('.pdf')) {
+	if (filenameOrId.endsWith('.pdf')) {
 		contentType = 'application/pdf';
-	} else if (filename.endsWith('.doc') || filename.endsWith('.docx')) {
+	} else if (filenameOrId.endsWith('.doc') || filenameOrId.endsWith('.docx')) {
 		contentType = 'application/msword';
 	}
 
 	return new Response(fileBuffer, {
 		headers: {
 			'Content-Type': contentType,
-			'Content-Disposition': `inline; filename="${filename}"`
+			'Content-Disposition': `inline; filename="${filenameOrId}"`
 		}
 	});
 }

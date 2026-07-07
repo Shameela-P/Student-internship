@@ -1,17 +1,26 @@
-import { i as updateEntireDatabase, n as getCollection, r as logAction } from "../../../chunks/db.js";
+import { i as logAction, o as updateEntireDatabase, r as getCollection } from "../../../chunks/db.js";
 import { a as requireRole } from "../../../chunks/auth.js";
 import { fail } from "@sveltejs/kit";
 //#region src/routes/admin/+page.server.js
 async function load({ cookies }) {
 	requireRole(cookies, ["admin"]);
+	const [studentsData, companiesData, internshipsData, applicationsData, notificationsData, emailTemplatesData, systemLogsData] = await Promise.all([
+		getCollection("students"),
+		getCollection("companies"),
+		getCollection("internships"),
+		getCollection("applications"),
+		getCollection("notifications"),
+		getCollection("emailTemplates"),
+		getCollection("systemLogs")
+	]);
 	const db = {
-		students: await getCollection("students"),
-		companies: await getCollection("companies"),
-		internships: await getCollection("internships"),
-		applications: await getCollection("applications"),
-		notifications: await getCollection("notifications"),
-		emailTemplates: await getCollection("emailTemplates"),
-		systemLogs: await getCollection("systemLogs")
+		students: studentsData,
+		companies: companiesData,
+		internships: internshipsData,
+		applications: applicationsData,
+		notifications: notificationsData,
+		emailTemplates: emailTemplatesData,
+		systemLogs: systemLogsData
 	};
 	const totalStudents = db.students.length;
 	const totalCompanies = db.companies.length;
@@ -57,14 +66,23 @@ var actions = {
 			success: false,
 			error: "Company reference ID is missing"
 		});
+		const [studentsData, companiesData, internshipsData, applicationsData, notificationsData, emailTemplatesData, systemLogsData] = await Promise.all([
+			getCollection("students"),
+			getCollection("companies"),
+			getCollection("internships"),
+			getCollection("applications"),
+			getCollection("notifications"),
+			getCollection("emailTemplates"),
+			getCollection("systemLogs")
+		]);
 		const db = {
-			students: await getCollection("students"),
-			companies: await getCollection("companies"),
-			internships: await getCollection("internships"),
-			applications: await getCollection("applications"),
-			notifications: await getCollection("notifications"),
-			emailTemplates: await getCollection("emailTemplates"),
-			systemLogs: await getCollection("systemLogs")
+			students: studentsData,
+			companies: companiesData,
+			internships: internshipsData,
+			applications: applicationsData,
+			notifications: notificationsData,
+			emailTemplates: emailTemplatesData,
+			systemLogs: systemLogsData
 		};
 		const companyIndex = db.companies.findIndex((c) => c.id === companyId);
 		if (companyIndex === -1) return fail(404, {
@@ -97,14 +115,23 @@ var actions = {
 			success: false,
 			error: "Company reference ID is missing"
 		});
+		const [studentsData, companiesData, internshipsData, applicationsData, notificationsData, emailTemplatesData, systemLogsData] = await Promise.all([
+			getCollection("students"),
+			getCollection("companies"),
+			getCollection("internships"),
+			getCollection("applications"),
+			getCollection("notifications"),
+			getCollection("emailTemplates"),
+			getCollection("systemLogs")
+		]);
 		const db = {
-			students: await getCollection("students"),
-			companies: await getCollection("companies"),
-			internships: await getCollection("internships"),
-			applications: await getCollection("applications"),
-			notifications: await getCollection("notifications"),
-			emailTemplates: await getCollection("emailTemplates"),
-			systemLogs: await getCollection("systemLogs")
+			students: studentsData,
+			companies: companiesData,
+			internships: internshipsData,
+			applications: applicationsData,
+			notifications: notificationsData,
+			emailTemplates: emailTemplatesData,
+			systemLogs: systemLogsData
 		};
 		const companyIndex = db.companies.findIndex((c) => c.id === companyId);
 		if (companyIndex === -1) return fail(404, {
@@ -134,14 +161,23 @@ var actions = {
 			success: false,
 			error: "Missing ID"
 		});
+		const [studentsData, companiesData, internshipsData, applicationsData, notificationsData, emailTemplatesData, systemLogsData] = await Promise.all([
+			getCollection("students"),
+			getCollection("companies"),
+			getCollection("internships"),
+			getCollection("applications"),
+			getCollection("notifications"),
+			getCollection("emailTemplates"),
+			getCollection("systemLogs")
+		]);
 		const db = {
-			students: await getCollection("students"),
-			companies: await getCollection("companies"),
-			internships: await getCollection("internships"),
-			applications: await getCollection("applications"),
-			notifications: await getCollection("notifications"),
-			emailTemplates: await getCollection("emailTemplates"),
-			systemLogs: await getCollection("systemLogs")
+			students: studentsData,
+			companies: companiesData,
+			internships: internshipsData,
+			applications: applicationsData,
+			notifications: notificationsData,
+			emailTemplates: emailTemplatesData,
+			systemLogs: systemLogsData
 		};
 		const companyIndex = db.companies.findIndex((c) => c.id === companyId);
 		if (companyIndex === -1) return fail(404, {
@@ -163,14 +199,23 @@ var actions = {
 			success: false,
 			error: "Missing ID"
 		});
+		const [studentsData, companiesData, internshipsData, applicationsData, notificationsData, emailTemplatesData, systemLogsData] = await Promise.all([
+			getCollection("students"),
+			getCollection("companies"),
+			getCollection("internships"),
+			getCollection("applications"),
+			getCollection("notifications"),
+			getCollection("emailTemplates"),
+			getCollection("systemLogs")
+		]);
 		const db = {
-			students: await getCollection("students"),
-			companies: await getCollection("companies"),
-			internships: await getCollection("internships"),
-			applications: await getCollection("applications"),
-			notifications: await getCollection("notifications"),
-			emailTemplates: await getCollection("emailTemplates"),
-			systemLogs: await getCollection("systemLogs")
+			students: studentsData,
+			companies: companiesData,
+			internships: internshipsData,
+			applications: applicationsData,
+			notifications: notificationsData,
+			emailTemplates: emailTemplatesData,
+			systemLogs: systemLogsData
 		};
 		const company = db.companies.find((c) => c.id === companyId);
 		if (!company) return fail(404, {

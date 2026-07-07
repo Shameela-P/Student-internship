@@ -69,7 +69,7 @@ function getSessionUser(cookies) {
 			cookies.set("nexora_session", newToken, {
 				path: "/",
 				httpOnly: true,
-				secure: private_env.NODE_ENV === "production",
+				secure: true,
 				sameSite: "lax",
 				maxAge: 3600 * 24
 			});

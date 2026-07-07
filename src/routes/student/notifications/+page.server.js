@@ -3,10 +3,11 @@ import { requireRole } from '$lib/auth';
 
 export async function load({ cookies }) {
 	const sessionUser = requireRole(cookies, ['student']);
-	const db = {
-		students: await getCollection('students'),
-		notifications: await getCollection('notifications')
-	};
+	const [studentsData, notificationsData] = await Promise.all([
+		getCollection('students'),
+		getCollection('notifications')
+	]);
+	const db = { students: studentsData, notifications: notificationsData };
 	const student = db.students.find(s => s.id === sessionUser.id);
 
 	// Get notifications matching student email

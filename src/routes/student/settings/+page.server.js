@@ -4,9 +4,10 @@ import { fail } from '@sveltejs/kit';
 
 export async function load({ cookies }) {
 	const sessionUser = requireRole(cookies, ['student']);
-	const db = {
-		students: await getCollection('students')
-	};
+	const [studentsData] = await Promise.all([
+		getCollection('students')
+	]);
+	const db = { students: studentsData };
 	const student = db.students.find(s => s.id === sessionUser.id);
 	
 	// Create settings object if not exists in DB or return defaults
@@ -45,9 +46,10 @@ export const actions = {
 			return fail(400, { success: false, error: 'Password must be at least 6 characters long' });
 		}
 
-		const db = {
-		students: await getCollection('students')
-	};
+		const [studentsData] = await Promise.all([
+		getCollection('students')
+	]);
+	const db = { students: studentsData };
 		const studentIndex = db.students.findIndex(s => s.id === sessionUser.id);
 		if (studentIndex === -1) {
 			return fail(404, { success: false, error: 'Student account not found' });
@@ -77,9 +79,10 @@ export const actions = {
 		const profileVisibility = formData.get('profileVisibility')?.toString() || 'public';
 		const twoFactorAuth = formData.get('twoFactorAuth') === 'true';
 
-		const db = {
-		students: await getCollection('students')
-	};
+		const [studentsData] = await Promise.all([
+		getCollection('students')
+	]);
+	const db = { students: studentsData };
 		const studentIndex = db.students.findIndex(s => s.id === sessionUser.id);
 		if (studentIndex === -1) {
 			return fail(404, { success: false, error: 'Student account not found' });

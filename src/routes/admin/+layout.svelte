@@ -103,8 +103,8 @@
 
 	<!-- Mobile Drawer -->
 	{#if mobileMenuOpen}
-		<div class="md:hidden fixed inset-x-0 top-[69px] bottom-0 bg-slate-950/30 backdrop-blur-md z-40" onclick={toggleMobileMenu}>
-			<div class="w-64 h-full bg-white dark:bg-slate-900 border-r border-slate-200/10 p-4 space-y-2 flex flex-col justify-between" onclick={(e) => e.stopPropagation()}>
+		<div class="md:hidden fixed inset-x-0 top-[69px] bottom-0 bg-slate-950/30 backdrop-blur-md z-40" onclick={toggleMobileMenu} role="button" tabindex="0" onkeydown={(e) => { if(e.key === 'Enter' || e.key === ' ') toggleMobileMenu(); }}>
+			<div class="w-64 h-full bg-white dark:bg-slate-900 border-r border-slate-200/10 p-4 space-y-2 flex flex-col justify-between" onclick={(e) => e.stopPropagation()} role="presentation" onkeydown={(e) => e.stopPropagation()}>
 				<nav class="space-y-1">
 					<a href="/admin" class={getLinkClass('/admin')} onclick={toggleMobileMenu}>Overview</a>
 					<a href="/admin/companies" class={getLinkClass('/admin/companies')} onclick={toggleMobileMenu}>Companies Board</a>

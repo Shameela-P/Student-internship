@@ -2,12 +2,13 @@ import { getCollection } from '$lib/db';
 import { getSessionUser } from '$lib/auth';
 
 export async function load({ cookies }) {
-	const db = {
-		students: await getCollection('students'),
-		companies: await getCollection('companies'),
-		internships: await getCollection('internships'),
-		applications: await getCollection('applications')
-	};
+	const [studentsData, companiesData, internshipsData, applicationsData] = await Promise.all([
+		getCollection('students'),
+		getCollection('companies'),
+		getCollection('internships'),
+		getCollection('applications')
+	]);
+	const db = { students: studentsData, companies: companiesData, internships: internshipsData, applications: applicationsData };
 	const user = getSessionUser(cookies);
 
 	// Calculate statistics

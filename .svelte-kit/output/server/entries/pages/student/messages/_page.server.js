@@ -1,21 +1,33 @@
-import { i as updateEntireDatabase, n as getCollection } from "../../../../chunks/db.js";
-import { n as markMessagesRead } from "../../../../chunks/messages.js";
+import { o as updateEntireDatabase, r as getCollection } from "../../../../chunks/db.js";
 import { a as requireRole } from "../../../../chunks/auth.js";
 import { fail } from "@sveltejs/kit";
+import fs from "fs";
+import path from "path";
 //#region src/routes/student/messages/+page.server.js
 async function load({ cookies }) {
 	const sessionUser = requireRole(cookies, ["student"]);
+	const [studentsData, companiesData, messagesData, notificationsData] = await Promise.all([
+		getCollection("students"),
+		getCollection("companies"),
+		getCollection("messages"),
+		getCollection("notifications")
+	]);
 	const db = {
-		students: await getCollection("students"),
-		companies: await getCollection("companies"),
-		messages: await getCollection("messages"),
-		notifications: await getCollection("notifications")
+		students: studentsData,
+		companies: companiesData,
+		messages: messagesData,
+		notifications: notificationsData
 	};
 	const student = db.students.find((s) => s.id === sessionUser.id);
 	if (!db.messages) db.messages = [];
 	const userMessages = db.messages.filter((m) => m.senderEmail.toLowerCase() === student.email.toLowerCase() || m.recipientEmail.toLowerCase() === student.email.toLowerCase());
 	let dbChanged = false;
-	if (markMessagesRead(db.messages, student.email)) dbChanged = true;
+	db.messages.forEach((m) => {
+		if (m.recipientEmail.toLowerCase() === student.email.toLowerCase() && !m.read) {
+			m.read = true;
+			dbChanged = true;
+		}
+	});
 	if (dbChanged) await updateEntireDatabase(db);
 	return {
 		student,
@@ -33,11 +45,17 @@ async function load({ cookies }) {
 }
 var actions = { sendMessage: async ({ request, cookies }) => {
 	const sessionUser = requireRole(cookies, ["student"]);
+	const [studentsData, companiesData, messagesData, notificationsData] = await Promise.all([
+		getCollection("students"),
+		getCollection("companies"),
+		getCollection("messages"),
+		getCollection("notifications")
+	]);
 	const db = {
-		students: await getCollection("students"),
-		companies: await getCollection("companies"),
-		messages: await getCollection("messages"),
-		notifications: await getCollection("notifications")
+		students: studentsData,
+		companies: companiesData,
+		messages: messagesData,
+		notifications: notificationsData
 	};
 	const student = db.students.find((s) => s.id === sessionUser.id);
 	const formData = await request.formData();
@@ -45,19 +63,30 @@ var actions = { sendMessage: async ({ request, cookies }) => {
 	const recipientRole = formData.get("recipientRole")?.toString().trim();
 	const recipientName = formData.get("recipientName")?.toString().trim();
 	const content = formData.get("content")?.toString().trim();
-	const attachmentUrl = formData.get("attachmentUrl")?.toString().trim();
-	const attachmentName = formData.get("attachmentName")?.toString().trim();
-	const attachmentSize = formData.get("attachmentSize")?.toString().trim();
-	const attachmentMimeType = formData.get("attachmentMimeType")?.toString().trim();
-	if (!recipientEmail || !recipientRole || !content && !attachmentUrl) return fail(400, {
+	const attachmentFile = formData.get("attachment");
+	if (!recipientEmail || !recipientRole || !content && (!attachmentFile || attachmentFile.size === 0)) return fail(400, {
 		success: false,
 		error: "Recipient details or content is required"
 	});
 	let attachmentPath = "";
 	let attachmentType = "";
-	if (attachmentUrl) {
-		attachmentPath = attachmentUrl;
-		attachmentType = attachmentMimeType?.startsWith("image/") ? "image" : "file";
+	if (attachmentFile && attachmentFile instanceof File && attachmentFile.size > 0) {
+		const ext = path.extname(attachmentFile.name) || ".pdf";
+		const filename = `attachment_${Date.now()}_${Math.random().toString(36).substr(2, 6)}${ext}`;
+		const dest = path.resolve("uploads/attachments", filename);
+		try {
+			if (!fs.existsSync(path.resolve("uploads/attachments"))) fs.mkdirSync(path.resolve("uploads/attachments"), { recursive: true });
+			const buffer = Buffer.from(await attachmentFile.arrayBuffer());
+			fs.writeFileSync(dest, buffer);
+			attachmentPath = filename;
+			attachmentType = ext.toLowerCase() === ".pdf" ? "resume" : "file";
+		} catch (err) {
+			console.error("Chat attachment upload error:", err);
+			return fail(500, {
+				success: false,
+				error: "Failed to upload attachment file"
+			});
+		}
 	}
 	if (!db.messages) db.messages = [];
 	const newMessage = {
@@ -72,19 +101,16 @@ var actions = { sendMessage: async ({ request, cookies }) => {
 		timestamp: (/* @__PURE__ */ new Date()).toISOString(),
 		read: false,
 		attachmentPath,
-		attachmentType,
-		attachmentName: attachmentName || "",
-		attachmentSize: parseInt(attachmentSize) || 0,
-		attachmentMimeType: attachmentMimeType || ""
+		attachmentType
 	};
 	db.messages.push(newMessage);
 	if (!db.notifications) db.notifications = [];
-	db.notifications.push({
-		id: `notif_${Date.now()}_${Math.floor(Math.random() * 1e3)}`,
+	db.notifications.unshift({
+		id: "notif_" + Date.now(),
 		recipientEmail,
 		recipientRole,
-		subject: `New Message from ${student.fullName}`,
-		body: content ? `"${content.substring(0, 100)}${content.length > 100 ? "..." : ""}"` : `Sent an attachment: ${attachmentName || "File"}`,
+		subject: "New Message from " + newMessage.senderName,
+		body: "You received a new message: \"" + content.substring(0, 50) + "...\"",
 		date: (/* @__PURE__ */ new Date()).toISOString(),
 		read: false
 	});

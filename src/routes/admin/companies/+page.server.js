@@ -3,9 +3,10 @@ import { requireRole } from '$lib/auth';
 
 export async function load({ cookies }) {
 	requireRole(cookies, ['admin']);
-	const db = {
-		companies: await getCollection('companies')
-	};
+	const [companiesData] = await Promise.all([
+		getCollection('companies')
+	]);
+	const db = { companies: companiesData };
 
 	// Reverse to show newest first
 	const companies = [...db.companies].reverse();
@@ -22,9 +23,10 @@ export const actions = {
 		const companyId = data.get('companyId');
 		const newStatus = data.get('status');
 
-		const db = {
-		companies: await getCollection('companies')
-	};
+		const [companiesData] = await Promise.all([
+		getCollection('companies')
+	]);
+	const db = { companies: companiesData };
 		const companyIndex = db.companies.findIndex(c => c.id === companyId);
 		
 		if (companyIndex > -1) {

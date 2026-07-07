@@ -4,10 +4,11 @@ import { redirect } from '@sveltejs/kit';
 
 export async function load({ cookies }) {
 	const sessionUser = requireRole(cookies, ['admin']);
-	const db = {
-		admins: await getCollection('admins'),
-		notifications: await getCollection('notifications')
-	};
+	const [adminsData, notificationsData] = await Promise.all([
+		getCollection('admins'),
+		getCollection('notifications')
+	]);
+	const db = { admins: adminsData, notifications: notificationsData };
 	const admin = db.admins.find(a => a.id === sessionUser.id);
 
 	if (!admin) {

@@ -1,4 +1,4 @@
-import { n as getCollection, r as logAction } from "../../../chunks/db.js";
+import { i as logAction, r as getCollection } from "../../../chunks/db.js";
 import { n as createToken, o as verifyPassword, s as verifyToken, t as createRefreshToken } from "../../../chunks/auth.js";
 import { fail, redirect } from "@sveltejs/kit";
 //#region src/routes/login/+page.server.js
@@ -19,10 +19,15 @@ var actions = { default: async ({ request, cookies }) => {
 		success: false,
 		error: "All fields are required"
 	});
+	const [studentsData, companiesData, adminsData] = await Promise.all([
+		getCollection("students"),
+		getCollection("companies"),
+		getCollection("admins")
+	]);
 	const db = {
-		students: await getCollection("students"),
-		companies: await getCollection("companies"),
-		admins: await getCollection("admins")
+		students: studentsData,
+		companies: companiesData,
+		admins: adminsData
 	};
 	const setAuthCookies = (payload) => {
 		const token = createToken(payload);

@@ -6,11 +6,12 @@ import path from 'path';
 
 export async function load({ cookies }) {
 	const sessionUser = requireRole(cookies, ['admin']);
-	const db = {
-		students: await getCollection('students'),
-		companies: await getCollection('companies'),
-		messages: await getCollection('messages')
-	};
+	const [studentsData, companiesData, messagesData] = await Promise.all([
+		getCollection('students'),
+		getCollection('companies'),
+		getCollection('messages')
+	]);
+	const db = { students: studentsData, companies: companiesData, messages: messagesData };
 
 	if (!db.messages) {
 		db.messages = [];
@@ -65,11 +66,12 @@ export async function load({ cookies }) {
 export const actions = {
 	sendMessage: async ({ request, cookies }) => {
 		const sessionUser = requireRole(cookies, ['admin']);
-		const db = {
-		students: await getCollection('students'),
-		companies: await getCollection('companies'),
-		messages: await getCollection('messages')
-	};
+		const [studentsData, companiesData, messagesData] = await Promise.all([
+		getCollection('students'),
+		getCollection('companies'),
+		getCollection('messages')
+	]);
+	const db = { students: studentsData, companies: companiesData, messages: messagesData };
 
 		const formData = await request.formData();
 		const recipientEmail = formData.get('recipientEmail')?.toString().trim();

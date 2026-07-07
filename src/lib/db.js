@@ -1,4 +1,4 @@
-import { getDatabase, ref, get, child, update, set, remove } from "firebase/database";
+import { getDatabase, ref, get, child, update, set, remove, query, orderByChild, equalTo } from "firebase/database";
 import { app } from "./firebase.js";
 import crypto from 'crypto';
 
@@ -212,8 +212,24 @@ export async function getCollection(collectionName) {
  * We'll use a local helper to find it. If we need to scale later, we can restructure Firebase.
  */
 export async function getDocument(collectionName, id) {
-	const collection = await getCollection(collectionName);
-	return collection.find(item => item && item.id === id) || null;
+	const dbQuery = query(child(dbRef, collectionName), orderByChild('id'), equalTo(id));
+	const snapshot = await get(dbQuery);
+	if (!snapshot.exists()) return null;
+	const data = snapshot.val();
+	return Object.values(data)[0] || null;
+}
+
+let cache = { companies: null, lastFetch: 0 };
+
+export async function getCachedCompanies() {
+    const now = Date.now();
+    // Cache for 60 seconds
+    if (cache.companies && now - cache.lastFetch < 60000) {
+        return cache.companies;
+    }
+    cache.companies = await getCollection('companies');
+    cache.lastFetch = now;
+    return cache.companies;
 }
 
 /**

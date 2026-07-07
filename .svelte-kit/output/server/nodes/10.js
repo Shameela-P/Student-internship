@@ -1,10 +1,10 @@
-import * as server from '../entries/pages/admin/notifications/_page.server.js';
+import * as server from '../entries/pages/admin/students/_page.server.js';
 
 export const index = 10;
 let component_cache;
-export const component = async () => component_cache ??= (await import('../entries/pages/admin/notifications/_page.svelte.js')).default;
+export const component = async () => component_cache ??= (await import('../entries/pages/admin/students/_page.svelte.js')).default;
 export { server };
-export const server_id = "src/routes/admin/notifications/+page.server.js";
-export const imports = ["_app/immutable/nodes/10.C8ylzU4M.js","_app/immutable/chunks/CrKY3KsX.js","_app/immutable/chunks/5W_Zh4Rl.js","_app/immutable/chunks/Bm8jZxG3.js","_app/immutable/chunks/T1OpgVWV.js","_app/immutable/chunks/xihTtKlq.js"];
+export const server_id = "src/routes/admin/students/+page.server.js";
+export const imports = ["_app/immutable/nodes/10.Bxz2zCvG.js","_app/immutable/chunks/GSFvJ3-1.js","_app/immutable/chunks/xihTtKlq.js"];
 export const stylesheets = [];
 export const fonts = [];

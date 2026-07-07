@@ -6,13 +6,15 @@ import path from 'path';
 
 export async function load({ cookies }) {
 	const sessionUser = requireRole(cookies, ['company']);
-	const db = {
-		students: await getCollection('students'),
-		companies: await getCollection('companies'),
-		internships: await getCollection('internships'),
-		applications: await getCollection('applications'),
-		messages: await getCollection('messages')
-	};
+	const [studentsData, companiesData, internshipsData, applicationsData, messagesData] = await Promise.all([
+		getCollection('students'),
+		getCollection('companies'),
+		getCollection('internships'),
+		getCollection('applications'),
+		getCollection('messages'),
+		getCollection('notifications')
+	]);
+	const db = { students: studentsData, companies: companiesData, internships: internshipsData, applications: applicationsData, messages: messagesData, notifications: notificationsData };
 	const company = db.companies.find(c => c.id === sessionUser.id);
 
 	if (!db.messages) {
@@ -73,13 +75,15 @@ export async function load({ cookies }) {
 export const actions = {
 	sendMessage: async ({ request, cookies }) => {
 		const sessionUser = requireRole(cookies, ['company']);
-		const db = {
-		students: await getCollection('students'),
-		companies: await getCollection('companies'),
-		internships: await getCollection('internships'),
-		applications: await getCollection('applications'),
-		messages: await getCollection('messages')
-	};
+		const [studentsData, companiesData, internshipsData, applicationsData, messagesData] = await Promise.all([
+		getCollection('students'),
+		getCollection('companies'),
+		getCollection('internships'),
+		getCollection('applications'),
+		getCollection('messages'),
+		getCollection('notifications')
+	]);
+	const db = { students: studentsData, companies: companiesData, internships: internshipsData, applications: applicationsData, messages: messagesData, notifications: notificationsData };
 		const company = db.companies.find(c => c.id === sessionUser.id);
 
 		const formData = await request.formData();
@@ -136,6 +140,17 @@ export const actions = {
 		};
 
 		db.messages.push(newMessage);
+		if (!db.notifications) db.notifications = [];
+		db.notifications.unshift({
+			id: 'notif_' + Date.now(),
+			recipientEmail,
+			recipientRole: recipientRole,
+			subject: 'New Message from ' + newMessage.senderName,
+			body: 'You received a new message: "' + content.substring(0, 50) + '..."',
+			date: new Date().toISOString(),
+			read: false
+		});
+
 		await updateEntireDatabase(db);
 
 		return { success: true };

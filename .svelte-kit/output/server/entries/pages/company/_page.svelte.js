@@ -24,7 +24,7 @@ function _page($$renderer, $$props) {
 			for (let $$index = 0, $$length = each_array.length; $$index < $$length; $$index++) {
 				let bar = each_array[$$index];
 				const percentage = Math.round(bar.value / maxVal() * 100);
-				$$renderer.push(`<div class="space-y-1.5"><div class="flex items-center justify-between text-xs font-semibold"><span class="text-slate-700 dark:text-slate-300 truncate max-w-sm">${escape_html(bar.title)}</span> <span class="text-slate-500 dark:text-slate-400">${escape_html(bar.value)} applicants</span></div> <div class="h-3.5 w-full bg-slate-100 dark:bg-slate-900 rounded-full overflow-hidden border border-slate-200/5 dark:border-slate-800/20"><div class="h-full bg-linear-to-r from-indigo-500 to-indigo-600 rounded-full transition-all duration-500"${attr_style(`width: ${stringify(percentage)}%`)}></div></div></div>`);
+				$$renderer.push(`<div class="space-y-1.5"><div class="flex items-center justify-between text-xs font-semibold"><span class="text-slate-700 dark:text-slate-300 truncate max-w-sm">${escape_html(bar.title)}</span> <span class="text-slate-500 dark:text-slate-400">${escape_html(bar.value)} applicants</span></div> <div class="h-3.5 w-full bg-slate-100 dark:bg-slate-900 rounded-full overflow-hidden border border-slate-200/5 dark:border-slate-800/20"><div class="h-full bg-gradient-to-r from-indigo-500 to-indigo-600 rounded-full transition-all duration-500"${attr_style(`width: ${stringify(percentage)}%`)}></div></div></div>`);
 			}
 			$$renderer.push(`<!--]--></div>`);
 		}

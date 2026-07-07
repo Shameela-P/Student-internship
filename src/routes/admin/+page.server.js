@@ -4,15 +4,16 @@ import { fail } from '@sveltejs/kit';
 
 export async function load({ cookies }) {
 	const sessionUser = requireRole(cookies, ['admin']);
-	const db = {
-		students: await getCollection('students'),
-		companies: await getCollection('companies'),
-		internships: await getCollection('internships'),
-		applications: await getCollection('applications'),
-		notifications: await getCollection('notifications'),
-		emailTemplates: await getCollection('emailTemplates'),
-		systemLogs: await getCollection('systemLogs')
-	};
+	const [studentsData, companiesData, internshipsData, applicationsData, notificationsData, emailTemplatesData, systemLogsData] = await Promise.all([
+		getCollection('students'),
+		getCollection('companies'),
+		getCollection('internships'),
+		getCollection('applications'),
+		getCollection('notifications'),
+		getCollection('emailTemplates'),
+		getCollection('systemLogs')
+	]);
+	const db = { students: studentsData, companies: companiesData, internships: internshipsData, applications: applicationsData, notifications: notificationsData, emailTemplates: emailTemplatesData, systemLogs: systemLogsData };
 
 	const totalStudents = db.students.length;
 	const totalCompanies = db.companies.length;
@@ -67,15 +68,16 @@ export const actions = {
 			return fail(400, { success: false, error: 'Company reference ID is missing' });
 		}
 
-		const db = {
-		students: await getCollection('students'),
-		companies: await getCollection('companies'),
-		internships: await getCollection('internships'),
-		applications: await getCollection('applications'),
-		notifications: await getCollection('notifications'),
-		emailTemplates: await getCollection('emailTemplates'),
-		systemLogs: await getCollection('systemLogs')
-	};
+		const [studentsData, companiesData, internshipsData, applicationsData, notificationsData, emailTemplatesData, systemLogsData] = await Promise.all([
+		getCollection('students'),
+		getCollection('companies'),
+		getCollection('internships'),
+		getCollection('applications'),
+		getCollection('notifications'),
+		getCollection('emailTemplates'),
+		getCollection('systemLogs')
+	]);
+	const db = { students: studentsData, companies: companiesData, internships: internshipsData, applications: applicationsData, notifications: notificationsData, emailTemplates: emailTemplatesData, systemLogs: systemLogsData };
 		const companyIndex = db.companies.findIndex(c => c.id === companyId);
 		if (companyIndex === -1) {
 			return fail(404, { success: false, error: 'Company profile not found' });
@@ -117,15 +119,16 @@ export const actions = {
 			return fail(400, { success: false, error: 'Company reference ID is missing' });
 		}
 
-		const db = {
-		students: await getCollection('students'),
-		companies: await getCollection('companies'),
-		internships: await getCollection('internships'),
-		applications: await getCollection('applications'),
-		notifications: await getCollection('notifications'),
-		emailTemplates: await getCollection('emailTemplates'),
-		systemLogs: await getCollection('systemLogs')
-	};
+		const [studentsData, companiesData, internshipsData, applicationsData, notificationsData, emailTemplatesData, systemLogsData] = await Promise.all([
+		getCollection('students'),
+		getCollection('companies'),
+		getCollection('internships'),
+		getCollection('applications'),
+		getCollection('notifications'),
+		getCollection('emailTemplates'),
+		getCollection('systemLogs')
+	]);
+	const db = { students: studentsData, companies: companiesData, internships: internshipsData, applications: applicationsData, notifications: notificationsData, emailTemplates: emailTemplatesData, systemLogs: systemLogsData };
 		const companyIndex = db.companies.findIndex(c => c.id === companyId);
 		if (companyIndex === -1) {
 			return fail(404, { success: false, error: 'Company profile not found' });
@@ -159,15 +162,16 @@ export const actions = {
 		const companyId = formData.get('companyId')?.toString();
 		if (!companyId) return fail(400, { success: false, error: 'Missing ID' });
 
-		const db = {
-		students: await getCollection('students'),
-		companies: await getCollection('companies'),
-		internships: await getCollection('internships'),
-		applications: await getCollection('applications'),
-		notifications: await getCollection('notifications'),
-		emailTemplates: await getCollection('emailTemplates'),
-		systemLogs: await getCollection('systemLogs')
-	};
+		const [studentsData, companiesData, internshipsData, applicationsData, notificationsData, emailTemplatesData, systemLogsData] = await Promise.all([
+		getCollection('students'),
+		getCollection('companies'),
+		getCollection('internships'),
+		getCollection('applications'),
+		getCollection('notifications'),
+		getCollection('emailTemplates'),
+		getCollection('systemLogs')
+	]);
+	const db = { students: studentsData, companies: companiesData, internships: internshipsData, applications: applicationsData, notifications: notificationsData, emailTemplates: emailTemplatesData, systemLogs: systemLogsData };
 		const companyIndex = db.companies.findIndex(c => c.id === companyId);
 		if (companyIndex === -1) return fail(404, { success: false, error: 'Not found' });
 
@@ -187,15 +191,16 @@ export const actions = {
 		
 		if (!companyId) return fail(400, { success: false, error: 'Missing ID' });
 
-		const db = {
-		students: await getCollection('students'),
-		companies: await getCollection('companies'),
-		internships: await getCollection('internships'),
-		applications: await getCollection('applications'),
-		notifications: await getCollection('notifications'),
-		emailTemplates: await getCollection('emailTemplates'),
-		systemLogs: await getCollection('systemLogs')
-	};
+		const [studentsData, companiesData, internshipsData, applicationsData, notificationsData, emailTemplatesData, systemLogsData] = await Promise.all([
+		getCollection('students'),
+		getCollection('companies'),
+		getCollection('internships'),
+		getCollection('applications'),
+		getCollection('notifications'),
+		getCollection('emailTemplates'),
+		getCollection('systemLogs')
+	]);
+	const db = { students: studentsData, companies: companiesData, internships: internshipsData, applications: applicationsData, notifications: notificationsData, emailTemplates: emailTemplatesData, systemLogs: systemLogsData };
 		const company = db.companies.find(c => c.id === companyId);
 		if (!company) return fail(404, { success: false, error: 'Not found' });
 

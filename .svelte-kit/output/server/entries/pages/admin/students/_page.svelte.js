@@ -3,7 +3,7 @@ import { S as escape_html, b as attr, i as ensure_array_like, r as derived, t as
 function _page($$renderer, $$props) {
 	$$renderer.component(($$renderer) => {
 		let { data } = $$props;
-		let students = data.students;
+		let students = [...data.students];
 		let searchQuery = "";
 		let filterTab = "All";
 		const totalStudents = derived(() => students.length);

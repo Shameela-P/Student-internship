@@ -1,10 +1,11 @@
-import { i as updateEntireDatabase, n as getCollection, r as logAction } from "../../../../chunks/db.js";
+import { i as logAction, o as updateEntireDatabase, r as getCollection } from "../../../../chunks/db.js";
 import { a as requireRole, i as hashPassword, o as verifyPassword } from "../../../../chunks/auth.js";
 import { fail } from "@sveltejs/kit";
 //#region src/routes/student/settings/+page.server.js
 async function load({ cookies }) {
 	const sessionUser = requireRole(cookies, ["student"]);
-	const student = { students: await getCollection("students") }.students.find((s) => s.id === sessionUser.id);
+	const [studentsData] = await Promise.all([getCollection("students")]);
+	const student = { students: studentsData }.students.find((s) => s.id === sessionUser.id);
 	return {
 		student,
 		settings: student.settings || {
@@ -35,7 +36,8 @@ var actions = {
 			success: false,
 			error: "Password must be at least 6 characters long"
 		});
-		const db = { students: await getCollection("students") };
+		const [studentsData] = await Promise.all([getCollection("students")]);
+		const db = { students: studentsData };
 		const studentIndex = db.students.findIndex((s) => s.id === sessionUser.id);
 		if (studentIndex === -1) return fail(404, {
 			success: false,
@@ -62,7 +64,8 @@ var actions = {
 		const chatReceipts = formData.get("chatReceipts") === "true";
 		const profileVisibility = formData.get("profileVisibility")?.toString() || "public";
 		const twoFactorAuth = formData.get("twoFactorAuth") === "true";
-		const db = { students: await getCollection("students") };
+		const [studentsData] = await Promise.all([getCollection("students")]);
+		const db = { students: studentsData };
 		const studentIndex = db.students.findIndex((s) => s.id === sessionUser.id);
 		if (studentIndex === -1) return fail(404, {
 			success: false,

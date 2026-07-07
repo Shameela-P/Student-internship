@@ -4,7 +4,10 @@
 	let { data, form } = $props();
 
 	// Select registration type (Student vs Company)
-	let activeTab = $state(data.role === 'company' ? 'company' : 'student');
+	// svelte-ignore state_referenced_locally
+	let initialRole = data.role;
+	// svelte-ignore state_referenced_locally
+	let activeTab = $state(initialRole === 'company' ? 'company' : 'student');
 	let loading = $state(false);
 
 	const industries = [

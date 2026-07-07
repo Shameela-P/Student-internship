@@ -1,6 +1,7 @@
 import crypto from 'crypto';
 import { redirect } from '@sveltejs/kit';
 import { env } from '$env/dynamic/private';
+import { dev } from '$app/environment';
 
 const SECRET_KEY = env.JWT_SECRET || 'nexora_super_secret_key_2026_safe';
 const REFRESH_SECRET = env.JWT_REFRESH_SECRET || 'nx_refresh_token_very_secure_99';
@@ -97,7 +98,7 @@ export function getSessionUser(cookies) {
 			cookies.set('nexora_session', newToken, {
 				path: '/',
 				httpOnly: true,
-				secure: env.NODE_ENV === 'production',
+				secure: !dev,
 				sameSite: 'lax',
 				maxAge: 60 * 60 * 24
 			});

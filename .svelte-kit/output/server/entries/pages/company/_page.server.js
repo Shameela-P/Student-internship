@@ -1,13 +1,19 @@
-import { n as getCollection } from "../../../chunks/db.js";
+import { r as getCollection } from "../../../chunks/db.js";
 import { a as requireRole } from "../../../chunks/auth.js";
 //#region src/routes/company/+page.server.js
 async function load({ cookies }) {
 	const sessionUser = requireRole(cookies, ["company"]);
+	const [studentsData, companiesData, internshipsData, applicationsData] = await Promise.all([
+		getCollection("students"),
+		getCollection("companies"),
+		getCollection("internships"),
+		getCollection("applications")
+	]);
 	const db = {
-		students: await getCollection("students"),
-		companies: await getCollection("companies"),
-		internships: await getCollection("internships"),
-		applications: await getCollection("applications")
+		students: studentsData,
+		companies: companiesData,
+		internships: internshipsData,
+		applications: applicationsData
 	};
 	const company = db.companies.find((c) => c.id === sessionUser.id);
 	const postedInternships = db.internships.filter((i) => i.companyId === company.id);

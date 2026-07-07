@@ -1,17 +1,25 @@
-import { i as updateEntireDatabase, n as getCollection, r as logAction } from "../../../../chunks/db.js";
+import { i as logAction, o as updateEntireDatabase, r as getCollection } from "../../../../chunks/db.js";
 import { a as requireRole } from "../../../../chunks/auth.js";
 import { fail } from "@sveltejs/kit";
 import crypto from "crypto";
 //#region src/routes/company/applications/+page.server.js
 async function load({ cookies }) {
 	const sessionUser = requireRole(cookies, ["company"]);
+	const [studentsData, companiesData, internshipsData, applicationsData, notificationsData, emailTemplatesData] = await Promise.all([
+		getCollection("students"),
+		getCollection("companies"),
+		getCollection("internships"),
+		getCollection("applications"),
+		getCollection("notifications"),
+		getCollection("emailTemplates")
+	]);
 	const db = {
-		students: await getCollection("students"),
-		companies: await getCollection("companies"),
-		internships: await getCollection("internships"),
-		applications: await getCollection("applications"),
-		notifications: await getCollection("notifications"),
-		emailTemplates: await getCollection("emailTemplates")
+		students: studentsData,
+		companies: companiesData,
+		internships: internshipsData,
+		applications: applicationsData,
+		notifications: notificationsData,
+		emailTemplates: emailTemplatesData
 	};
 	const company = db.companies.find((c) => c.id === sessionUser.id);
 	const postedInternships = db.internships.filter((i) => i.companyId === company.id);
@@ -55,13 +63,21 @@ var actions = {
 			success: false,
 			error: "Reference ID and Status are required"
 		});
+		const [studentsData, companiesData, internshipsData, applicationsData, notificationsData, emailTemplatesData] = await Promise.all([
+			getCollection("students"),
+			getCollection("companies"),
+			getCollection("internships"),
+			getCollection("applications"),
+			getCollection("notifications"),
+			getCollection("emailTemplates")
+		]);
 		const db = {
-			students: await getCollection("students"),
-			companies: await getCollection("companies"),
-			internships: await getCollection("internships"),
-			applications: await getCollection("applications"),
-			notifications: await getCollection("notifications"),
-			emailTemplates: await getCollection("emailTemplates")
+			students: studentsData,
+			companies: companiesData,
+			internships: internshipsData,
+			applications: applicationsData,
+			notifications: notificationsData,
+			emailTemplates: emailTemplatesData
 		};
 		const appIndex = db.applications.findIndex((a) => a.id === appId);
 		if (appIndex === -1) return fail(404, {
@@ -139,13 +155,21 @@ var actions = {
 			success: false,
 			error: "Reference ID is required"
 		});
+		const [studentsData, companiesData, internshipsData, applicationsData, notificationsData, emailTemplatesData] = await Promise.all([
+			getCollection("students"),
+			getCollection("companies"),
+			getCollection("internships"),
+			getCollection("applications"),
+			getCollection("notifications"),
+			getCollection("emailTemplates")
+		]);
 		const db = {
-			students: await getCollection("students"),
-			companies: await getCollection("companies"),
-			internships: await getCollection("internships"),
-			applications: await getCollection("applications"),
-			notifications: await getCollection("notifications"),
-			emailTemplates: await getCollection("emailTemplates")
+			students: studentsData,
+			companies: companiesData,
+			internships: internshipsData,
+			applications: applicationsData,
+			notifications: notificationsData,
+			emailTemplates: emailTemplatesData
 		};
 		const appIndex = db.applications.findIndex((a) => a.id === appId);
 		if (appIndex === -1) return fail(404, {

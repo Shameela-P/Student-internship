@@ -1,6 +1,7 @@
 <script>
 	let { data } = $props();
-	let students = $state(data.students);
+	// svelte-ignore state_referenced_locally
+	let students = $state([...data.students]);
 	
 	let searchQuery = $state('');
 	let filterTab = $state('All'); // 'All', 'Active', 'Blocked'

@@ -1,6 +1,7 @@
 <script>
 	let { data } = $props();
-	let templates = $state(data.templates);
+	// svelte-ignore state_referenced_locally
+	let templates = $state([...data.templates]);
 	let selectedTemplate = $state(null);
 
 	function selectTemplate(template) {
@@ -62,24 +63,27 @@
 			{#if selectedTemplate}
 				<div class="space-y-6">
 					<div>
-						<label class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Template Name</label>
+						<label for="templateName" class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Template Name</label>
 						<input 
+							id="templateName"
 							type="text" 
 							bind:value={selectedTemplate.name}
 							class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/50 focus:outline-none focus:border-indigo-500 text-sm font-semibold text-slate-900 dark:text-white"
 						/>
 					</div>
 					<div>
-						<label class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Email Subject</label>
+						<label for="templateSubject" class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Email Subject</label>
 						<input 
+							id="templateSubject"
 							type="text" 
 							bind:value={selectedTemplate.subject}
 							class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/50 focus:outline-none focus:border-indigo-500 text-sm text-slate-900 dark:text-white"
 						/>
 					</div>
 					<div>
-						<label class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Email Body</label>
+						<label for="templateBody" class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Email Body</label>
 						<textarea 
+							id="templateBody"
 							bind:value={selectedTemplate.body}
 							rows="12"
 							class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/50 focus:outline-none focus:border-indigo-500 text-sm text-slate-900 dark:text-white resize-none"

@@ -1,16 +1,18 @@
 import { logAction, DOMAINS, getCollection, updateEntireDatabase } from '$lib/db';
 import { requireRole } from '$lib/auth';
+import { buildInternshipPayload } from '$lib/internship-utils';
 import { fail } from '@sveltejs/kit';
 import fs from 'fs';
 import path from 'path';
 
 export async function load({ cookies }) {
 	const sessionUser = requireRole(cookies, ['company']);
-	const db = {
-		companies: await getCollection('companies'),
-		internships: await getCollection('internships'),
-		applications: await getCollection('applications')
-	};
+	const [companiesData, internshipsData, applicationsData] = await Promise.all([
+		getCollection('companies'),
+		getCollection('internships'),
+		getCollection('applications')
+	]);
+	const db = { companies: companiesData, internships: internshipsData, applications: applicationsData };
 	const company = db.companies.find(c => c.id === sessionUser.id);
 
 	// Load only internships created by this company
@@ -26,11 +28,12 @@ export async function load({ cookies }) {
 export const actions = {
 	postInternship: async ({ request, cookies }) => {
 		const sessionUser = requireRole(cookies, ['company']);
-		const db = {
-		companies: await getCollection('companies'),
-		internships: await getCollection('internships'),
-		applications: await getCollection('applications')
-	};
+		const [companiesData, internshipsData, applicationsData] = await Promise.all([
+		getCollection('companies'),
+		getCollection('internships'),
+		getCollection('applications')
+	]);
+	const db = { companies: companiesData, internships: internshipsData, applications: applicationsData };
 		const company = db.companies.find(c => c.id === sessionUser.id);
 
 		// Account approval gate
@@ -94,34 +97,31 @@ export const actions = {
 			}
 		}
 
-		const skillsRequired = skillsRaw.split(',').map(s => s.trim()).filter(Boolean);
-
-		const newInternship = {
-			id: `intern_${Date.now()}`,
+		const newInternship = buildInternshipPayload({
 			companyId: company.id,
-			title,
-			domain,
-			subCategory,
-			skillsRequired,
-			description,
-			learningOutcomes,
-			responsibilities,
-			eligibilityCriteria,
-			duration,
-			startDate,
-			lastDateToApply,
-			mode,
-			type,
-			fee: type.includes('Paid') ? fee : 0,
-			stipendAmount: type.includes('Stipend') ? stipendAmount : 0,
-			openings,
-			location,
-			certificateAvailable,
-			jobOpportunity,
 			bannerPath,
-			status: 'Active',
-			createdAt: new Date().toISOString()
-		};
+			formValues: {
+				title,
+				domain,
+				subCategory,
+				skillsRequired: skillsRaw,
+				description,
+				learningOutcomes,
+				responsibilities,
+				eligibilityCriteria,
+				duration,
+				startDate,
+				lastDateToApply,
+				mode,
+				type,
+				fee,
+				stipendAmount,
+				openings,
+				location,
+				certificateAvailable,
+				jobOpportunity
+			}
+		});
 
 		db.internships.push(newInternship);
 		await updateEntireDatabase(db);
@@ -132,11 +132,12 @@ export const actions = {
 
 	editInternship: async ({ request, cookies }) => {
 		const sessionUser = requireRole(cookies, ['company']);
-		const db = {
-		companies: await getCollection('companies'),
-		internships: await getCollection('internships'),
-		applications: await getCollection('applications')
-	};
+		const [companiesData, internshipsData, applicationsData] = await Promise.all([
+		getCollection('companies'),
+		getCollection('internships'),
+		getCollection('applications')
+	]);
+	const db = { companies: companiesData, internships: internshipsData, applications: applicationsData };
 		const company = db.companies.find(c => c.id === sessionUser.id);
 
 		const formData = await request.formData();
@@ -198,30 +199,34 @@ export const actions = {
 			}
 		}
 
-		const skillsRequired = skillsRaw.split(',').map(s => s.trim()).filter(Boolean);
-
 		db.internships[internshipIndex] = {
 			...db.internships[internshipIndex],
-			title,
-			domain,
-			subCategory,
-			skillsRequired,
-			description,
-			learningOutcomes,
-			responsibilities,
-			eligibilityCriteria,
-			duration,
-			startDate,
-			lastDateToApply,
-			mode,
-			type,
-			fee: type.includes('Paid') ? fee : 0,
-			stipendAmount: type.includes('Stipend') ? stipendAmount : 0,
-			openings,
-			location,
-			certificateAvailable,
-			jobOpportunity,
-			bannerPath
+			...buildInternshipPayload({
+				companyId: company.id,
+				bannerPath,
+				existingId: id,
+				formValues: {
+					title,
+					domain,
+					subCategory,
+					skillsRequired: skillsRaw,
+					description,
+					learningOutcomes,
+					responsibilities,
+					eligibilityCriteria,
+					duration,
+					startDate,
+					lastDateToApply,
+					mode,
+					type,
+					fee,
+					stipendAmount,
+					openings,
+					location,
+					certificateAvailable,
+					jobOpportunity
+				}
+			})
 		};
 
 		await updateEntireDatabase(db);
@@ -239,11 +244,12 @@ export const actions = {
 			return fail(400, { success: false, error: 'Reference ID is missing' });
 		}
 
-		const db = {
-		companies: await getCollection('companies'),
-		internships: await getCollection('internships'),
-		applications: await getCollection('applications')
-	};
+		const [companiesData, internshipsData, applicationsData] = await Promise.all([
+		getCollection('companies'),
+		getCollection('internships'),
+		getCollection('applications')
+	]);
+	const db = { companies: companiesData, internships: internshipsData, applications: applicationsData };
 		const index = db.internships.findIndex(i => i.id === id && i.companyId === sessionUser.id);
 		if (index === -1) {
 			return fail(404, { success: false, error: 'Internship listing not found' });
@@ -269,11 +275,12 @@ export const actions = {
 			return fail(400, { success: false, error: 'Reference ID is missing' });
 		}
 
-		const db = {
-		companies: await getCollection('companies'),
-		internships: await getCollection('internships'),
-		applications: await getCollection('applications')
-	};
+		const [companiesData, internshipsData, applicationsData] = await Promise.all([
+		getCollection('companies'),
+		getCollection('internships'),
+		getCollection('applications')
+	]);
+	const db = { companies: companiesData, internships: internshipsData, applications: applicationsData };
 		const index = db.internships.findIndex(i => i.id === id && i.companyId === sessionUser.id);
 		if (index === -1) {
 			return fail(404, { success: false, error: 'Internship listing not found' });

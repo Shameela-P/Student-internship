@@ -3,13 +3,18 @@ import { requireRole } from '$lib/auth';
 
 export async function load({ cookies, url }) {
 	const sessionUser = requireRole(cookies, ['student']);
-	const db = {
-		students: await getCollection('students'),
-		companies: await getCollection('companies'),
-		internships: await getCollection('internships'),
-		applications: await getCollection('applications')
-	};
+	const [studentsData, companiesData, internshipsData, applicationsData] = await Promise.all([
+		getCollection('students'),
+		getCollection('companies'),
+		getCollection('internships'),
+		getCollection('applications')
+	]);
+	const db = { students: studentsData, companies: companiesData, internships: internshipsData, applications: applicationsData };
 	const student = db.students.find(s => s.id === sessionUser.id);
+	if (!student) {
+		cookies.delete('nexora_session', { path: '/' });
+		throw new Error('Student session not found');
+	}
 
 	// Extract filters from URL search params
 	const searchQuery = url.searchParams.get('query')?.toLowerCase().trim() || '';
@@ -32,13 +37,14 @@ export async function load({ cookies, url }) {
 
 	// Filter companies
 	const filteredCompanies = db.companies.filter(c => {
+		if (!c || typeof c !== 'object') return false;
 		// Only verified & approved
 		if (c.status !== 'Approved' || c.isSuspended) return false;
 
 		// Search Query (Company Name or Description)
 		if (searchQuery) {
-			const nameMatch = c.companyName.toLowerCase().includes(searchQuery);
-			const descMatch = c.companyDescription.toLowerCase().includes(searchQuery);
+			const nameMatch = (c.companyName || '').toLowerCase().includes(searchQuery);
+			const descMatch = (c.companyDescription || '').toLowerCase().includes(searchQuery);
 			if (!nameMatch && !descMatch) return false;
 		}
 
@@ -46,10 +52,13 @@ export async function load({ cookies, url }) {
 		if (filterIndustry && c.industryType !== filterIndustry) return false;
 
 		// Location filter
-		if (filterLocation && !c.companyAddress.toLowerCase().includes(filterLocation)) return false;
+		if (filterLocation && !(c.companyAddress || '').toLowerCase().includes(filterLocation)) return false;
 
 		// Get active internships for this company
 		const companyInternships = activeInternshipsMap.get(c.id) || [];
+		
+		// Hide companies that don't have any active internships
+		if (companyInternships.length === 0) return false;
 
 		// Domain filter (Must have at least one active internship matching this domain)
 		if (filterDomain) {
@@ -59,13 +68,13 @@ export async function load({ cookies, url }) {
 
 		// Mode filter (Must have at least one active internship matching this mode)
 		if (filterMode) {
-			const hasMode = companyInternships.some(i => i.mode.toLowerCase() === filterMode.toLowerCase());
+			const hasMode = companyInternships.some(i => (i.mode || '').toLowerCase() === filterMode.toLowerCase());
 			if (!hasMode) return false;
 		}
 
 		// Type filter (Must have at least one active internship matching this type)
 		if (filterType) {
-			const hasType = companyInternships.some(i => i.type.toLowerCase() === filterType.toLowerCase());
+			const hasType = companyInternships.some(i => (i.type || '').toLowerCase() === filterType.toLowerCase());
 			if (!hasType) return false;
 		}
 
@@ -78,12 +87,12 @@ export async function load({ cookies, url }) {
 		
 		return {
 			id: c.id,
-			companyName: c.companyName,
-			companyDescription: c.companyDescription,
-			industryType: c.industryType,
-			companyAddress: c.companyAddress,
-			companyLogo: c.companyLogo,
-			website: c.website,
+			companyName: c.companyName || 'Unnamed Company',
+			companyDescription: c.companyDescription || 'A verified partner on Nexora.',
+			industryType: c.industryType || 'General',
+			companyAddress: c.companyAddress || 'Remote / Hybrid',
+			companyLogo: c.companyLogo || '',
+			website: c.website || '',
 			openingsCount: companyInternships.length,
 			rating
 		};

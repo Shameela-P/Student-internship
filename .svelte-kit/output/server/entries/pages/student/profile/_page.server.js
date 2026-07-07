@@ -1,7 +1,7 @@
-import { i as updateEntireDatabase, n as getCollection, r as logAction } from "../../../../chunks/db.js";
+import { i as logAction, o as updateEntireDatabase, r as getCollection } from "../../../../chunks/db.js";
 import { a as requireRole } from "../../../../chunks/auth.js";
 import { fail } from "@sveltejs/kit";
-import fs from "fs";
+import "fs";
 import path from "path";
 //#region src/routes/student/profile/+page.server.js
 async function load({ cookies }) {
@@ -70,16 +70,13 @@ var actions = {
 		});
 		const ext = path.extname(resumeFile.name) || ".pdf";
 		const filename = `resume_${Date.now()}_${Math.random().toString(36).substr(2, 6)}${ext}`;
-		const dest = path.resolve("uploads/resumes", filename);
+		path.resolve("uploads/resumes", filename);
 		try {
-			const buffer = Buffer.from(await resumeFile.arrayBuffer());
-			fs.writeFileSync(dest, buffer);
-			const oldResume = db.students[studentIndex].resumePath;
-			if (oldResume && oldResume !== "mock-resume.pdf" && oldResume !== "mock-resume-2.pdf") {
-				const oldPath = path.resolve("uploads/resumes", oldResume);
-				if (fs.existsSync(oldPath)) fs.unlinkSync(oldPath);
-			}
-			db.students[studentIndex].resumePath = filename;
+			const base64Data = Buffer.from(await resumeFile.arrayBuffer()).toString("base64");
+			db.students[studentIndex].resumeData = base64Data;
+			db.students[studentIndex].resumeName = resumeFile.name;
+			db.students[studentIndex].resumeMimeType = resumeFile.type || "application/pdf";
+			db.students[studentIndex].resumePath = db.students[studentIndex].id;
 			await updateEntireDatabase(db);
 			logAction("STUDENT_UPDATE_RESUME", `Student ${db.students[studentIndex].fullName} uploaded a new resume.`);
 			return {

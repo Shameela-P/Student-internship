@@ -3,12 +3,13 @@ import { requireRole } from '$lib/auth';
 
 export async function load({ cookies, url }) {
 	const sessionUser = requireRole(cookies, ['student']);
-	const db = {
-		students: await getCollection('students'),
-		companies: await getCollection('companies'),
-		internships: await getCollection('internships'),
-		applications: await getCollection('applications')
-	};
+	const [studentsData, companiesData, internshipsData, applicationsData] = await Promise.all([
+		getCollection('students'),
+		getCollection('companies'),
+		getCollection('internships'),
+		getCollection('applications')
+	]);
+	const db = { students: studentsData, companies: companiesData, internships: internshipsData, applications: applicationsData };
 	const student = db.students.find(s => s.id === sessionUser.id);
 	
 	const hash = url.searchParams.get('hash');

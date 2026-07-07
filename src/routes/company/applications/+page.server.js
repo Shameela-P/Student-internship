@@ -5,14 +5,15 @@ import crypto from 'crypto';
 
 export async function load({ cookies }) {
 	const sessionUser = requireRole(cookies, ['company']);
-	const db = {
-		students: await getCollection('students'),
-		companies: await getCollection('companies'),
-		internships: await getCollection('internships'),
-		applications: await getCollection('applications'),
-		notifications: await getCollection('notifications'),
-		emailTemplates: await getCollection('emailTemplates')
-	};
+	const [studentsData, companiesData, internshipsData, applicationsData, notificationsData, emailTemplatesData] = await Promise.all([
+		getCollection('students'),
+		getCollection('companies'),
+		getCollection('internships'),
+		getCollection('applications'),
+		getCollection('notifications'),
+		getCollection('emailTemplates')
+	]);
+	const db = { students: studentsData, companies: companiesData, internships: internshipsData, applications: applicationsData, notifications: notificationsData, emailTemplates: emailTemplatesData };
 	const company = db.companies.find(c => c.id === sessionUser.id);
 
 	// Fetch internships posted by this company
@@ -66,14 +67,15 @@ export const actions = {
 			return fail(400, { success: false, error: 'Reference ID and Status are required' });
 		}
 
-		const db = {
-		students: await getCollection('students'),
-		companies: await getCollection('companies'),
-		internships: await getCollection('internships'),
-		applications: await getCollection('applications'),
-		notifications: await getCollection('notifications'),
-		emailTemplates: await getCollection('emailTemplates')
-	};
+		const [studentsData, companiesData, internshipsData, applicationsData, notificationsData, emailTemplatesData] = await Promise.all([
+		getCollection('students'),
+		getCollection('companies'),
+		getCollection('internships'),
+		getCollection('applications'),
+		getCollection('notifications'),
+		getCollection('emailTemplates')
+	]);
+	const db = { students: studentsData, companies: companiesData, internships: internshipsData, applications: applicationsData, notifications: notificationsData, emailTemplates: emailTemplatesData };
 		
 		// Find application and verify owner is the company
 		const appIndex = db.applications.findIndex(a => a.id === appId);
@@ -185,14 +187,15 @@ export const actions = {
 			return fail(400, { success: false, error: 'Reference ID is required' });
 		}
 
-		const db = {
-		students: await getCollection('students'),
-		companies: await getCollection('companies'),
-		internships: await getCollection('internships'),
-		applications: await getCollection('applications'),
-		notifications: await getCollection('notifications'),
-		emailTemplates: await getCollection('emailTemplates')
-	};
+		const [studentsData, companiesData, internshipsData, applicationsData, notificationsData, emailTemplatesData] = await Promise.all([
+		getCollection('students'),
+		getCollection('companies'),
+		getCollection('internships'),
+		getCollection('applications'),
+		getCollection('notifications'),
+		getCollection('emailTemplates')
+	]);
+	const db = { students: studentsData, companies: companiesData, internships: internshipsData, applications: applicationsData, notifications: notificationsData, emailTemplates: emailTemplatesData };
 		
 		const appIndex = db.applications.findIndex(a => a.id === appId);
 		if (appIndex === -1) {

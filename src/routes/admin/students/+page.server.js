@@ -3,9 +3,10 @@ import { requireRole } from '$lib/auth';
 
 export async function load({ cookies }) {
 	requireRole(cookies, ['admin']);
-	const db = {
-		students: await getCollection('students')
-	};
+	const [studentsData] = await Promise.all([
+		getCollection('students')
+	]);
+	const db = { students: studentsData };
 	
 	const students = db.students.map(s => {
 		// Calculate stats if needed, or just pass data

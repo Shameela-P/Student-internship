@@ -10,7 +10,7 @@ return {
 	assets: new Set(["robots.txt"]),
 	mimeTypes: {".txt":"text/plain"},
 	_: {
-		client: {start:"_app/immutable/entry/start.v2b83Hn1.js",app:"_app/immutable/entry/app.BBq-wZVP.js",imports:["_app/immutable/entry/start.v2b83Hn1.js","_app/immutable/chunks/5W_Zh4Rl.js","_app/immutable/chunks/CrKY3KsX.js","_app/immutable/entry/app.BBq-wZVP.js","_app/immutable/chunks/CrKY3KsX.js","_app/immutable/chunks/kNaey6uv.js","_app/immutable/chunks/xihTtKlq.js"],stylesheets:[],fonts:[],uses_env_dynamic_public:false},
+		client: {start:"_app/immutable/entry/start.DVlVi1_4.js",app:"_app/immutable/entry/app.B9T_pLif.js",imports:["_app/immutable/entry/start.DVlVi1_4.js","_app/immutable/chunks/DLrS9xGv.js","_app/immutable/chunks/GSFvJ3-1.js","_app/immutable/entry/app.B9T_pLif.js","_app/immutable/chunks/GSFvJ3-1.js","_app/immutable/chunks/kNaey6uv.js","_app/immutable/chunks/xihTtKlq.js"],stylesheets:[],fonts:[],uses_env_dynamic_public:false},
 		nodes: [
 			__memo(() => import('./nodes/0.js')),
 			__memo(() => import('./nodes/1.js')),
@@ -81,39 +81,18 @@ return {
 				endpoint: null
 			},
 			{
-				id: "/admin/notifications",
-				pattern: /^\/admin\/notifications\/?$/,
+				id: "/admin/students",
+				pattern: /^\/admin\/students\/?$/,
 				params: [],
 				page: { layouts: [0,2,], errors: [1,,], leaf: 10 },
 				endpoint: null
 			},
 			{
-				id: "/admin/students",
-				pattern: /^\/admin\/students\/?$/,
-				params: [],
-				page: { layouts: [0,2,], errors: [1,,], leaf: 11 },
-				endpoint: null
-			},
-			{
-				id: "/api/attachments/[filename]",
-				pattern: /^\/api\/attachments\/([^/]+?)\/?$/,
+				id: "/api/banners/[filename]",
+				pattern: /^\/api\/banners\/([^/]+?)\/?$/,
 				params: [{"name":"filename","optional":false,"rest":false,"chained":false}],
 				page: null,
-				endpoint: __memo(() => import('./entries/endpoints/api/attachments/_filename_/_server.js'))
-			},
-			{
-				id: "/api/messages/read",
-				pattern: /^\/api\/messages\/read\/?$/,
-				params: [],
-				page: null,
-				endpoint: __memo(() => import('./entries/endpoints/api/messages/read/_server.js'))
-			},
-			{
-				id: "/api/notifications/read",
-				pattern: /^\/api\/notifications\/read\/?$/,
-				params: [],
-				page: null,
-				endpoint: __memo(() => import('./entries/endpoints/api/notifications/read/_server.js'))
+				endpoint: __memo(() => import('./entries/endpoints/api/banners/_filename_/_server.js'))
 			},
 			{
 				id: "/api/refresh",
@@ -133,42 +112,42 @@ return {
 				id: "/company",
 				pattern: /^\/company\/?$/,
 				params: [],
-				page: { layouts: [0,3,], errors: [1,,], leaf: 12 },
+				page: { layouts: [0,3,], errors: [1,,], leaf: 11 },
 				endpoint: null
 			},
 			{
 				id: "/company/applications",
 				pattern: /^\/company\/applications\/?$/,
 				params: [],
-				page: { layouts: [0,3,], errors: [1,,], leaf: 13 },
+				page: { layouts: [0,3,], errors: [1,,], leaf: 12 },
 				endpoint: null
 			},
 			{
 				id: "/company/internships",
 				pattern: /^\/company\/internships\/?$/,
 				params: [],
-				page: { layouts: [0,3,], errors: [1,,], leaf: 14 },
+				page: { layouts: [0,3,], errors: [1,,], leaf: 13 },
 				endpoint: null
 			},
 			{
 				id: "/company/messages",
 				pattern: /^\/company\/messages\/?$/,
 				params: [],
-				page: { layouts: [0,3,], errors: [1,,], leaf: 15 },
+				page: { layouts: [0,3,], errors: [1,,], leaf: 14 },
 				endpoint: null
 			},
 			{
 				id: "/company/notifications",
 				pattern: /^\/company\/notifications\/?$/,
 				params: [],
-				page: { layouts: [0,3,], errors: [1,,], leaf: 16 },
+				page: { layouts: [0,3,], errors: [1,,], leaf: 15 },
 				endpoint: null
 			},
 			{
 				id: "/login",
 				pattern: /^\/login\/?$/,
 				params: [],
-				page: { layouts: [0,], errors: [1,], leaf: 17 },
+				page: { layouts: [0,], errors: [1,], leaf: 16 },
 				endpoint: null
 			},
 			{
@@ -184,6 +163,13 @@ return {
 				params: [],
 				page: null,
 				endpoint: __memo(() => import('./entries/endpoints/logout/_server.js'))
+			},
+			{
+				id: "/privacy-policy",
+				pattern: /^\/privacy-policy\/?$/,
+				params: [],
+				page: { layouts: [0,], errors: [1,], leaf: 17 },
+				endpoint: null
 			},
 			{
 				id: "/register",
@@ -249,8 +235,8 @@ return {
 				endpoint: null
 			},
 			{
-				id: "/verify",
-				pattern: /^\/verify\/?$/,
+				id: "/terms",
+				pattern: /^\/terms\/?$/,
 				params: [],
 				page: { layouts: [0,], errors: [1,], leaf: 27 },
 				endpoint: null

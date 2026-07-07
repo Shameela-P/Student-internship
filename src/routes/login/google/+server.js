@@ -1,9 +1,6 @@
 import { json } from '@sveltejs/kit';
-import { getCollection, updateEntireDatabase, logAction } from '$lib/db';
-import jwt from 'jsonwebtoken';
-
-const JWT_SECRET = process.env.JWT_SECRET || 'fallback-secret-key-for-jwt-signing';
-
+import { getCollection, updateDocument, addDocument, logAction } from '$lib/db';
+import { createToken } from '$lib/auth';
 import { dev } from '$app/environment';
 
 export async function POST({ request, cookies }) {
@@ -14,10 +11,15 @@ export async function POST({ request, cookies }) {
 			return json({ error: 'Missing required Google Auth payload fields.' }, { status: 400 });
 		}
 
+		const [studentsData, companiesData, adminsData] = await Promise.all([
+			getCollection('students'),
+			getCollection('companies'),
+			getCollection('admins')
+		]);
 		const db = {
-			students: await getCollection('students'),
-			companies: await getCollection('companies'),
-			admins: await getCollection('admins')
+			students: studentsData,
+			companies: companiesData,
+			admins: adminsData
 		};
 		let user = null;
 		let redirectPath = '/';
@@ -41,7 +43,7 @@ export async function POST({ request, cookies }) {
 			// Optional: Update photoURL if changed
 			if (photoURL && existingStudent.profilePhoto !== photoURL) {
 				existingStudent.profilePhoto = photoURL;
-				await updateEntireDatabase(db);
+				await updateDocument('students', existingStudent.id, { profilePhoto: photoURL });
 			}
 		} else if (existingCompany) {
 			if (existingCompany.isSuspended) {
@@ -70,8 +72,7 @@ export async function POST({ request, cookies }) {
 					isBlocked: false,
 					createdAt: new Date().toISOString()
 				};
-				db.students.push(newStudent);
-				await updateEntireDatabase(db);
+				await addDocument('students', newStudent);
 				
 				user = { id: newStudent.id, role: 'student', email };
 				redirectPath = '/student';
@@ -91,8 +92,7 @@ export async function POST({ request, cookies }) {
 					isSuspended: false,
 					createdAt: new Date().toISOString()
 				};
-				db.companies.push(newCompany);
-				await updateEntireDatabase(db);
+				await addDocument('companies', newCompany);
 
 				user = { id: newCompany.id, role: 'company', email };
 				redirectPath = '/company';
@@ -101,12 +101,8 @@ export async function POST({ request, cookies }) {
 			}
 		}
 
-		// 3. Generate JWT Token
-		const token = jwt.sign(
-			{ id: user.id, role: user.role, email: user.email, name: name },
-			JWT_SECRET,
-			{ expiresIn: '24h' }
-		);
+		// 3. Generate JWT Token using the shared custom implementation
+		const token = createToken({ id: user.id, role: user.role, email: user.email, name: name });
 
 		// 4. Set Session Cookie
 		cookies.set('nexora_session', token, {
