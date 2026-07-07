@@ -17,6 +17,16 @@
 	--color-midnight-glow: #A855F7;
 	--color-midnight-emerald: #10B981;
 	--color-midnight-amber: #F59E0B;
+
+	/* Semantic Design Tokens */
+	--color-surface: #FFFFFF;
+	--color-surface-dark: #1E293B;
+	--color-primary: #0F172A;
+	--color-primary-dark: #F8FAFC;
+	--color-muted: #64748B;
+	--color-muted-dark: #94A3B8;
+	--color-divider: #E2E8F0;
+	--color-divider-dark: #1E293B;
 }
 
 @keyframes float {
@@ -33,57 +43,26 @@ html, body {
 	font-family: var(--font-sans);
 	transition: background-color 0.3s ease, color 0.3s ease;
 	scroll-behavior: smooth;
+	@apply bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100;
 }
 
-/* Enforce dark theme colors matching user screenshot & specified hex values */
-.dark body {
-	background: radial-gradient(circle at 50% -20%, #1e0b36 0%, #050816 100%) !important;
-	color: #FFFFFF !important;
-}
-
-.dark aside {
-	background-color: #111827 !important;
-	border-right: 1px solid rgba(124, 58, 237, 0.15) !important;
-}
-
-/* Glassmorphism custom classes */
+/* Base Glassmorphism custom classes */
 .glass {
-	background: rgba(255, 255, 255, 0.45);
-	backdrop-filter: blur(12px);
-	-webkit-backdrop-filter: blur(12px);
-	border: 1px solid rgba(255, 255, 255, 0.25);
-}
-
-.dark .glass {
-	background: rgba(17, 24, 39, 0.45) !important;
-	backdrop-filter: blur(12px);
-	-webkit-backdrop-filter: blur(12px);
-	border: 1px solid rgba(124, 58, 237, 0.1) !important;
+	@apply bg-white/60 dark:bg-slate-900/60 backdrop-blur-md border border-slate-200 dark:border-slate-800;
 }
 
 .glass-card {
-	background: rgba(255, 255, 255, 0.6);
-	backdrop-filter: blur(8px);
-	border: 1px solid rgba(255, 255, 255, 0.3);
-	box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.04);
+	@apply bg-white/80 dark:bg-slate-900/80 backdrop-blur-lg border border-slate-200 dark:border-slate-800 shadow-sm dark:shadow-none;
 }
 
-.dark .glass-card {
-	background: rgba(17, 24, 39, 0.8) !important;
-	backdrop-filter: blur(12px);
-	border: 1px solid rgba(124, 58, 237, 0.15) !important;
-	box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5) !important;
-}
-
-/* Card Hover Animation - Purple Glow */
+/* Card Hover Animation - Indigo Glow */
 .premium-card-hover {
 	transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .premium-card-hover:hover {
 	transform: translateY(-4px) scale(1.02);
-	border-color: rgba(168, 85, 247, 0.5) !important;
-	box-shadow: 0 0 25px rgba(168, 85, 247, 0.25) !important;
+	@apply border-indigo-500/50 shadow-[0_10px_25px_-5px_rgba(99,102,241,0.2)];
 }
 
 /* Scrollbar styling */
@@ -97,20 +76,11 @@ html, body {
 }
 
 ::-webkit-scrollbar-thumb {
-	background: rgba(156, 163, 175, 0.3);
-	border-radius: 9999px;
-}
-
-.dark ::-webkit-scrollbar-thumb {
-	background: rgba(124, 58, 237, 0.2);
+	@apply bg-slate-300 dark:bg-slate-700 rounded-full;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-	background: rgba(156, 163, 175, 0.5);
-}
-
-.dark ::-webkit-scrollbar-thumb:hover {
-	background: rgba(124, 58, 237, 0.4);
+	@apply bg-slate-400 dark:bg-slate-600;
 }
 
 /* Custom animations and gradient text */
@@ -121,45 +91,5 @@ html, body {
 }
 
 .bg-radial-glow {
-	background: radial-gradient(circle at 50% 50%, rgba(124, 58, 237, 0.15) 0%, transparent 60%);
-}
-
-/* -------------------------------------
-   THEME OVERRIDES 
--------------------------------------- */
-
-/* Soft Slate Light Mode */
-html:not(.dark) body {
-	background: #F1F5F9 !important;
-	color: #0F172A !important;
-}
-html:not(.dark) aside {
-	background-color: #E2E8F0 !important;
-	border-right-color: #cbd5e1 !important;
-}
-html:not(.dark) .glass, html:not(.dark) .glass-card {
-	background: #FFFFFF !important;
-	border-color: #e2e8f0 !important;
-}
-html:not(.dark) .bg-indigo-600 {
-	background-color: #2563EB !important;
-	color: #FFFFFF !important;
-}
-html:not(.dark) .text-indigo-600 {
-	color: #2563EB !important;
-}
-html:not(.dark) .from-indigo-600 {
-	--tw-gradient-from: #2563EB !important;
-}
-html:not(.dark) .to-emerald-500 {
-	--tw-gradient-to: #0891B2 !important;
-}
-html:not(.dark) .bg-slate-50, html:not(.dark) .bg-slate-950 {
-	background-color: #F1F5F9 !important;
-}
-html:not(.dark) .text-white {
-	color: #0F172A !important;
-}
-html:not(.dark) .bg-indigo-600.text-white {
-	color: #FFFFFF !important;
+	background: radial-gradient(circle at 50% 50%, rgba(99, 102, 241, 0.1) 0%, transparent 60%);
 }

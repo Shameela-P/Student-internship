@@ -13,10 +13,10 @@
 </script>
 
 <div class="mb-10">
-	<h1 class="font-display font-black text-3xl md:text-4xl text-slate-900 dark:text-white tracking-tight">
+	<h1 class="font-display font-black text-3xl md:text-4xl text-primary dark:text-primary-dark tracking-tight">
 		Administrative Control Console
 	</h1>
-	<p class="text-sm text-slate-500 dark:text-slate-400 mt-1">
+	<p class="text-sm text-muted dark:text-muted-dark mt-1">
 		Nexora Platform Overview • Global statistics, vetting verification queues, and audit logs.
 	</p>
 </div>
@@ -24,13 +24,13 @@
 <!-- Stats counter cards -->
 <div class="grid grid-cols-2 lg:grid-cols-6 gap-5 mb-10">
 	<div class="p-5 rounded-2xl glass-card border border-slate-200/15 dark:border-slate-800/40">
-		<span class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Students</span>
+		<span class="text-xs font-bold text-muted dark:text-muted-dark uppercase tracking-wider">Students</span>
 		<h2 class="font-display font-black text-2xl text-indigo-500 mt-2">{stats.totalStudents}</h2>
 		<p class="text-[10px] text-slate-600 dark:text-slate-400 mt-1">Registered candidate profiles</p>
 	</div>
 
 	<div class="p-5 rounded-2xl glass-card border border-slate-200/15 dark:border-slate-800/40">
-		<span class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Companies</span>
+		<span class="text-xs font-bold text-muted dark:text-muted-dark uppercase tracking-wider">Companies</span>
 		<h2 class="font-display font-black text-2xl text-emerald-500 mt-2">{stats.totalCompanies}</h2>
 		<p class="text-[10px] text-slate-600 dark:text-slate-400 mt-1">
 			Registered accounts ({stats.pendingCompaniesCount} pending)
@@ -38,25 +38,25 @@
 	</div>
 
 	<div class="p-5 rounded-2xl glass-card border border-slate-200/15 dark:border-slate-800/40">
-		<span class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Internships</span>
+		<span class="text-xs font-bold text-muted dark:text-muted-dark uppercase tracking-wider">Internships</span>
 		<h2 class="font-display font-black text-2xl text-purple-500 mt-2">{stats.activeInternships}</h2>
 		<p class="text-[10px] text-slate-600 dark:text-slate-400 mt-1">Active program postings</p>
 	</div>
 
 	<div class="p-5 rounded-2xl glass-card border border-slate-200/15 dark:border-slate-800/40">
-		<span class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Applications</span>
+		<span class="text-xs font-bold text-muted dark:text-muted-dark uppercase tracking-wider">Applications</span>
 		<h2 class="font-display font-black text-2xl text-amber-500 mt-2">{stats.totalApplications}</h2>
 		<p class="text-[10px] text-slate-600 dark:text-slate-400 mt-1">Total application documents</p>
 	</div>
 
 	<div class="p-5 rounded-2xl glass-card border border-slate-200/15 dark:border-slate-800/40">
-		<span class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Placements</span>
+		<span class="text-xs font-bold text-muted dark:text-muted-dark uppercase tracking-wider">Placements</span>
 		<h2 class="font-display font-black text-2xl text-pink-500 mt-2">{stats.successfulPlacements}</h2>
 		<p class="text-[10px] text-slate-600 dark:text-slate-400 mt-1">Approved selections</p>
 	</div>
 
 	<div class="p-5 rounded-2xl glass-card border border-slate-200/15 dark:border-slate-800/40 col-span-2 lg:col-span-1">
-		<span class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Certificates</span>
+		<span class="text-xs font-bold text-muted dark:text-muted-dark uppercase tracking-wider">Certificates</span>
 		<h2 class="font-display font-black text-2xl text-cyan-500 mt-2">{stats.certificatesGenerated}</h2>
 		<p class="text-[10px] text-slate-600 dark:text-slate-400 mt-1">Issued verifications</p>
 	</div>
@@ -64,12 +64,12 @@
 
 <!-- Active Companies Moderation -->
 <div class="mb-10">
-	<h3 class="font-display font-bold text-xl text-slate-900 dark:text-white mb-4">
+	<h3 class="font-display font-bold text-xl text-primary dark:text-primary-dark mb-4">
 		Active Corporate Accounts Moderation
 	</h3>
 	<div class="overflow-x-auto rounded-3xl glass border border-slate-200/10 dark:border-slate-800/40">
 		<table class="w-full text-left text-xs">
-			<thead class="bg-slate-100/50 dark:bg-slate-900/50 text-slate-500 dark:text-slate-400 font-bold">
+			<thead class="bg-slate-100/50 dark:bg-slate-900/50 text-muted dark:text-muted-dark font-bold">
 				<tr>
 					<th class="p-4 rounded-tl-2xl">Company Name</th>
 					<th class="p-4">Email Contact</th>
@@ -129,18 +129,18 @@
 	<!-- Left: Verification Queue -->
 	<div class="lg:col-span-2 space-y-6">
 		<div class="p-6 rounded-3xl glass border border-slate-200/10 dark:border-slate-800/40">
-			<h3 class="font-display font-bold text-base text-slate-900 dark:text-white mb-2 flex items-center justify-between">
+			<h3 class="font-display font-bold text-base text-primary dark:text-primary-dark mb-2 flex items-center justify-between">
 				<span>Company Verification Queue</span>
 				{#if queue.length > 0}
 					<span class="h-2 w-2 rounded-full bg-amber-500 animate-ping"></span>
 				{/if}
 			</h3>
-			<p class="text-xs text-slate-500 dark:text-slate-400 mb-6">
+			<p class="text-xs text-muted dark:text-muted-dark mb-6">
 				Vet and approve newly registered companies before they can post openings or view resumes.
 			</p>
 
 			{#if queue.length === 0}
-				<div class="py-16 text-center text-xs text-slate-600 dark:text-slate-400 border border-dashed border-slate-200 dark:border-slate-800 rounded-2xl">
+				<div class="py-16 text-center text-xs text-slate-600 dark:text-slate-400 border border-dashed border-divider dark:border-divider-dark rounded-2xl">
 					Verification queue is empty. All registered companies verified.
 				</div>
 			{:else}
@@ -193,7 +193,7 @@
 									<button
 										type="submit"
 										disabled={verifyLoading}
-										class="px-3.5 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-slate-900 dark:text-white text-xs font-bold shadow-md shadow-emerald-500/10 transition cursor-pointer disabled:opacity-50"
+										class="px-3.5 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-primary dark:text-primary-dark text-xs font-bold shadow-md shadow-emerald-500/10 transition cursor-pointer disabled:opacity-50"
 									>
 										Approve
 									</button>
@@ -208,10 +208,10 @@
 
 	<!-- Right: System Activity logs stream -->
 	<div class="p-6 rounded-3xl glass border border-slate-200/10 dark:border-slate-800/40 flex flex-col">
-		<h3 class="font-display font-bold text-base text-slate-900 dark:text-white mb-2">
+		<h3 class="font-display font-bold text-base text-primary dark:text-primary-dark mb-2">
 			Platform Audit Stream
 		</h3>
-		<p class="text-xs text-slate-500 dark:text-slate-400 mb-6">
+		<p class="text-xs text-muted dark:text-muted-dark mb-6">
 			Live system activities and transaction logs.
 		</p>
 
@@ -219,14 +219,37 @@
 		<div class="flex-grow overflow-y-auto max-h-[400px] pr-2 space-y-4">
 			{#each logs as log}
 				{@const actionColor = log.action.includes('FRAUD') || log.action.includes('BLOCK') ? 'text-rose-500 bg-rose-500/10' : log.action.includes('CREATE') || log.action.includes('REGISTER') ? 'text-emerald-500 bg-emerald-500/10' : 'text-indigo-500 bg-indigo-500/10'}
-				<div class="p-3 bg-slate-100/40 dark:bg-slate-950/10 border border-slate-200/5 dark:border-slate-800/10 rounded-xl text-xs space-y-1.5 hover:border-slate-200/20 dark:hover:border-slate-200 dark:border-slate-800/20 transition">
+				<div class="p-4 bg-slate-100/40 dark:bg-slate-950/20 border border-slate-200/5 dark:border-slate-800/20 rounded-2xl text-xs flex flex-col gap-2 hover:border-slate-300 dark:hover:border-divider-dark/40 transition">
 					<div class="flex items-center justify-between gap-4 font-bold">
-						<span class="px-2 py-0.5 rounded text-[8px] tracking-wider uppercase {actionColor}">
+						<span class="px-2.5 py-1 rounded-md text-[9px] tracking-widest uppercase {actionColor}">
 							{log.action}
 						</span>
-						<span class="text-[8px] text-slate-600 dark:text-slate-400 font-semibold">{new Date(log.timestamp).toLocaleTimeString()}</span>
+						<span class="text-[10px] text-slate-500 dark:text-slate-400 font-semibold tracking-wide">
+							{new Date(log.timestamp).toLocaleTimeString()}
+						</span>
 					</div>
-					<p class="text-[11px] text-slate-600 dark:text-slate-300 leading-relaxed font-sans">{log.details}</p>
+					
+					<p class="text-xs text-slate-700 dark:text-slate-300 font-medium font-sans">
+						{log.details}
+					</p>
+
+					<!-- Structured Data grid -->
+					{#if log.user && log.user !== 'System'}
+						<div class="grid grid-cols-2 gap-y-1.5 gap-x-4 mt-2 pt-2 border-t border-divider dark:border-divider-dark/40 text-[10px]">
+							<div class="flex justify-between">
+								<span class="text-slate-500 font-semibold uppercase">Actor:</span>
+								<span class="text-slate-700 dark:text-slate-300 font-bold">{log.user} ({log.role})</span>
+							</div>
+							<div class="flex justify-between">
+								<span class="text-slate-500 font-semibold uppercase">Email:</span>
+								<span class="text-slate-700 dark:text-slate-300 font-mono truncate max-w-[120px]">{log.email}</span>
+							</div>
+							<div class="flex justify-between">
+								<span class="text-slate-500 font-semibold uppercase">Target:</span>
+								<span class="text-slate-700 dark:text-slate-300">{log.target}</span>
+							</div>
+						</div>
+					{/if}
 				</div>
 			{/each}
 		</div>
@@ -235,13 +258,19 @@
 
 <!-- Warning Modal -->
 {#if modWarnCompany}
+<<<<<<< HEAD
 	<div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm" onclick={() => modWarnCompany = null} role="button" tabindex="0" onkeydown={(e) => { if(e.key === 'Escape' || e.key === 'Enter' || e.key === ' ') modWarnCompany = null; }}>
 		<div class="w-full max-w-md rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 shadow-2xl relative" onclick={(e) => e.stopPropagation()} role="presentation" onkeydown={(e) => e.stopPropagation()}>
 			<button onclick={() => modWarnCompany = null} aria-label="Close modal" class="absolute top-4 right-4 p-1.5 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-600 dark:hover:text-slate-900 dark:text-white cursor-pointer transition">
+=======
+	<div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm" onclick={() => modWarnCompany = null}>
+		<div class="w-full max-w-md rounded-2xl bg-surface dark:bg-surface-dark border border-divider dark:border-divider-dark p-6 shadow-2xl relative" onclick={(e) => e.stopPropagation()}>
+			<button onclick={() => modWarnCompany = null} class="absolute top-4 right-4 p-1.5 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-600 dark:hover:text-primary dark:text-primary-dark cursor-pointer transition">
+>>>>>>> 5d366a2a4dc395f3384571ee5f12913df8f6d8b8
 				<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" x2="6" y1="6" y2="18"/><line x1="6" x2="18" y1="6" y2="18"/></svg>
 			</button>
 
-			<h3 class="font-display font-bold text-lg text-slate-900 dark:text-white mb-2">Issue Warning</h3>
+			<h3 class="font-display font-bold text-lg text-primary dark:text-primary-dark mb-2">Issue Warning</h3>
 			<p class="text-xs text-slate-500 mb-4">Send a formal compliance warning to {modWarnCompany.companyName}.</p>
 
 			<form
@@ -261,13 +290,13 @@
 				
 				<div>
 					<label for="warningMessage" class="block text-xs font-bold text-slate-500 uppercase mb-2">Warning Reason / Message</label>
-					<textarea id="warningMessage" name="warningMessage" required rows="3" class="w-full px-3 py-2.5 rounded-lg border border-slate-200 dark:border-slate-800 bg-transparent text-sm text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500" placeholder="E.g., Suspicious activity detected..."></textarea>
+					<textarea id="warningMessage" name="warningMessage" required rows="3" class="w-full px-3 py-2.5 rounded-lg border border-divider dark:border-divider-dark bg-transparent text-sm text-primary dark:text-primary-dark focus:outline-none focus:border-indigo-500" placeholder="E.g., Suspicious activity detected..."></textarea>
 				</div>
 
 				<button
 					type="submit"
 					disabled={modLoading}
-					class="w-full py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-900 dark:text-white font-bold text-sm shadow-md transition cursor-pointer disabled:opacity-50"
+					class="w-full py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-primary dark:text-primary-dark font-bold text-sm shadow-md transition cursor-pointer disabled:opacity-50"
 				>
 					Send Warning Notice
 				</button>

@@ -18,10 +18,10 @@
 
 <div class="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-4">
 	<div>
-		<h1 class="font-display font-black text-3xl text-slate-900 dark:text-white tracking-tight">
+		<h1 class="font-display font-black text-3xl text-primary dark:text-primary-dark tracking-tight">
 			Company Management
 		</h1>
-		<p class="text-sm text-slate-500 dark:text-slate-400 mt-1">
+		<p class="text-sm text-muted dark:text-muted-dark mt-1">
 			View and manage {companies.length} registered companies.
 		</p>
 	</div>
@@ -32,7 +32,7 @@
 			type="text"
 			bind:value={searchQuery}
 			placeholder="Search companies..."
-			class="w-full pl-9 pr-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/50 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500"
+			class="w-full pl-9 pr-4 py-2.5 rounded-xl border border-divider dark:border-divider-dark bg-surface dark:bg-surface-dark/50 text-sm text-primary dark:text-primary-dark focus:outline-none focus:border-indigo-500"
 		/>
 		<svg class="absolute left-3 top-3 h-4 w-4 text-slate-600 dark:text-slate-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 			<circle cx="11" cy="11" r="8" stroke-width="2"/>
@@ -41,16 +41,16 @@
 	</div>
 </div>
 
-<div class="bg-white dark:bg-slate-900/40 rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-sm">
+<div class="bg-surface dark:bg-surface-dark/40 rounded-2xl border border-divider dark:border-divider-dark overflow-hidden shadow-sm">
 	<div class="overflow-x-auto">
 		<table class="w-full text-left border-collapse">
 			<thead>
-				<tr class="bg-slate-50 dark:bg-slate-900/60 border-b border-slate-200 dark:border-slate-800">
-					<th class="px-6 py-4 text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Company</th>
-					<th class="px-6 py-4 text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Contact</th>
-					<th class="px-6 py-4 text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Industry</th>
-					<th class="px-6 py-4 text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Status</th>
-					<th class="px-6 py-4 text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider text-right">Actions</th>
+				<tr class="bg-slate-50 dark:bg-slate-900/60 border-b border-divider dark:border-divider-dark">
+					<th class="px-6 py-4 text-xs font-bold text-muted dark:text-muted-dark uppercase tracking-wider">Company</th>
+					<th class="px-6 py-4 text-xs font-bold text-muted dark:text-muted-dark uppercase tracking-wider">Contact</th>
+					<th class="px-6 py-4 text-xs font-bold text-muted dark:text-muted-dark uppercase tracking-wider">Industry</th>
+					<th class="px-6 py-4 text-xs font-bold text-muted dark:text-muted-dark uppercase tracking-wider">Status</th>
+					<th class="px-6 py-4 text-xs font-bold text-muted dark:text-muted-dark uppercase tracking-wider text-right">Actions</th>
 				</tr>
 			</thead>
 			<tbody class="divide-y divide-slate-200 dark:divide-slate-800">
@@ -62,7 +62,7 @@
 									{comp.companyName.charAt(0)}
 								</div>
 								<div>
-									<div class="font-bold text-sm text-slate-900 dark:text-white">{comp.companyName}</div>
+									<div class="font-bold text-sm text-primary dark:text-primary-dark">{comp.companyName}</div>
 									<div class="text-xs text-slate-500 mt-0.5">{new Date(comp.createdAt).toLocaleDateString()}</div>
 								</div>
 							</div>
@@ -146,7 +146,7 @@
 				
 				{#if filteredCompanies.length === 0}
 					<tr>
-						<td colspan="5" class="px-6 py-12 text-center text-slate-500 dark:text-slate-400 text-sm">
+						<td colspan="5" class="px-6 py-12 text-center text-muted dark:text-muted-dark text-sm">
 							No companies found matching "{searchQuery}"
 						</td>
 					</tr>

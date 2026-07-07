@@ -183,33 +183,51 @@ export const DOMAINS = [
 
 // Firebase Async Utilities
 
+// In-memory cache for large collections to avoid Firebase timeouts
+let cache = {};
+let cacheTimestamps = {};
+const CACHE_DURATION = 2 * 60 * 1000; // 2 minutes
+
+export function invalidateCache(collectionName = null) {
+	if (collectionName) {
+		delete cache[collectionName];
+		delete cacheTimestamps[collectionName];
+	} else {
+		cache = {};
+		cacheTimestamps = {};
+	}
+}
+
 /**
  * Gets an entire collection (array of items)
  * Stored as an array in Firebase, but might be fetched as an object with numeric keys.
  * We normalize it back to an array.
  */
 export async function getCollection(collectionName) {
+	const now = Date.now();
+	if (cache[collectionName] && cacheTimestamps[collectionName] && now - cacheTimestamps[collectionName] < CACHE_DURATION) {
+		return [...cache[collectionName]]; // Return copy to prevent accidental mutation
+	}
+
 	const snapshot = await get(child(dbRef, collectionName));
 	if (!snapshot.exists()) return [];
 	const data = snapshot.val();
 	
+	let result = [];
 	// Normalize to array (Firebase might return an object or array)
 	if (Array.isArray(data)) {
-		return data.filter(item => item !== null);
+		result = data.filter(item => item !== null);
 	} else if (typeof data === 'object') {
-		return Object.values(data).filter(item => item !== null);
+		result = Object.values(data).filter(item => item !== null);
 	}
-	return [];
+	
+	cache[collectionName] = result;
+	cacheTimestamps[collectionName] = now;
+	return [...result];
 }
 
 /**
  * Fetch a specific item from a collection by its array index OR by its unique 'id' property.
- * Since previously it was just arrays stored in Firebase, we should fetch the collection and find it,
- * unless we migrate the DB to use ID as the key. For now, fetching collection and finding is safer 
- * to preserve array indices, or we can use Firebase queries.
- * Since we want targeted loading, we can try to fetch the collection.
- * Wait, to avoid downloading 5MB, we SHOULD use an index, but Firebase stores them as an array.
- * We'll use a local helper to find it. If we need to scale later, we can restructure Firebase.
  */
 export async function getDocument(collectionName, id) {
 	const dbQuery = query(child(dbRef, collectionName), orderByChild('id'), equalTo(id));
@@ -239,6 +257,7 @@ export async function addDocument(collectionName, data) {
 	const collection = await getCollection(collectionName);
 	collection.push(data);
 	await set(child(dbRef, collectionName), collection);
+	invalidateCache(collectionName);
 }
 
 /**
@@ -251,6 +270,7 @@ export async function updateDocument(collectionName, id, updates) {
 		collection[index] = { ...collection[index], ...updates };
 		// Partial update using index
 		await set(child(dbRef, `${collectionName}/${index}`), collection[index]);
+		invalidateCache(collectionName);
 	}
 }
 
@@ -262,6 +282,7 @@ export async function deleteDocument(collectionName, id) {
 	const index = collection.findIndex(item => item && item.id === id);
 	if (index !== -1) {
 		await remove(child(dbRef, `${collectionName}/${index}`));
+		invalidateCache(collectionName);
 	}
 }
 
@@ -270,6 +291,7 @@ export async function deleteDocument(collectionName, id) {
  */
 export async function updateEntireDatabase(data) {
 	await update(dbRef, data);
+	invalidateCache();
 }
 
 /**
@@ -277,23 +299,29 @@ export async function updateEntireDatabase(data) {
  */
 export async function overwriteEntireDatabase(data) {
 	await set(dbRef, data);
+	invalidateCache();
 }
 
 /**
- * Unified Logger
+ * Unified Logger for System Audits
  */
-export async function logAction(action, details) {
+export async function logAction(action, details, user = 'System', role = 'System', email = 'N/A', target = 'N/A', ip = 'N/A') {
 	const newLog = {
 		id: `log_${Date.now()}_${Math.random().toString(36).substr(2, 5)}`,
 		action,
 		details,
+		user,
+		role,
+		email,
+		target,
+		ip,
 		timestamp: new Date().toISOString()
 	};
 	
 	const logs = await getCollection('systemLogs');
 	logs.unshift(newLog);
-	if (logs.length > 200) {
-		logs.length = 200; // truncate
+	if (logs.length > 500) {
+		logs.length = 500; // truncate
 	}
 	await set(child(dbRef, 'systemLogs'), logs);
 }

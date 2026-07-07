@@ -55,7 +55,8 @@ export const actions = {
 			if (!verifyPassword(password, student.password)) return fail(400, { success: false, error: 'Invalid email or password' });
 
 			setAuthCookies({ id: student.id, email: student.email, name: student.fullName, role: 'student' });
-			logAction('STUDENT_LOGIN', `Student ${student.fullName} (${student.email}) logged in successfully.`);
+			const ip = request.headers.get('x-forwarded-for') || 'Unknown IP';
+			logAction('STUDENT_LOGIN', 'Logged in via Credentials', student.fullName, 'Student', student.email, 'Dashboard', ip);
 			throw redirect(303, '/student');
 		} 
 		else if (role === 'company') {
@@ -65,7 +66,8 @@ export const actions = {
 			if (!verifyPassword(password, company.password)) return fail(400, { success: false, error: 'Invalid email or password' });
 
 			setAuthCookies({ id: company.id, email: company.companyEmail, name: company.companyName, role: 'company' });
-			logAction('COMPANY_LOGIN', `Company ${company.companyName} logged in.`);
+			const ip = request.headers.get('x-forwarded-for') || 'Unknown IP';
+			logAction('COMPANY_LOGIN', 'Logged in via Credentials', company.companyName, 'Company', company.companyEmail, 'Dashboard', ip);
 			throw redirect(303, '/company');
 		} 
 		else if (role === 'admin') {

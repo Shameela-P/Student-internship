@@ -10,6 +10,17 @@
 	let activeTab = $state(initialRole === 'company' ? 'company' : 'student');
 	let loading = $state(false);
 
+	let studentPassword = $state('');
+	let companyPassword = $state('');
+
+	// Validation helpers
+	let hasMinLength = $derived((activeTab === 'student' ? studentPassword : companyPassword).length >= 8);
+	let hasUppercase = $derived(/[A-Z]/.test(activeTab === 'student' ? studentPassword : companyPassword));
+	let hasLowercase = $derived(/[a-z]/.test(activeTab === 'student' ? studentPassword : companyPassword));
+	let hasNumber = $derived(/[0-9]/.test(activeTab === 'student' ? studentPassword : companyPassword));
+	let hasSpecial = $derived(/[^A-Za-z0-9]/.test(activeTab === 'student' ? studentPassword : companyPassword));
+	let isPasswordValid = $derived(hasMinLength && hasUppercase && hasLowercase && hasNumber && hasSpecial);
+
 	const industries = [
 		'Software & IT',
 		'Engineering',
@@ -44,10 +55,10 @@
 		</a>
 
 		<div class="text-center mb-8">
-			<h1 class="font-display font-black text-3xl text-slate-900 dark:text-white tracking-tight">
+			<h1 class="font-display font-black text-3xl text-primary dark:text-primary-dark tracking-tight">
 				Create Your Nexora Account
 			</h1>
-			<p class="text-sm text-slate-500 dark:text-slate-400 mt-2">
+			<p class="text-sm text-muted dark:text-muted-dark mt-2">
 				Join our platform to expand your opportunities.
 			</p>
 		</div>
@@ -100,23 +111,47 @@
 
 				<div class="grid grid-cols-1 md:grid-cols-2 gap-5">
 					<div>
-						<label for="fullName" class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Full Name *</label>
-						<input type="text" id="fullName" name="fullName" required placeholder="John Doe" class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-950/30 text-sm text-slate-900 dark:text-white focus:border-indigo-500 focus:outline-none" />
+						<label for="fullName" class="block text-xs font-bold text-muted dark:text-muted-dark uppercase tracking-wider mb-2">Full Name *</label>
+						<input type="text" id="fullName" name="fullName" required placeholder="John Doe" class="w-full px-4 py-3 rounded-xl border border-divider dark:border-divider-dark bg-white/50 dark:bg-slate-950/30 text-sm text-primary dark:text-primary-dark focus:border-indigo-500 focus:outline-none" />
 					</div>
 
 					<div>
-						<label for="email" class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Email Address *</label>
-						<input type="email" id="email" name="email" required placeholder="john@example.com" class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-950/30 text-sm text-slate-900 dark:text-white focus:border-indigo-500 focus:outline-none" />
+						<label for="email" class="block text-xs font-bold text-muted dark:text-muted-dark uppercase tracking-wider mb-2">Email Address *</label>
+						<input type="email" id="email" name="email" required placeholder="john@example.com" class="w-full px-4 py-3 rounded-xl border border-divider dark:border-divider-dark bg-white/50 dark:bg-slate-950/30 text-sm text-primary dark:text-primary-dark focus:border-indigo-500 focus:outline-none" />
 					</div>
 
 					<div>
-						<label for="mobileNumber" class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Mobile Number *</label>
-						<input type="tel" id="mobileNumber" name="mobileNumber" required placeholder="9876543210" class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-950/30 text-sm text-slate-900 dark:text-white focus:border-indigo-500 focus:outline-none" />
+						<label for="mobileNumber" class="block text-xs font-bold text-muted dark:text-muted-dark uppercase tracking-wider mb-2">Mobile Number *</label>
+						<input type="tel" id="mobileNumber" name="mobileNumber" required placeholder="9876543210" class="w-full px-4 py-3 rounded-xl border border-divider dark:border-divider-dark bg-white/50 dark:bg-slate-950/30 text-sm text-primary dark:text-primary-dark focus:border-indigo-500 focus:outline-none" />
 					</div>
 
 					<div>
-						<label for="password" class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Password *</label>
-						<input type="password" id="password" name="password" required placeholder="••••••••" class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-950/30 text-sm text-slate-900 dark:text-white focus:border-indigo-500 focus:outline-none" />
+						<label for="password" class="block text-xs font-bold text-muted dark:text-muted-dark uppercase tracking-wider mb-2">Password *</label>
+						<input type="password" id="password" name="password" required bind:value={studentPassword} placeholder="••••••••" class="w-full px-4 py-3 rounded-xl border border-divider dark:border-divider-dark bg-white/50 dark:bg-slate-950/30 text-sm text-primary dark:text-primary-dark focus:border-indigo-500 focus:outline-none mb-2" />
+						
+						<!-- Password Validation Feedback -->
+						<div class="space-y-1 text-xs">
+							<div class="flex items-center gap-2 {hasMinLength ? 'text-emerald-500' : 'text-slate-400'}">
+								<svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d={hasMinLength ? 'M5 13l4 4L19 7' : 'M6 18L18 6M6 6l12 12'}></path></svg>
+								Minimum 8 characters
+							</div>
+							<div class="flex items-center gap-2 {hasUppercase ? 'text-emerald-500' : 'text-slate-400'}">
+								<svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d={hasUppercase ? 'M5 13l4 4L19 7' : 'M6 18L18 6M6 6l12 12'}></path></svg>
+								One uppercase letter
+							</div>
+							<div class="flex items-center gap-2 {hasLowercase ? 'text-emerald-500' : 'text-slate-400'}">
+								<svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d={hasLowercase ? 'M5 13l4 4L19 7' : 'M6 18L18 6M6 6l12 12'}></path></svg>
+								One lowercase letter
+							</div>
+							<div class="flex items-center gap-2 {hasNumber ? 'text-emerald-500' : 'text-slate-400'}">
+								<svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d={hasNumber ? 'M5 13l4 4L19 7' : 'M6 18L18 6M6 6l12 12'}></path></svg>
+								One number
+							</div>
+							<div class="flex items-center gap-2 {hasSpecial ? 'text-emerald-500' : 'text-slate-400'}">
+								<svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d={hasSpecial ? 'M5 13l4 4L19 7' : 'M6 18L18 6M6 6l12 12'}></path></svg>
+								One special character
+							</div>
+						</div>
 					</div>
 				</div>
 
@@ -126,23 +161,23 @@
 
 				<div class="grid grid-cols-1 md:grid-cols-2 gap-5">
 					<div class="md:col-span-2">
-						<label for="collegeName" class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">College/University Name *</label>
-						<input type="text" id="collegeName" name="collegeName" required placeholder="IIT Madras, NIT Trichy, etc." class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-950/30 text-sm text-slate-900 dark:text-white focus:border-indigo-500 focus:outline-none" />
+						<label for="collegeName" class="block text-xs font-bold text-muted dark:text-muted-dark uppercase tracking-wider mb-2">College/University Name *</label>
+						<input type="text" id="collegeName" name="collegeName" required placeholder="IIT Madras, NIT Trichy, etc." class="w-full px-4 py-3 rounded-xl border border-divider dark:border-divider-dark bg-white/50 dark:bg-slate-950/30 text-sm text-primary dark:text-primary-dark focus:border-indigo-500 focus:outline-none" />
 					</div>
 
 					<div>
-						<label for="degreeCourse" class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Degree / Course *</label>
-						<input type="text" id="degreeCourse" name="degreeCourse" required placeholder="B.E, B.Tech, M.B.A, B.Com" class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-950/30 text-sm text-slate-900 dark:text-white focus:border-indigo-500 focus:outline-none" />
+						<label for="degreeCourse" class="block text-xs font-bold text-muted dark:text-muted-dark uppercase tracking-wider mb-2">Degree / Course *</label>
+						<input type="text" id="degreeCourse" name="degreeCourse" required placeholder="B.E, B.Tech, M.B.A, B.Com" class="w-full px-4 py-3 rounded-xl border border-divider dark:border-divider-dark bg-white/50 dark:bg-slate-950/30 text-sm text-primary dark:text-primary-dark focus:border-indigo-500 focus:outline-none" />
 					</div>
 
 					<div>
-						<label for="department" class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Department *</label>
-						<input type="text" id="department" name="department" required placeholder="Computer Science, Mechanical, Finance" class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-950/30 text-sm text-slate-900 dark:text-white focus:border-indigo-500 focus:outline-none" />
+						<label for="department" class="block text-xs font-bold text-muted dark:text-muted-dark uppercase tracking-wider mb-2">Department *</label>
+						<input type="text" id="department" name="department" required placeholder="Computer Science, Mechanical, Finance" class="w-full px-4 py-3 rounded-xl border border-divider dark:border-divider-dark bg-white/50 dark:bg-slate-950/30 text-sm text-primary dark:text-primary-dark focus:border-indigo-500 focus:outline-none" />
 					</div>
 
 					<div>
-						<label for="yearOfStudy" class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Year of Study *</label>
-						<select id="yearOfStudy" name="yearOfStudy" required class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-950/30 text-sm text-slate-700 dark:text-slate-300 focus:border-indigo-500 focus:outline-none">
+						<label for="yearOfStudy" class="block text-xs font-bold text-muted dark:text-muted-dark uppercase tracking-wider mb-2">Year of Study *</label>
+						<select id="yearOfStudy" name="yearOfStudy" required class="w-full px-4 py-3 rounded-xl border border-divider dark:border-divider-dark bg-white/50 dark:bg-slate-950/30 text-sm text-slate-700 dark:text-slate-300 focus:border-indigo-500 focus:outline-none">
 							<option value="1">1st Year</option>
 							<option value="2">2nd Year</option>
 							<option value="3">3rd Year</option>
@@ -152,8 +187,8 @@
 					</div>
 
 					<div>
-						<label for="currentStatus" class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Current Status *</label>
-						<select id="currentStatus" name="currentStatus" required class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-950/30 text-sm text-slate-700 dark:text-slate-300 focus:border-indigo-500 focus:outline-none">
+						<label for="currentStatus" class="block text-xs font-bold text-muted dark:text-muted-dark uppercase tracking-wider mb-2">Current Status *</label>
+						<select id="currentStatus" name="currentStatus" required class="w-full px-4 py-3 rounded-xl border border-divider dark:border-divider-dark bg-white/50 dark:bg-slate-950/30 text-sm text-slate-700 dark:text-slate-300 focus:border-indigo-500 focus:outline-none">
 							<option value="Student">Currently Studying (Student)</option>
 							<option value="Graduate">Graduated (Graduate)</option>
 						</select>
@@ -166,30 +201,30 @@
 
 				<div class="space-y-4">
 					<div>
-						<label for="resume" class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Upload Resume (PDF/DOC) *</label>
+						<label for="resume" class="block text-xs font-bold text-muted dark:text-muted-dark uppercase tracking-wider mb-2">Upload Resume (PDF/DOC) *</label>
 						<input type="file" id="resume" name="resume" accept=".pdf,.doc,.docx" required class="w-full text-sm text-slate-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-indigo-500/10 file:text-indigo-600 dark:file:bg-indigo-500/20 dark:file:text-indigo-400 hover:file:bg-indigo-500/20" />
 					</div>
 
 					<div>
-						<label for="skills" class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Skills (Comma Separated) *</label>
-						<input type="text" id="skills" name="skills" required placeholder="React, Node.js, Python, Figma, Accounting" class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-950/30 text-sm text-slate-900 dark:text-white focus:border-indigo-500 focus:outline-none" />
+						<label for="skills" class="block text-xs font-bold text-muted dark:text-muted-dark uppercase tracking-wider mb-2">Skills (Comma Separated) *</label>
+						<input type="text" id="skills" name="skills" required placeholder="React, Node.js, Python, Figma, Accounting" class="w-full px-4 py-3 rounded-xl border border-divider dark:border-divider-dark bg-white/50 dark:bg-slate-950/30 text-sm text-primary dark:text-primary-dark focus:border-indigo-500 focus:outline-none" />
 					</div>
 
 					<div>
-						<label for="profilePhoto" class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Profile Photo URL (Optional)</label>
-						<input type="text" id="profilePhoto" name="profilePhoto" placeholder="https://example.com/avatar.jpg" class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-950/30 text-sm text-slate-900 dark:text-white focus:border-indigo-500 focus:outline-none" />
+						<label for="profilePhoto" class="block text-xs font-bold text-muted dark:text-muted-dark uppercase tracking-wider mb-2">Profile Photo URL (Optional)</label>
+						<input type="text" id="profilePhoto" name="profilePhoto" placeholder="https://example.com/avatar.jpg" class="w-full px-4 py-3 rounded-xl border border-divider dark:border-divider-dark bg-white/50 dark:bg-slate-950/30 text-sm text-primary dark:text-primary-dark focus:border-indigo-500 focus:outline-none" />
 					</div>
 
 					<div>
-						<label for="address" class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Contact Address *</label>
-						<textarea id="address" name="address" required rows="3" placeholder="Flat No, Street Name, City, Pincode" class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-950/30 text-sm text-slate-900 dark:text-white focus:border-indigo-500 focus:outline-none"></textarea>
+						<label for="address" class="block text-xs font-bold text-muted dark:text-muted-dark uppercase tracking-wider mb-2">Contact Address *</label>
+						<textarea id="address" name="address" required rows="3" placeholder="Flat No, Street Name, City, Pincode" class="w-full px-4 py-3 rounded-xl border border-divider dark:border-divider-dark bg-white/50 dark:bg-slate-950/30 text-sm text-primary dark:text-primary-dark focus:border-indigo-500 focus:outline-none"></textarea>
 					</div>
 				</div>
 
 				<button
 					type="submit"
-					disabled={loading}
-					class="w-full py-4 rounded-xl font-bold text-slate-900 dark:text-white bg-indigo-600 hover:bg-indigo-500 hover:shadow-lg hover:shadow-indigo-500/10 active:scale-98 transition duration-200 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+					disabled={loading || !isPasswordValid}
+					class="w-full py-4 rounded-xl font-bold text-primary dark:text-primary-dark bg-indigo-600 hover:bg-indigo-500 hover:shadow-lg hover:shadow-indigo-500/10 active:scale-98 transition duration-200 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
 				>
 					{#if loading}
 						<span class="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
@@ -219,30 +254,30 @@
 
 				<div class="grid grid-cols-1 md:grid-cols-2 gap-5">
 					<div>
-						<label for="companyName" class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Company Name *</label>
-						<input type="text" id="companyName" name="companyName" required placeholder="Google, TechNova Solutions, etc." class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-950/30 text-sm text-slate-900 dark:text-white focus:border-indigo-500 focus:outline-none" />
+						<label for="companyName" class="block text-xs font-bold text-muted dark:text-muted-dark uppercase tracking-wider mb-2">Company Name *</label>
+						<input type="text" id="companyName" name="companyName" required placeholder="Google, TechNova Solutions, etc." class="w-full px-4 py-3 rounded-xl border border-divider dark:border-divider-dark bg-white/50 dark:bg-slate-950/30 text-sm text-primary dark:text-primary-dark focus:border-indigo-500 focus:outline-none" />
 					</div>
 
 					<div>
-						<label for="companyEmail" class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Corporate Email Address *</label>
-						<input type="email" id="companyEmail" name="companyEmail" required placeholder="recruiting@company.com" class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-950/30 text-sm text-slate-900 dark:text-white focus:border-indigo-500 focus:outline-none" />
+						<label for="companyEmail" class="block text-xs font-bold text-muted dark:text-muted-dark uppercase tracking-wider mb-2">Corporate Email Address *</label>
+						<input type="email" id="companyEmail" name="companyEmail" required placeholder="recruiting@company.com" class="w-full px-4 py-3 rounded-xl border border-divider dark:border-divider-dark bg-white/50 dark:bg-slate-950/30 text-sm text-primary dark:text-primary-dark focus:border-indigo-500 focus:outline-none" />
 					</div>
 
 					<div>
-						<label for="companyContactNumber" class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Company Contact Number *</label>
-						<input type="tel" id="companyContactNumber" name="companyContactNumber" required placeholder="044-1234567" class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-950/30 text-sm text-slate-900 dark:text-white focus:border-indigo-500 focus:outline-none" />
+						<label for="companyContactNumber" class="block text-xs font-bold text-muted dark:text-muted-dark uppercase tracking-wider mb-2">Company Contact Number *</label>
+						<input type="tel" id="companyContactNumber" name="companyContactNumber" required placeholder="044-1234567" class="w-full px-4 py-3 rounded-xl border border-divider dark:border-divider-dark bg-white/50 dark:bg-slate-950/30 text-sm text-primary dark:text-primary-dark focus:border-indigo-500 focus:outline-none" />
 					</div>
 
 					<div>
-						<label for="website" class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Corporate Website *</label>
-						<input type="url" id="website" name="website" required placeholder="https://mycompany.com" class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-950/30 text-sm text-slate-900 dark:text-white focus:border-indigo-500 focus:outline-none" />
+						<label for="website" class="block text-xs font-bold text-muted dark:text-muted-dark uppercase tracking-wider mb-2">Corporate Website *</label>
+						<input type="url" id="website" name="website" required placeholder="https://mycompany.com" class="w-full px-4 py-3 rounded-xl border border-divider dark:border-divider-dark bg-white/50 dark:bg-slate-950/30 text-sm text-primary dark:text-primary-dark focus:border-indigo-500 focus:outline-none" />
 					</div>
 				</div>
 
 				<div class="grid grid-cols-1 md:grid-cols-2 gap-5">
 					<div>
-						<label for="industryType" class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Industry Sector *</label>
-						<select id="industryType" name="industryType" required class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-950/30 text-sm text-slate-700 dark:text-slate-300 focus:border-indigo-500 focus:outline-none">
+						<label for="industryType" class="block text-xs font-bold text-muted dark:text-muted-dark uppercase tracking-wider mb-2">Industry Sector *</label>
+						<select id="industryType" name="industryType" required class="w-full px-4 py-3 rounded-xl border border-divider dark:border-divider-dark bg-white/50 dark:bg-slate-950/30 text-sm text-slate-700 dark:text-slate-300 focus:border-indigo-500 focus:outline-none">
 							{#each industries as industry}
 								<option value={industry}>{industry}</option>
 							{/each}
@@ -250,30 +285,54 @@
 					</div>
 
 					<div>
-						<label for="companyLogo" class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Company Logo URL (Optional)</label>
-						<input type="text" id="companyLogo" name="companyLogo" placeholder="https://example.com/logo.png" class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-950/30 text-sm text-slate-900 dark:text-white focus:border-indigo-500 focus:outline-none" />
+						<label for="companyLogo" class="block text-xs font-bold text-muted dark:text-muted-dark uppercase tracking-wider mb-2">Company Logo URL (Optional)</label>
+						<input type="text" id="companyLogo" name="companyLogo" placeholder="https://example.com/logo.png" class="w-full px-4 py-3 rounded-xl border border-divider dark:border-divider-dark bg-white/50 dark:bg-slate-950/30 text-sm text-primary dark:text-primary-dark focus:border-indigo-500 focus:outline-none" />
 					</div>
 				</div>
 
 				<div>
-					<label for="password" class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Account Password *</label>
-					<input type="password" id="password" name="password" required placeholder="••••••••" class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-950/30 text-sm text-slate-900 dark:text-white focus:border-indigo-500 focus:outline-none" />
+					<label for="password" class="block text-xs font-bold text-muted dark:text-muted-dark uppercase tracking-wider mb-2">Account Password *</label>
+					<input type="password" id="password" name="password" required bind:value={companyPassword} placeholder="••••••••" class="w-full px-4 py-3 rounded-xl border border-divider dark:border-divider-dark bg-white/50 dark:bg-slate-950/30 text-sm text-primary dark:text-primary-dark focus:border-indigo-500 focus:outline-none mb-2" />
+					
+					<!-- Password Validation Feedback -->
+					<div class="space-y-1 text-xs">
+						<div class="flex items-center gap-2 {hasMinLength ? 'text-emerald-500' : 'text-slate-400'}">
+							<svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d={hasMinLength ? 'M5 13l4 4L19 7' : 'M6 18L18 6M6 6l12 12'}></path></svg>
+							Minimum 8 characters
+						</div>
+						<div class="flex items-center gap-2 {hasUppercase ? 'text-emerald-500' : 'text-slate-400'}">
+							<svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d={hasUppercase ? 'M5 13l4 4L19 7' : 'M6 18L18 6M6 6l12 12'}></path></svg>
+							One uppercase letter
+						</div>
+						<div class="flex items-center gap-2 {hasLowercase ? 'text-emerald-500' : 'text-slate-400'}">
+							<svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d={hasLowercase ? 'M5 13l4 4L19 7' : 'M6 18L18 6M6 6l12 12'}></path></svg>
+							One lowercase letter
+						</div>
+						<div class="flex items-center gap-2 {hasNumber ? 'text-emerald-500' : 'text-slate-400'}">
+							<svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d={hasNumber ? 'M5 13l4 4L19 7' : 'M6 18L18 6M6 6l12 12'}></path></svg>
+							One number
+						</div>
+						<div class="flex items-center gap-2 {hasSpecial ? 'text-emerald-500' : 'text-slate-400'}">
+							<svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d={hasSpecial ? 'M5 13l4 4L19 7' : 'M6 18L18 6M6 6l12 12'}></path></svg>
+							One special character
+						</div>
+					</div>
 				</div>
 
 				<div>
-					<label for="companyDescription" class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Company Description *</label>
-					<textarea id="companyDescription" name="companyDescription" required rows="3" placeholder="Briefly describe what your organization does..." class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-950/30 text-sm text-slate-900 dark:text-white focus:border-indigo-500 focus:outline-none"></textarea>
+					<label for="companyDescription" class="block text-xs font-bold text-muted dark:text-muted-dark uppercase tracking-wider mb-2">Company Description *</label>
+					<textarea id="companyDescription" name="companyDescription" required rows="3" placeholder="Briefly describe what your organization does..." class="w-full px-4 py-3 rounded-xl border border-divider dark:border-divider-dark bg-white/50 dark:bg-slate-950/30 text-sm text-primary dark:text-primary-dark focus:border-indigo-500 focus:outline-none"></textarea>
 				</div>
 
 				<div>
-					<label for="companyAddress" class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Corporate HQ Address *</label>
-					<textarea id="companyAddress" name="companyAddress" required rows="2" placeholder="Suite, Building, Street, City, ZIP" class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-950/30 text-sm text-slate-900 dark:text-white focus:border-indigo-500 focus:outline-none"></textarea>
+					<label for="companyAddress" class="block text-xs font-bold text-muted dark:text-muted-dark uppercase tracking-wider mb-2">Corporate HQ Address *</label>
+					<textarea id="companyAddress" name="companyAddress" required rows="2" placeholder="Suite, Building, Street, City, ZIP" class="w-full px-4 py-3 rounded-xl border border-divider dark:border-divider-dark bg-white/50 dark:bg-slate-950/30 text-sm text-primary dark:text-primary-dark focus:border-indigo-500 focus:outline-none"></textarea>
 				</div>
 
 				<button
 					type="submit"
-					disabled={loading}
-					class="w-full py-4 rounded-xl font-bold text-slate-900 dark:text-white bg-indigo-600 hover:bg-indigo-500 hover:shadow-lg hover:shadow-indigo-500/10 active:scale-98 transition duration-200 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+					disabled={loading || !isPasswordValid}
+					class="w-full py-4 rounded-xl font-bold text-primary dark:text-primary-dark bg-indigo-600 hover:bg-indigo-500 hover:shadow-lg hover:shadow-indigo-500/10 active:scale-98 transition duration-200 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
 				>
 					{#if loading}
 						<span class="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>

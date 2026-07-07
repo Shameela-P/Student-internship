@@ -79,7 +79,7 @@ export async function load({ cookies, url }) {
 		}
 
 		return true;
-	}).map(c => {
+	}).slice(0, 60).map(c => {
 		const companyInternships = activeInternshipsMap.get(c.id) || [];
 		// Rating based on company name length to keep it consistent and realistic
 		const lengthVal = c.companyName.length;

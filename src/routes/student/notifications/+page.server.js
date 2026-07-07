@@ -15,20 +15,11 @@ export async function load({ cookies }) {
 		n => n.recipientEmail.toLowerCase() === student.email.toLowerCase()
 	);
 
-	// Mark all as read
-	let changed = false;
-	studentNotifications.forEach(n => {
-		if (!n.read) {
-			n.read = true;
-			changed = true;
-		}
-	});
-
-	if (changed) {
-		await updateEntireDatabase(db);
-	}
+	// Do NOT mark all as read immediately.
+	// Notifications will be marked as read when the user opens them.
 
 	return {
-		notifications: studentNotifications
+		notifications: studentNotifications,
+		student: { email: student.email }
 	};
 }

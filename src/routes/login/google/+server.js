@@ -1,6 +1,14 @@
 import { json } from '@sveltejs/kit';
+<<<<<<< HEAD
 import { getCollection, updateDocument, addDocument, logAction } from '$lib/db';
 import { createToken } from '$lib/auth';
+=======
+import { getCollection, updateEntireDatabase, logAction } from '$lib/db';
+import { createToken } from '$lib/auth';
+
+const JWT_SECRET = process.env.JWT_SECRET || 'fallback-secret-key-for-jwt-signing';
+
+>>>>>>> 5d366a2a4dc395f3384571ee5f12913df8f6d8b8
 import { dev } from '$app/environment';
 
 export async function POST({ request, cookies }) {
@@ -101,7 +109,11 @@ export async function POST({ request, cookies }) {
 			}
 		}
 
+<<<<<<< HEAD
 		// 3. Generate JWT Token using the shared custom implementation
+=======
+		// 3. Generate Token
+>>>>>>> 5d366a2a4dc395f3384571ee5f12913df8f6d8b8
 		const token = createToken({ id: user.id, role: user.role, email: user.email, name: name });
 
 		// 4. Set Session Cookie
@@ -114,7 +126,8 @@ export async function POST({ request, cookies }) {
 		});
 		
 		const roleFormatted = user.role.charAt(0).toUpperCase() + user.role.slice(1);
-		logAction(`${user.role.toUpperCase()}_LOGIN`, `${roleFormatted} ${name} (${email}) logged in via Google.`);
+		const ip = request.headers.get('x-forwarded-for') || 'Unknown IP';
+		logAction(`${user.role.toUpperCase()}_LOGIN`, `Logged in via Google`, name, roleFormatted, email, 'Dashboard', ip);
 
 		return json({ success: true, redirect: redirectPath });
 

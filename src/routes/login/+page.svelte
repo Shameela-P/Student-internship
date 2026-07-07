@@ -1,5 +1,6 @@
 <script>
 	import { enhance } from '$app/forms';
+	import { page } from '$app/stores';
 	import { auth, googleProvider } from '$lib/firebase';
 	import { signInWithPopup } from 'firebase/auth';
 
@@ -44,7 +45,19 @@
 			}
 		} catch (error) {
 			console.error("Google Auth Error", error);
+<<<<<<< HEAD
 			googleError = error?.code === 'auth/popup-blocked' ? 'Popup was blocked by your browser. Please allow popups and try again.' : 'Google authentication was cancelled or failed.';
+=======
+			if (error.code === 'auth/popup-closed-by-user') {
+				googleError = "Sign-in popup was closed before completion.";
+			} else if (error.code === 'auth/popup-blocked') {
+				googleError = "Sign-in popup was blocked by your browser.";
+			} else if (error.message && error.message.toLowerCase().includes('third-party cookies')) {
+				googleError = "Please enable third-party cookies for Google Login.";
+			} else {
+				googleError = "Google authentication failed. Please try again later.";
+			}
+>>>>>>> 5d366a2a4dc395f3384571ee5f12913df8f6d8b8
 		} finally {
 			googleLoading = false;
 		}
@@ -66,10 +79,10 @@
 		</a>
 
 		<div class="text-center mb-8">
-			<h1 class="font-display font-black text-3xl text-slate-900 dark:text-white tracking-tight">
+			<h1 class="font-display font-black text-3xl text-primary dark:text-primary-dark tracking-tight">
 				Welcome Back
 			</h1>
-			<p class="text-sm text-slate-500 dark:text-slate-400 mt-2">
+			<p class="text-sm text-muted dark:text-muted-dark mt-2">
 				Sign in to access your Nexora dashboard.
 			</p>
 		</div>
@@ -99,6 +112,14 @@
 			</button>
 		</div>
 
+		<!-- Success Feedback -->
+		{#if $page.url.searchParams.get('registered') === 'true'}
+			<div class="mb-6 p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-xs font-semibold flex items-center gap-2">
+				<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+				Registration successful! Please sign in.
+			</div>
+		{/if}
+
 		<!-- Error Feedback -->
 		{#if form?.error || googleError}
 			<div class="mb-6 p-4 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-600 dark:text-rose-400 text-xs font-semibold flex items-center gap-2">
@@ -123,7 +144,11 @@
 			<input type="hidden" name="role" value={activeRole} />
 
 			<div>
+<<<<<<< HEAD
 				<label for="email" class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2" aria-label="Email address">
+=======
+				<label for="email" class="block text-xs font-bold text-muted dark:text-muted-dark uppercase tracking-wider mb-2">
+>>>>>>> 5d366a2a4dc395f3384571ee5f12913df8f6d8b8
 					{#if activeRole === 'company'}
 						Company Email Address
 					{:else}
@@ -136,13 +161,17 @@
 					name="email"
 					required
 					placeholder="name@example.com"
-					class="w-full px-4 py-3.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-950/30 focus:border-indigo-500 dark:focus:border-indigo-400 focus:ring-2 focus:ring-indigo-500/10 focus:outline-none transition text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-600"
+					class="w-full px-4 py-3.5 rounded-xl border border-divider dark:border-divider-dark bg-white/50 dark:bg-slate-950/30 focus:border-indigo-500 dark:focus:border-indigo-400 focus:ring-2 focus:ring-indigo-500/10 focus:outline-none transition text-sm text-primary dark:text-primary-dark placeholder-slate-400 dark:placeholder-slate-600"
 				/>
 			</div>
 
 			<div>
 				<div class="flex items-center justify-between mb-2">
+<<<<<<< HEAD
 					<label for="password" class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider" aria-label="Password">
+=======
+					<label for="password" class="block text-xs font-bold text-muted dark:text-muted-dark uppercase tracking-wider">
+>>>>>>> 5d366a2a4dc395f3384571ee5f12913df8f6d8b8
 						Password
 					</label>
 				</div>
@@ -152,14 +181,14 @@
 					name="password"
 					required
 					placeholder="••••••••"
-					class="w-full px-4 py-3.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-950/30 focus:border-indigo-500 dark:focus:border-indigo-400 focus:ring-2 focus:ring-indigo-500/10 focus:outline-none transition text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-600"
+					class="w-full px-4 py-3.5 rounded-xl border border-divider dark:border-divider-dark bg-white/50 dark:bg-slate-950/30 focus:border-indigo-500 dark:focus:border-indigo-400 focus:ring-2 focus:ring-indigo-500/10 focus:outline-none transition text-sm text-primary dark:text-primary-dark placeholder-slate-400 dark:placeholder-slate-600"
 				/>
 			</div>
 
 			<button
 				type="submit"
 				disabled={loading}
-				class="w-full py-3.5 rounded-xl font-bold text-slate-900 dark:text-white bg-[#cc2233] hover:bg-[#b01e2c] active:scale-95 transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+				class="w-full py-3.5 rounded-xl font-bold text-primary dark:text-primary-dark bg-surface hover:bg-surface active:scale-95 transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
 			>
 				{#if loading}
 					<span class="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
@@ -170,6 +199,7 @@
 			</button>
 
 			<div class="relative flex items-center py-2">
+<<<<<<< HEAD
 				<div class="grow border-t border-slate-200 dark:border-slate-800"></div>
 				<span class="shrink-0 mx-4 text-xs text-slate-600 dark:text-slate-500">or</span>
 				<div class="grow border-t border-slate-200 dark:border-slate-800"></div>
@@ -180,6 +210,18 @@
 					ROLE (ONLY FOR FIRST-TIME GOOGLE SIGN-UP)
 				</label>
 				<select id="googleRole" bind:value={googleRole} class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-950/30 focus:border-indigo-500 dark:focus:border-indigo-400 focus:outline-none transition text-sm text-slate-900 dark:text-white cursor-pointer">
+=======
+				<div class="flex-grow border-t border-divider dark:border-divider-dark"></div>
+				<span class="flex-shrink-0 mx-4 text-xs text-slate-600 dark:text-slate-400 dark:text-slate-500">or</span>
+				<div class="flex-grow border-t border-divider dark:border-divider-dark"></div>
+			</div>
+
+			<div>
+				<label class="block text-xs font-bold text-muted dark:text-muted-dark uppercase tracking-wider mb-2">
+					ROLE (ONLY FOR FIRST-TIME GOOGLE SIGN-UP)
+				</label>
+				<select bind:value={googleRole} class="w-full px-4 py-3 rounded-xl border border-divider dark:border-divider-dark bg-white/50 dark:bg-slate-950/30 focus:border-indigo-500 dark:focus:border-indigo-400 focus:outline-none transition text-sm text-primary dark:text-primary-dark cursor-pointer">
+>>>>>>> 5d366a2a4dc395f3384571ee5f12913df8f6d8b8
 					<option value="student">Student / Intern</option>
 					<option value="company">Company / Employer</option>
 				</select>

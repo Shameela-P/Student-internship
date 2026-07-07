@@ -97,11 +97,11 @@ function generateSeedData() {
 		'AgriGrow Solutions', 'EcoTravels', 'StarHotels', 'Quantum Computing Labs', 'GovTech Solutions'
 	];
 
-	// Generate more random company names to reach 550+
-	while (companyNames.length < 600) {
+	// Generate more random company names to reach 10000
+	while (companyNames.length < 10000) {
 		const word1 = ['Alpha', 'Beta', 'Quantum', 'Vortex', 'Apex', 'Zenith', 'Innova', 'Matrix', 'Nexus', 'Tech', 'Cyber', 'Data', 'Web', 'Cloud', 'Logic', 'Prime', 'Global', 'Future', 'Nano', 'Mega', 'Hyper', 'Super', 'Ultra', 'Giga', 'Tera', 'Peta', 'Exa'];
 		const word2 = ['Solutions', 'Systems', 'Labs', 'Analytics', 'Studios', 'Corp', 'Group', 'Networks', 'Tech', 'Software', 'Digital', 'Consulting', 'Hub', 'Space', 'Dynamics', 'Services', 'Ventures', 'Partners', 'Associates', 'Holdings'];
-		const name = `${word1[Math.floor(Math.random() * word1.length)]} ${word2[Math.floor(Math.random() * word2.length)]}`;
+		const name = `${word1[Math.floor(Math.random() * word1.length)]} ${word2[Math.floor(Math.random() * word2.length)]} ${companyNames.length}`; // Added length to ensure uniqueness
 		if (!companyNames.includes(name)) {
 			companyNames.push(name);
 		}
@@ -151,7 +151,7 @@ function generateSeedData() {
 	});
 
 	// 2. Seed Students
-	for (let i = 0; i < 2600; i++) {
+	for (let i = 0; i < 250; i++) {
 		const fn = firstNames[Math.floor(Math.random() * firstNames.length)];
 		const ln = lastNames[Math.floor(Math.random() * lastNames.length)];
 		const fullName = `${fn} ${ln}`;

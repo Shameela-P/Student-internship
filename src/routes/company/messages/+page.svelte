@@ -1,20 +1,65 @@
 <script>
 	import { enhance } from '$app/forms';
+<<<<<<< HEAD
 	import { invalidateAll } from '$app/navigation';
 	import { onMount, onDestroy } from 'svelte';
+=======
+	import { onMount, onDestroy } from 'svelte';
+	import { getDatabase, ref, onValue } from 'firebase/database';
+	import { app } from '$lib/firebase';
+>>>>>>> 5d366a2a4dc395f3384571ee5f12913df8f6d8b8
 
 	let { data, form } = $props();
 
 	const company = $derived(data.company);
-	const messages = $derived(data.messages);
 	const contacts = $derived(data.contacts);
 
+	// Instead of statically deriving messages, we make it reactive state
+	let messages = $state(data.messages || []);
 	let activeEmail = $state(null);
 	let messageText = $state('');
-	let attachmentInput = $state(null);
-	let selectedFileName = $state('');
 	let showNewChatModal = $state(false);
 	let newChatQuery = $state('');
+
+	// Firebase Realtime Listener setup
+	let unsubscribe = null;
+	const db = getDatabase(app);
+
+	onMount(() => {
+		// Listen to all messages (assuming prototype security rules allow read)
+		const msgsRef = ref(db, 'messages');
+		unsubscribe = onValue(msgsRef, (snapshot) => {
+			const val = snapshot.val();
+			if (val) {
+				let allMsgs = [];
+				if (Array.isArray(val)) {
+					allMsgs = val.filter(item => item !== null);
+				} else if (typeof val === 'object') {
+					allMsgs = Object.values(val).filter(item => item !== null);
+				}
+				// Filter for this company
+				messages = allMsgs.filter(m => 
+					m.senderEmail.toLowerCase() === company.companyEmail.toLowerCase() || 
+					m.recipientEmail.toLowerCase() === company.companyEmail.toLowerCase()
+				);
+			} else {
+				messages = [];
+			}
+		});
+
+		const stored = localStorage.getItem(`drafts_${company.companyEmail}`);
+		if (stored) {
+			try {
+				drafts = JSON.parse(stored);
+			} catch(e) {}
+		}
+	});
+
+	onDestroy(() => {
+		if (unsubscribe) {
+			unsubscribe();
+		}
+	});
 
 	// Compute threads list (unique contacts that this user has had chat with)
 	const threads = $derived.by(() => {
@@ -31,7 +76,7 @@
 					email: contactEmail,
 					name: contactName,
 					role: contactRole,
-					lastMessage: m.content || (m.attachmentPath ? 'Attachment shared' : ''),
+					lastMessage: m.content || '',
 					lastTimestamp: m.timestamp,
 					unreadCount: !isSender && !m.read ? 1 : 0
 				});
@@ -44,16 +89,8 @@
 		return Array.from(map.values()).sort((a, b) => new Date(b.lastTimestamp) - new Date(a.lastTimestamp));
 	});
 
-	// Select the first thread if activeEmail is not set
-	let drafts = {};
-
-	onMount(() => {
-		const stored = localStorage.getItem(`drafts_${company.companyEmail}`);
-		if (stored) {
-			try {
-				drafts = JSON.parse(stored);
-			} catch(e) {}
-		}
+	// Select the first thread if activeEmail is not set, but handle reactively if it appears
+	$effect(() => {
 		if (threads.length > 0 && !activeEmail) {
 			selectThread(threads[0].email);
 		}
@@ -65,6 +102,8 @@
 
 		return () => clearInterval(pollInterval);
 	});
+
+	let drafts = {};
 
 	// Get active thread details
 	const activeThread = $derived(threads.find(t => t.email.toLowerCase() === activeEmail?.toLowerCase()));
@@ -98,12 +137,13 @@
 		}
 	}
 
-	function handleFileChange(e) {
-		const files = e.target.files;
-		if (files && files.length > 0) {
-			selectedFileName = files[0].name;
-		} else {
-			selectedFileName = '';
+	function handleKeydown(e) {
+		if (e.key === 'Enter' && !e.shiftKey) {
+			e.preventDefault();
+			const form = e.currentTarget.closest('form');
+			if (messageText.trim()) {
+				form.requestSubmit();
+			}
 		}
 	}
 
@@ -130,16 +170,16 @@
 	);
 </script>
 
-<div class="flex-grow flex flex-col md:flex-row h-[78vh] rounded-2xl bg-slate-905 border border-slate-200 dark:border-slate-800 overflow-hidden shadow-2xl">
+<div class="flex-grow flex flex-col md:flex-row h-[78vh] rounded-2xl bg-slate-905 border border-divider dark:border-divider-dark overflow-hidden shadow-2xl">
 	
 	<!-- Conversations Sidebar -->
-	<div class="w-full md:w-80 border-r border-slate-200 dark:border-slate-800/50 bg-white dark:bg-slate-900/40 flex flex-col justify-between shrink-0">
+	<div class="w-full md:w-80 border-r border-divider dark:border-divider-dark/50 bg-surface dark:bg-surface-dark/40 flex flex-col justify-between shrink-0">
 		<div>
-			<div class="p-4 border-b border-slate-200 dark:border-slate-800/50 flex items-center justify-between">
-				<h2 class="font-display font-black text-lg text-slate-900 dark:text-white">Inbox</h2>
+			<div class="p-4 border-b border-divider dark:border-divider-dark/50 flex items-center justify-between">
+				<h2 class="font-display font-black text-lg text-primary dark:text-primary-dark">Inbox</h2>
 				<button 
 					onclick={() => { showNewChatModal = true; newChatQuery = ''; }}
-					class="p-1.5 rounded-lg hover:bg-slate-800 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:text-white transition cursor-pointer"
+					class="p-1.5 rounded-lg hover:bg-slate-800 text-slate-600 dark:text-slate-400 hover:text-primary dark:text-primary-dark transition cursor-pointer"
 					title="Start Conversation"
 				>
 					<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="shrink-0"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
@@ -156,21 +196,21 @@
 					{#each threads as thread}
 						<button
 							onclick={() => selectThread(thread.email)}
-							class="w-full text-left p-4 hover:bg-white dark:bg-slate-900/50 transition duration-150 flex items-start gap-3 relative focus:outline-none {activeEmail?.toLowerCase() === thread.email.toLowerCase() ? 'bg-slate-900/80 border-l-2 border-blue-500' : ''}"
+							class="w-full text-left p-4 hover:bg-surface dark:bg-surface-dark/50 transition duration-150 flex items-start gap-3 relative focus:outline-none {activeEmail?.toLowerCase() === thread.email.toLowerCase() ? 'bg-slate-900/80 border-l-2 border-blue-500' : ''}"
 						>
-							<div class="h-9 w-9 rounded-xl bg-slate-950 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-800 flex items-center justify-center font-display font-black text-sm shrink-0">
+							<div class="h-9 w-9 rounded-xl bg-slate-950 text-slate-600 dark:text-slate-400 border border-divider dark:border-divider-dark flex items-center justify-center font-display font-black text-sm shrink-0">
 								{thread.name.charAt(0)}
 							</div>
 							<div class="min-w-0 flex-grow">
 								<div class="flex items-center justify-between">
-									<h4 class="font-display font-bold text-xs text-slate-900 dark:text-white truncate pr-2">{thread.name}</h4>
+									<h4 class="font-display font-bold text-xs text-primary dark:text-primary-dark truncate pr-2">{thread.name}</h4>
 									<span class="text-[9px] text-slate-500 font-bold shrink-0">{new Date(thread.lastTimestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
 								</div>
 								<p class="text-[10px] text-slate-600 dark:text-slate-400 truncate mt-1 leading-normal">{thread.lastMessage}</p>
 							</div>
 
 							{#if thread.unreadCount > 0}
-								<span class="absolute top-4 right-4 h-4 w-4 bg-blue-500 rounded-full flex items-center justify-center text-[8px] font-black text-slate-900 dark:text-white animate-pulse">
+								<span class="absolute top-4 right-4 h-4 w-4 bg-blue-500 rounded-full flex items-center justify-center text-[8px] font-black text-primary dark:text-primary-dark animate-pulse">
 									{thread.unreadCount}
 								</span>
 							{/if}
@@ -181,7 +221,7 @@
 		</div>
 
 		<!-- Current profile indicator at bottom -->
-		<div class="p-4 border-t border-slate-200 dark:border-slate-800/50 bg-slate-900/20 text-slate-500 text-[10px] font-bold">
+		<div class="p-4 border-t border-divider dark:border-divider-dark/50 bg-slate-900/20 text-slate-500 text-[10px] font-bold">
 			Connected as: {company.companyEmail}
 		</div>
 	</div>
@@ -190,13 +230,13 @@
 	<div class="flex-grow flex flex-col justify-between bg-slate-950/20">
 		{#if activeEmail}
 			<!-- Header -->
-			<div class="p-4 border-b border-slate-200 dark:border-slate-800/50 bg-slate-100 dark:bg-slate-900/30 flex items-center justify-between">
+			<div class="p-4 border-b border-divider dark:border-divider-dark/50 bg-slate-100 dark:bg-slate-900/30 flex items-center justify-between">
 				<div class="flex items-center gap-3">
-					<div class="h-9 w-9 rounded-xl bg-gradient-to-tr from-slate-800 to-slate-950 border border-slate-200 dark:border-slate-800 text-blue-400 flex items-center justify-center font-display font-black text-sm">
+					<div class="h-9 w-9 rounded-xl bg-gradient-to-tr from-slate-800 to-slate-950 border border-divider dark:border-divider-dark text-blue-400 flex items-center justify-center font-display font-black text-sm">
 						{activeThread ? activeThread.name.charAt(0) : activeEmail.charAt(0).toUpperCase()}
 					</div>
 					<div>
-						<h3 class="font-display font-bold text-sm text-slate-900 dark:text-white">{activeThread ? activeThread.name : activeEmail}</h3>
+						<h3 class="font-display font-bold text-sm text-primary dark:text-primary-dark">{activeThread ? activeThread.name : activeEmail}</h3>
 						<span class="text-[10px] text-blue-400 font-bold uppercase tracking-wider">{activeThread ? activeThread.role : 'Support'}</span>
 					</div>
 				</div>
@@ -216,18 +256,13 @@
 						{@const isSelf = msg.senderEmail.toLowerCase() === company.companyEmail.toLowerCase()}
 						<div class="flex {isSelf ? 'justify-end' : 'justify-start'}">
 							<div class="max-w-[70%]">
-								<!-- Message Bubble -->
-								<div class="p-3.5 rounded-2xl text-xs leading-relaxed {isSelf ? 'bg-blue-600 text-slate-900 dark:text-white rounded-tr-none' : 'bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-200 rounded-tl-none'}">
+								<div class="p-3.5 rounded-2xl text-xs leading-relaxed {isSelf ? 'bg-blue-600 text-primary dark:text-primary-dark rounded-tr-none' : 'bg-slate-900 border border-divider dark:border-divider-dark text-slate-200 rounded-tl-none'}">
 									<p class="whitespace-pre-wrap">{msg.content}</p>
 
-									<!-- Attachment Preview inside bubble -->
+									<!-- Attachment Fallback for legacy messages -->
 									{#if msg.attachmentPath}
-										<div class="mt-2.5 p-2 bg-slate-100 dark:bg-slate-950/40 border border-slate-200 dark:border-slate-800/50 rounded-xl flex items-center justify-between gap-3 text-[10px]">
-											<div class="flex items-center gap-2 min-w-0">
-												<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-blue-400 shrink-0"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
-												<span class="truncate text-slate-350">{msg.attachmentPath}</span>
-											</div>
-											<a href={`/api/attachments/${msg.attachmentPath}`} target="_blank" download class="font-extrabold text-blue-400 hover:underline shrink-0">Download</a>
+										<div class="mt-2 text-xs italic text-slate-500 opacity-70">
+											Attachment unavailable
 										</div>
 									{/if}
 								</div>
@@ -244,68 +279,41 @@
 			<form
 				action="?/sendMessage"
 				method="POST"
-				enctype="multipart/form-data"
 				use:enhance={() => {
 					if (activeEmail) {
 						drafts[activeEmail] = '';
 						saveDrafts();
 					}
 					messageText = '';
-					selectedFileName = '';
 					return ({ update }) => {
 						update({ resetForm: true });
 					};
 				}}
-				class="p-4 border-t border-slate-200 dark:border-slate-800/50 bg-slate-900/20"
+				class="p-4 border-t border-divider dark:border-divider-dark/50 bg-slate-900/20"
 			>
 				<input type="hidden" name="recipientEmail" value={activeEmail} />
 				<input type="hidden" name="recipientRole" value={activeThread ? activeThread.role : 'student'} />
 				<input type="hidden" name="recipientName" value={activeThread ? activeThread.name : 'Nexora User'} />
 
-				<div class="flex items-end gap-3 bg-slate-100 dark:bg-slate-950/40 border border-slate-200 dark:border-slate-800 rounded-2xl p-2">
-					<!-- Attachment Pin Button -->
-					<div class="relative shrink-0">
-						<input
-							type="file"
-							id="attachment"
-							name="attachment"
-							bind:this={attachmentInput}
-							onchange={handleFileChange}
-							class="hidden"
-						/>
-						<button
-							type="button"
-							onclick={() => attachmentInput.click()}
-							class="p-2 rounded-xl hover:bg-slate-800 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:text-white transition cursor-pointer"
-							title="Attach Document"
-						>
-							<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="shrink-0"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
-						</button>
-					</div>
-
+				<div class="flex items-end gap-3 bg-slate-100 dark:bg-slate-950/40 border border-divider dark:border-divider-dark rounded-2xl p-2">
 					<!-- Text box -->
-					<div class="flex-grow min-w-0 flex flex-col gap-1">
-						{#if selectedFileName}
-							<div class="text-[10px] text-blue-400 font-bold px-1.5 py-0.5 rounded bg-blue-500/10 border border-blue-500/20 w-max truncate max-w-full">
-								File: {selectedFileName}
-							</div>
-						{/if}
+					<div class="flex-grow min-w-0 flex flex-col gap-1 pl-2">
 						<textarea
 							name="content"
 							bind:value={messageText}
 							oninput={handleMessageInput}
-							required={!selectedFileName}
+							onkeydown={handleKeydown}
+							required
 							rows="1"
 							placeholder="Type your message here..."
-							class="w-full bg-transparent text-xs text-slate-900 dark:text-white placeholder-slate-500 focus:outline-none max-h-20 py-1 resize-none"
-							onsubmit={(e) => e.preventDefault()}
+							class="w-full bg-transparent text-xs text-primary dark:text-primary-dark placeholder-slate-500 focus:outline-none max-h-20 py-1 resize-none"
 						></textarea>
 					</div>
 
 					<!-- Send Button -->
 					<button
 						type="submit"
-						class="py-2 px-4 rounded-xl bg-blue-600 hover:bg-blue-500 text-slate-900 dark:text-white font-bold text-xs transition cursor-pointer shrink-0"
+						class="py-2 px-4 rounded-xl bg-blue-600 hover:bg-blue-500 text-primary dark:text-primary-dark font-bold text-xs transition cursor-pointer shrink-0"
 					>
 						Send
 					</button>
@@ -326,23 +334,27 @@
 {#if showNewChatModal}
 	<div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm" onclick={() => showNewChatModal = false} role="button" tabindex="0" onkeydown={(e) => { if(e.key === 'Escape' || e.key === 'Enter' || e.key === ' ') showNewChatModal = false; }}>
 		<div
-			class="w-full max-w-md rounded-2xl bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 shadow-2xl relative max-h-[80vh] overflow-y-auto"
+			class="w-full max-w-md rounded-2xl bg-slate-900 border border-divider dark:border-divider-dark p-6 shadow-2xl relative max-h-[80vh] overflow-y-auto"
 			onclick={(e) => e.stopPropagation()}
 			role="presentation"
 			onkeydown={(e) => e.stopPropagation()}
 		>
+<<<<<<< HEAD
 			<button onclick={() => showNewChatModal = false} aria-label="Close modal" class="absolute top-4 right-4 p-1.5 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:text-white cursor-pointer transition">
+=======
+			<button onclick={() => showNewChatModal = false} class="absolute top-4 right-4 p-1.5 rounded-lg text-slate-600 dark:text-slate-400 hover:text-primary dark:text-primary-dark cursor-pointer transition">
+>>>>>>> 5d366a2a4dc395f3384571ee5f12913df8f6d8b8
 				<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" x2="6" y1="6" y2="18"/><line x1="6" x2="18" y1="6" y2="18"/></svg>
 			</button>
 
-			<h3 class="font-display font-bold text-lg text-slate-900 dark:text-white mb-4">Start Conversation</h3>
+			<h3 class="font-display font-bold text-lg text-primary dark:text-primary-dark mb-4">Start Conversation</h3>
 			
 			<div class="relative mb-4">
 				<input
 					type="text"
 					bind:value={newChatQuery}
 					placeholder="Search applicant by name or email..."
-					class="w-full pl-9 pr-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-100 dark:bg-slate-950/40 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-blue-500"
+					class="w-full pl-9 pr-4 py-2.5 rounded-xl border border-divider dark:border-divider-dark bg-slate-100 dark:bg-slate-950/40 text-xs text-primary dark:text-primary-dark focus:outline-none focus:border-blue-500"
 				/>
 				<svg class="absolute left-3 top-3.5 h-3.5 w-3.5 text-slate-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><circle cx="11" cy="11" r="8" stroke-width="2"/><line x1="21" x2="16.65" y1="21" y2="16.65" stroke-width="2" stroke-linecap="round"/></svg>
 			</div>
@@ -353,11 +365,11 @@
 						onclick={() => startNewChat(contact)}
 						class="w-full text-left py-3 px-2 rounded-lg hover:bg-slate-950/30 flex items-center gap-3 transition cursor-pointer text-xs"
 					>
-						<div class="h-8 w-8 rounded-lg bg-slate-950 border border-slate-200 dark:border-slate-800/50 flex items-center justify-center font-display font-black text-slate-600 dark:text-slate-400">
+						<div class="h-8 w-8 rounded-lg bg-slate-950 border border-divider dark:border-divider-dark/50 flex items-center justify-center font-display font-black text-slate-600 dark:text-slate-400">
 							{contact.name.charAt(0)}
 						</div>
 						<div class="min-w-0 flex-grow">
-							<h4 class="font-display font-bold text-slate-900 dark:text-white truncate">{contact.name}</h4>
+							<h4 class="font-display font-bold text-primary dark:text-primary-dark truncate">{contact.name}</h4>
 							<span class="text-[10px] text-slate-500 block truncate">{contact.email} • <strong class="text-blue-400 uppercase tracking-wider">{contact.role}</strong></span>
 						</div>
 					</button>

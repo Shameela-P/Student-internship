@@ -8,11 +8,16 @@
 </script>
 
 <!-- Header & Nav (Midnight Ocean dark glass style) -->
-<header class="w-full py-4 px-6 md:px-12 border-b border-slate-200 dark:border-slate-800 bg-slate-100 dark:bg-slate-950/40 backdrop-blur-md sticky top-0 z-50 flex items-center justify-between">
+<header class="w-full py-4 px-6 md:px-12 border-b border-divider dark:border-divider-dark bg-slate-100 dark:bg-slate-950/40 backdrop-blur-md sticky top-0 z-50 flex items-center justify-between">
 	<div class="flex items-center gap-3">
 		<!-- Dynamic Logo -->
+<<<<<<< HEAD
 		<img src={logo} alt="Nexora Logo" class="h-10 w-10 drop-shadow-md" />
 		<span class="font-display font-extrabold text-2xl tracking-wide bg-linear-to-r from-slate-900 to-slate-700 dark:from-white dark:to-slate-300 text-gradient">
+=======
+		<img loading="lazy" src={logo} alt="Nexora Logo" class="h-10 w-10 drop-shadow-md" />
+		<span class="font-display font-extrabold text-2xl tracking-wide bg-gradient-to-r from-slate-900 to-slate-700 dark:from-white dark:to-slate-300 text-gradient">
+>>>>>>> 5d366a2a4dc395f3384571ee5f12913df8f6d8b8
 			Nexora
 		</span>
 	</div>
@@ -22,20 +27,24 @@
 		{#if data.user}
 			<a
 				href={`/${data.user.role}`}
+<<<<<<< HEAD
 				class="px-5 py-2.5 rounded-xl text-sm font-semibold text-slate-900 dark:text-white bg-linear-to-r from-blue-600 via-indigo-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 hover:shadow-lg hover:shadow-indigo-500/10 transition-all duration-300 transform hover:-translate-y-0.5 active:translate-y-0"
+=======
+				class="px-5 py-2.5 rounded-xl text-sm font-semibold text-primary dark:text-primary-dark bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 hover:shadow-lg hover:shadow-indigo-500/10 transition-all duration-300 transform hover:-translate-y-0.5 active:translate-y-0"
+>>>>>>> 5d366a2a4dc395f3384571ee5f12913df8f6d8b8
 			>
 				Go to Dashboard ({data.user.role.toUpperCase()})
 			</a>
 		{:else}
 			<a
 				href="/login"
-				class="text-sm font-semibold text-slate-350 hover:text-slate-900 dark:text-white transition duration-200"
+				class="text-sm font-semibold text-slate-350 hover:text-primary dark:text-primary-dark transition duration-200"
 			>
 				Sign In
 			</a>
 			<a
 				href="/register"
-				class="px-5 py-2.5 rounded-xl text-sm font-semibold text-slate-900 dark:text-white bg-blue-600 hover:bg-blue-500 shadow-md hover:shadow-blue-500/15 transition duration-200"
+				class="px-5 py-2.5 rounded-xl text-sm font-semibold text-primary dark:text-primary-dark bg-blue-600 hover:bg-blue-500 shadow-md hover:shadow-blue-500/15 transition duration-200"
 			>
 				Get Started
 			</a>
@@ -52,10 +61,18 @@
 		Trusted by 10,000+ students and 500+ companies
 	</div>
 
+<<<<<<< HEAD
 	<h1 class="font-display font-black text-4xl md:text-6xl lg:text-7xl leading-tight max-w-5xl tracking-tight text-slate-900 dark:text-white">
 		Launch your next opportunity with <br class="hidden md:inline" />
 		<span class="bg-linear-to-r from-blue-400 via-purple-400 to-cyan-400 text-gradient">
 			clarity and momentum
+=======
+	<!-- Main Title -->
+	<h1 class="font-display font-black text-4xl md:text-6xl lg:text-7xl leading-tight max-w-5xl tracking-tight text-primary dark:text-primary-dark">
+		Connect, Collaborate & <br class="hidden md:inline" />
+		<span class="bg-gradient-to-r from-blue-400 via-purple-400 to-cyan-400 text-gradient">
+			Build the Future
+>>>>>>> 5d366a2a4dc395f3384571ee5f12913df8f6d8b8
 		</span>
 	</h1>
 
@@ -67,20 +84,28 @@
 		{#if !data.user}
 			<a
 				href="/register?role=student"
+<<<<<<< HEAD
 				class="px-8 py-4 rounded-2xl text-base font-bold text-slate-900 dark:text-white bg-linear-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 hover:shadow-lg hover:shadow-blue-500/20 transition-all duration-300 transform hover:-translate-y-1"
+=======
+				class="px-8 py-4 rounded-2xl text-base font-bold text-primary dark:text-primary-dark bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 hover:shadow-lg hover:shadow-blue-500/20 transition-all duration-300 transform hover:-translate-y-1"
+>>>>>>> 5d366a2a4dc395f3384571ee5f12913df8f6d8b8
 			>
 				Register as Student
 			</a>
 			<a
 				href="/register?role=company"
-				class="px-8 py-4 rounded-2xl text-base font-bold text-slate-300 glass border border-slate-200 dark:border-slate-800 hover:bg-slate-900 hover:text-slate-900 dark:text-white hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1"
+				class="px-8 py-4 rounded-2xl text-base font-bold text-slate-300 glass border border-divider dark:border-divider-dark hover:bg-slate-900 hover:text-primary dark:text-primary-dark hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1"
 			>
 				Register as Company
 			</a>
 		{:else}
 			<a
 				href={`/${data.user.role}`}
+<<<<<<< HEAD
 				class="px-8 py-4 rounded-2xl text-base font-bold text-slate-900 dark:text-white bg-linear-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 hover:shadow-lg hover:shadow-blue-500/10 transition-all duration-300 transform hover:-translate-y-1"
+=======
+				class="px-8 py-4 rounded-2xl text-base font-bold text-primary dark:text-primary-dark bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 hover:shadow-lg hover:shadow-blue-500/10 transition-all duration-300 transform hover:-translate-y-1"
+>>>>>>> 5d366a2a4dc395f3384571ee5f12913df8f6d8b8
 			>
 				Enter Dashboard
 			</a>
@@ -89,7 +114,7 @@
 </section>
 
 <!-- Stats Grid -->
-<section class="w-full bg-slate-100 dark:bg-slate-950/40 border-y border-slate-200 dark:border-slate-800/80 py-12 px-6 md:px-12 backdrop-blur-sm">
+<section class="w-full bg-slate-100 dark:bg-slate-950/40 border-y border-divider dark:border-divider-dark/80 py-12 px-6 md:px-12 backdrop-blur-sm">
 	<div class="max-w-7xl mx-auto grid grid-cols-2 lg:grid-cols-4 gap-6 md:gap-12">
 		<!-- Stat 1 -->
 		<div class="flex flex-col items-center text-center p-4">
@@ -134,7 +159,7 @@
 <section class="max-w-7xl mx-auto px-6 md:px-12 py-20">
 	<div class="flex flex-col md:flex-row md:items-end justify-between mb-12">
 		<div>
-			<h2 class="font-display font-extrabold text-3xl md:text-4xl text-slate-900 dark:text-white">
+			<h2 class="font-display font-extrabold text-3xl md:text-4xl text-primary dark:text-primary-dark">
 				Explore 150+ Domains
 			</h2>
 			<p class="text-slate-600 dark:text-slate-400 mt-2 max-w-xl">
@@ -153,10 +178,10 @@
 	<!-- Domain Cards with Vector SVGs, NO Emojis -->
 	<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
 		{#each categories as category}
-			<div class="p-6 rounded-2xl bg-white dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800/50 hover:border-blue-500/35 transition duration-300 hover:scale-[1.01] flex flex-col justify-between h-40">
+			<div class="p-6 rounded-2xl bg-surface dark:bg-surface-dark/40 border border-divider dark:border-divider-dark/50 hover:border-blue-500/35 transition duration-300 hover:scale-[1.01] flex flex-col justify-between h-40">
 				<div class="flex items-center justify-between">
 					<!-- Render clean vectors instead of emojis -->
-					<div class="p-2 bg-slate-950 rounded-xl text-blue-400 border border-slate-200 dark:border-slate-800">
+					<div class="p-2 bg-slate-950 rounded-xl text-blue-400 border border-divider dark:border-divider-dark">
 						{#if category.type === 'software'}
 							<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" /></svg>
 						{:else if category.type === 'engineering'}
@@ -172,7 +197,7 @@
 					</span>
 				</div>
 				<div>
-					<h3 class="font-display font-bold text-base text-slate-900 dark:text-white">
+					<h3 class="font-display font-bold text-base text-primary dark:text-primary-dark">
 						{category.name}
 					</h3>
 					<span class="text-xs text-slate-500 block mt-0.5">
@@ -187,7 +212,7 @@
 <!-- Featured Postings -->
 <section class="max-w-7xl mx-auto px-6 md:px-12 pb-24">
 	<div class="text-center mb-12">
-		<h2 class="font-display font-extrabold text-3xl md:text-4xl text-slate-900 dark:text-white">
+		<h2 class="font-display font-extrabold text-3xl md:text-4xl text-primary dark:text-primary-dark">
 			Featured Internships
 		</h2>
 		<p class="text-slate-600 dark:text-slate-400 mt-2 max-w-xl mx-auto">
@@ -197,8 +222,13 @@
 
 	<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
 		{#each featured as internship}
+<<<<<<< HEAD
 			<div class="p-8 rounded-2xl bg-white dark:bg-slate-900/40 hover:bg-slate-900/60 border border-slate-200 dark:border-slate-800/50 hover:border-blue-500/20 hover:shadow-blue-500/5 transition duration-300 relative group overflow-hidden">
 				<div class="absolute top-0 right-0 w-24 h-24 rounded-full bg-linear-to-bl from-blue-500/5 to-transparent blur-md pointer-events-none group-hover:scale-150 transition duration-500"></div>
+=======
+			<div class="p-8 rounded-2xl bg-surface dark:bg-surface-dark/40 hover:bg-slate-900/60 border border-divider dark:border-divider-dark/50 hover:border-blue-500/20 hover:shadow-blue-500/5 transition duration-300 relative group overflow-hidden">
+				<div class="absolute top-0 right-0 w-24 h-24 rounded-full bg-gradient-to-bl from-blue-500/5 to-transparent blur-md pointer-events-none group-hover:scale-150 transition duration-500"></div>
+>>>>>>> 5d366a2a4dc395f3384571ee5f12913df8f6d8b8
 
 				<div>
 					<div class="flex items-start justify-between">
@@ -206,7 +236,7 @@
 							<span class="px-3 py-1 rounded-full text-[10px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 uppercase tracking-wider">
 								{internship.type}
 							</span>
-							<h3 class="font-display font-bold text-xl text-slate-900 dark:text-white mt-3.5 group-hover:text-blue-400 transition duration-200">
+							<h3 class="font-display font-bold text-xl text-primary dark:text-primary-dark mt-3.5 group-hover:text-blue-400 transition duration-200">
 								{internship.title}
 							</h3>
 							<p class="text-xs font-semibold text-slate-600 dark:text-slate-400 mt-0.5">
@@ -214,7 +244,7 @@
 							</p>
 						</div>
 						<!-- Mock Logo Placeholder -->
-						<div class="h-10 w-10 rounded-xl bg-slate-950 border border-slate-200 dark:border-slate-800/50 flex items-center justify-center font-display font-black text-slate-500 text-sm shrink-0">
+						<div class="h-10 w-10 rounded-xl bg-slate-950 border border-divider dark:border-divider-dark/50 flex items-center justify-center font-display font-black text-slate-500 text-sm shrink-0">
 							{internship.companyName.charAt(0)}
 						</div>
 					</div>
@@ -224,7 +254,7 @@
 					</p>
 
 					<!-- Metas, NO Emojis -->
-					<div class="flex flex-wrap gap-x-6 gap-y-2 mt-6 text-[11px] font-bold text-slate-600 dark:text-slate-400 border-t border-slate-200 dark:border-slate-800/50 pt-4">
+					<div class="flex flex-wrap gap-x-6 gap-y-2 mt-6 text-[11px] font-bold text-slate-600 dark:text-slate-400 border-t border-divider dark:border-divider-dark/50 pt-4">
 						<div class="flex items-center gap-1.5">
 							<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="text-slate-500"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
 							{internship.location} ({internship.mode})
@@ -241,7 +271,7 @@
 					</div>
 				</div>
 
-				<div class="mt-8 pt-4 border-t border-slate-200 dark:border-slate-800/50 flex items-center justify-between">
+				<div class="mt-8 pt-4 border-t border-divider dark:border-divider-dark/50 flex items-center justify-between">
 					<span class="text-[10px] text-slate-500 font-bold">
 						Apply by: <strong class="text-slate-600 dark:text-slate-400">{internship.lastDateToApply}</strong>
 					</span>
@@ -260,6 +290,7 @@
 
 
 <!-- Footer -->
+<<<<<<< HEAD
 <footer class="w-full pt-16 pb-8 px-6 md:px-12 border-t border-slate-200 dark:border-slate-800/50 bg-slate-950/20">
 	<div class="max-w-7xl mx-auto">
 		<div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
@@ -312,6 +343,15 @@
 					</li>
 				</ul>
 			</div>
+=======
+<footer class="w-full py-12 px-6 md:px-12 border-t border-divider dark:border-divider-dark/50 bg-slate-950/20">
+	<div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
+		<div class="flex items-center gap-3">
+			<img loading="lazy" src={logo} alt="Nexora Logo" class="h-8 w-8 drop-shadow-sm" />
+			<span class="font-display font-extrabold text-xl text-primary dark:text-primary-dark">
+				Nexora
+			</span>
+>>>>>>> 5d366a2a4dc395f3384571ee5f12913df8f6d8b8
 		</div>
 
 		<div class="pt-8 border-t border-slate-200 dark:border-slate-800/80 flex flex-col md:flex-row items-center justify-between gap-4">

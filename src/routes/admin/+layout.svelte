@@ -14,8 +14,8 @@
 
 	function getLinkClass(path) {
 		const baseClass = "flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition duration-200 cursor-pointer ";
-		const activeClass = "bg-indigo-600 text-slate-900 dark:text-white shadow-lg shadow-indigo-500/15";
-		const inactiveClass = "text-slate-600 hover:bg-slate-200/50 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-white dark:bg-slate-900/50 dark:hover:text-slate-900 dark:text-white";
+		const activeClass = "bg-indigo-600 text-primary dark:text-primary-dark shadow-lg shadow-indigo-500/15";
+		const inactiveClass = "text-slate-600 hover:bg-slate-200/50 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-surface dark:bg-surface-dark/50 dark:hover:text-primary dark:text-primary-dark";
 		
 		if (page.url.pathname === path) {
 			return baseClass + activeClass;
@@ -29,7 +29,7 @@
 	<!-- Sidebar (Desktop) -->
 	<aside class="hidden md:flex flex-col w-64 border-r border-slate-200/20 dark:border-slate-800/40 bg-white/40 dark:bg-slate-950/40 backdrop-blur-lg fixed top-0 bottom-0 left-0 z-20">
 		<div class="p-6 border-b border-slate-200/10 dark:border-slate-800/40 flex items-center gap-3">
-			<img src={logo} alt="Nexora Logo" class="h-10 w-10 drop-shadow-md" />
+			<img loading="lazy" src={logo} alt="Nexora Logo" class="h-10 w-10 drop-shadow-md" />
 			<span class="font-display font-extrabold text-xl bg-gradient-to-r from-slate-900 to-slate-700 dark:from-white dark:to-slate-300 text-gradient">
 				Nexora
 			</span>
@@ -53,7 +53,7 @@
 					<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
 					<span>Chat Messages</span>
 					{#if unreadMsgs > 0}
-						<span class="absolute right-0 h-5 w-5 bg-blue-500 text-slate-900 dark:text-white rounded-full flex items-center justify-center text-[10px] font-bold">
+						<span class="absolute right-0 h-5 w-5 bg-blue-500 text-primary dark:text-primary-dark rounded-full flex items-center justify-center text-[10px] font-bold">
 							{unreadMsgs}
 						</span>
 					{/if}
@@ -89,7 +89,7 @@
 	<!-- Mobile Header Navbar -->
 	<header class="md:hidden w-full flex items-center justify-between py-4 px-6 border-b border-slate-200/10 dark:border-slate-800/40 bg-white/40 dark:bg-slate-950/40 backdrop-blur-lg sticky top-0 z-30">
 		<div class="flex items-center gap-3">
-			<img src={logo} alt="Nexora Logo" class="h-8 w-8 drop-shadow-sm" />
+			<img loading="lazy" src={logo} alt="Nexora Logo" class="h-8 w-8 drop-shadow-sm" />
 			<span class="font-display font-extrabold text-lg dark:text-white">Nexora</span>
 		</div>
 		<button onclick={toggleMobileMenu} class="p-2 rounded-lg bg-slate-100 dark:bg-slate-900 border border-slate-200/10 text-slate-700 dark:text-slate-300 focus:outline-none cursor-pointer">
@@ -103,8 +103,13 @@
 
 	<!-- Mobile Drawer -->
 	{#if mobileMenuOpen}
+<<<<<<< HEAD
 		<div class="md:hidden fixed inset-x-0 top-[69px] bottom-0 bg-slate-950/30 backdrop-blur-md z-40" onclick={toggleMobileMenu} role="button" tabindex="0" onkeydown={(e) => { if(e.key === 'Enter' || e.key === ' ') toggleMobileMenu(); }}>
 			<div class="w-64 h-full bg-white dark:bg-slate-900 border-r border-slate-200/10 p-4 space-y-2 flex flex-col justify-between" onclick={(e) => e.stopPropagation()} role="presentation" onkeydown={(e) => e.stopPropagation()}>
+=======
+		<div class="md:hidden fixed inset-x-0 top-[69px] bottom-0 bg-slate-950/30 backdrop-blur-md z-40" onclick={toggleMobileMenu}>
+			<div class="w-64 h-full bg-surface dark:bg-surface-dark border-r border-slate-200/10 p-4 space-y-2 flex flex-col justify-between" onclick={(e) => e.stopPropagation()}>
+>>>>>>> 5d366a2a4dc395f3384571ee5f12913df8f6d8b8
 				<nav class="space-y-1">
 					<a href="/admin" class={getLinkClass('/admin')} onclick={toggleMobileMenu}>Overview</a>
 					<a href="/admin/companies" class={getLinkClass('/admin/companies')} onclick={toggleMobileMenu}>Companies Board</a>
