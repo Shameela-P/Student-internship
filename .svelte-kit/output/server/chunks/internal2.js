@@ -1,6 +1,6 @@
 import "./index-server.js";
 import "./internal.js";
-import { $ as hydration_failed, A as set_active_reaction, B as boundary, C as is_passive_event, D as active_reaction, E as active_effect, F as get_next_sibling, G as hydrate_node, H as pop, I as init_operations, J as set_hydrating, K as hydrating, L as mutable_source, M as clear_text_content, N as create_text, O as get, P as get_first_child, Q as HYDRATION_ERROR, R as set, U as push, V as component_context, W as async_mode_flag, Y as hydration_mismatch, it as define_property, j as component_root, k as set_active_effect, m as setContext, o as render, q as set_hydrate_node, r as derived, rt as array_from, tt as LEGACY_PROPS, z as flushSync } from "./server.js";
+import { A as get, B as set, F as create_text, G as push, H as boundary, I as get_first_child, J as hydrating, K as async_mode_flag, L as get_next_sibling, M as set_active_reaction, N as component_root, O as active_effect, P as clear_text_content, R as init_operations, T as is_passive_event, U as component_context, V as flushSync, W as pop, X as set_hydrating, Y as set_hydrate_node, Z as hydration_mismatch, at as array_from, et as HYDRATION_ERROR, g as setContext, j as set_active_effect, k as active_reaction, o as render, ot as define_property, q as hydrate_node, r as derived, rt as LEGACY_PROPS, tt as hydration_failed, z as mutable_source } from "./server.js";
 //#region \0virtual:__sveltekit/server
 var read_implementation = null;
 function set_read_implementation(fn) {
@@ -603,10 +603,10 @@ var options = {
 	service_worker_options: void 0,
 	server_error_boundaries: false,
 	templates: {
-		app: ({ head, body, assets, nonce, env }) => "<!doctype html>\n<html lang=\"en\">\n	<head>\n		<meta charset=\"utf-8\" />\n		<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n		<meta name=\"text-scale\" content=\"scale\" />\n		" + head + "\n		<script>\n			(function () {\n				const storageKey = 'nexora-theme';\n				const stored = localStorage.getItem(storageKey);\n				const theme = stored === 'light' || stored === 'dark' || stored === 'system' ? stored : 'system';\n				const resolved = theme === 'dark' || theme === 'light' ? theme : (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');\n				document.documentElement.classList.remove('light', 'dark');\n				document.documentElement.classList.add(resolved);\n				document.documentElement.setAttribute('data-theme', resolved);\n				document.documentElement.style.colorScheme = resolved;\n			})();\n		<\/script>\n	</head>\n	<body data-sveltekit-preload-data=\"hover\">\n		<div style=\"display: contents\">" + body + "</div>\n	</body>\n</html>\n",
+		app: ({ head, body, assets, nonce, env }) => "<!doctype html>\r\n<html lang=\"en\">\r\n	<head>\r\n		<meta charset=\"utf-8\" />\r\n		<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\r\n		<meta name=\"text-scale\" content=\"scale\" />\r\n		<script>\r\n			// Check local storage or system preference to set initial theme and avoid FOUC\r\n			if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {\r\n				document.documentElement.classList.add('dark');\r\n			} else {\r\n				document.documentElement.classList.remove('dark');\r\n			}\r\n		<\/script>\r\n		" + head + "\r\n	</head>\r\n	<body data-sveltekit-preload-data=\"hover\">\r\n		<div style=\"display: contents\">" + body + "</div>\r\n	</body>\r\n</html>\r\n",
 		error: error_template_default
 	},
-	version_hash: "1pp1q8m"
+	version_hash: "1ihdtwa"
 };
 async function get_hooks() {
 	let handle;
@@ -614,7 +614,6 @@ async function get_hooks() {
 	let handleError;
 	let handleValidationError;
 	let init;
-	({handle, handleFetch, handleError, handleValidationError, init} = await import("../entries/hooks.server.js"));
 	let reroute;
 	let transport;
 	return {

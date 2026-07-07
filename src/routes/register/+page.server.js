@@ -1,7 +1,7 @@
 import { fail, redirect } from '@sveltejs/kit';
 import { logAction, getCollection, updateEntireDatabase } from '$lib/db';
 import { hashPassword, createToken } from '$lib/auth';
-import fs from 'fs';
+import { uploadFileBuffer } from '$lib/storageHelper';
 import path from 'path';
 
 export async function load({ url }) {
@@ -55,16 +55,14 @@ export const actions = {
 		let resumePath = '';
 		if (resumeFile && resumeFile instanceof File && resumeFile.size > 0) {
 			const ext = path.extname(resumeFile.name) || '.pdf';
-			const filename = `resume_${Date.now()}_${Math.random().toString(36).substr(2, 6)}${ext}`;
-			const dest = path.resolve('uploads/resumes', filename);
+			const filename = `resumes/resume_${Date.now()}_${Math.random().toString(36).substr(2, 6)}${ext}`;
 			
 			try {
-				const buffer = Buffer.from(await resumeFile.arrayBuffer());
-				fs.writeFileSync(dest, buffer);
-				resumePath = filename;
+				const buffer = await resumeFile.arrayBuffer();
+				resumePath = await uploadFileBuffer(buffer, filename, resumeFile.type || 'application/pdf');
 			} catch (err) {
 				console.error('File save error:', err);
-				return fail(500, { success: false, error: 'Failed to upload resume file. Please try again.' });
+				return fail(500, { success: false, error: 'Failed to upload resume to storage. Please try again.' });
 			}
 		} else {
 			return fail(400, { success: false, error: 'A PDF/DOC resume file upload is required' });
@@ -120,17 +118,7 @@ export const actions = {
 		await updateEntireDatabase(db);
 		logAction('STUDENT_REGISTER', `New student ${fullName} (${email}) registered.`);
 
-		// Log in automatically after registration
-		const token = createToken({ id: newStudent.id, email: newStudent.email, name: newStudent.fullName, role: 'student' });
-		cookies.set('nexora_session', token, {
-			path: '/',
-			httpOnly: true,
-			secure: true,
-			sameSite: 'lax',
-			maxAge: 60 * 60 * 24
-		});
-
-		throw redirect(303, '/student');
+		throw redirect(303, '/login?registered=true');
 	},
 
 	registerCompany: async ({ request, cookies }) => {
@@ -177,7 +165,7 @@ export const actions = {
 			industryType,
 			companyLogo,
 			password: hashPassword(password),
-			status: 'Pending', // Requires Admin Approval
+			status: 'Approved', // Auto-approved for immediate visibility
 			isSuspended: false,
 			createdAt: new Date().toISOString()
 		};
@@ -207,16 +195,6 @@ export const actions = {
 		await updateEntireDatabase(db);
 		logAction('COMPANY_REGISTER', `New company ${companyName} (${companyEmail}) submitted for approval.`);
 
-		// Log in automatically after registration
-		const token = createToken({ id: newCompany.id, email: newCompany.companyEmail, name: newCompany.companyName, role: 'company' });
-		cookies.set('nexora_session', token, {
-			path: '/',
-			httpOnly: true,
-			secure: true,
-			sameSite: 'lax',
-			maxAge: 60 * 60 * 24
-		});
-
-		throw redirect(303, '/company');
+		throw redirect(303, '/login?registered=true');
 	}
 };

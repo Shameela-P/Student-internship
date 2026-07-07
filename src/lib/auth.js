@@ -11,7 +11,10 @@ export function verifyPassword(password, stored) {
 		if (!stored || !stored.includes(':')) return false;
 		const [salt, hash] = stored.split(':');
 		const verify = crypto.scryptSync(password, salt, 64).toString('hex');
-		return hash === verify;
+		const hashBuf = Buffer.from(hash, 'hex');
+		const verifyBuf = Buffer.from(verify, 'hex');
+		if (hashBuf.length !== verifyBuf.length) return false;
+		return crypto.timingSafeEqual(hashBuf, verifyBuf);
 	} catch (e) {
 		console.error('Password verification failed:', e);
 		return false;

@@ -1,9 +1,9 @@
-import { _ as text_encoder, a as split_remote_key, f as get_status, g as get_relative_path, h as base64_encode, i as parse_remote_arg, n as TRAILING_SLASH_PARAM, o as stringify, p as normalize_error, r as create_remote_key, t as INVALIDATED_PARAM, v as noop, y as once } from "./chunks/shared.js";
+import { _ as noop, a as split_remote_key, f as get_status, g as text_encoder, h as get_relative_path, i as parse_remote_arg, m as base64_encode, n as TRAILING_SLASH_PARAM, o as stringify, p as normalize_error, r as create_remote_key, t as INVALIDATED_PARAM, v as once } from "./chunks/shared.js";
 import { a as app_dir, c as override, l as reset, o as assets, s as base } from "./chunks/internal.js";
 import { E as ENDPOINT_METHODS, O as PAGE_METHODS, _ as is_form_content_type, a as get_global_name, c as handle_fatal_error, d as redirect_response, f as serialize_uses, g as get_set_cookies, h as s, i as format_server_error, l as has_prerendered_path, m as escape_html, o as get_node_type, p as static_error_page, r as create_replacer, s as handle_error_and_jsonify, t as clarify_devalue_error, u as method_not_allowed, v as negotiate, x as deserialize_binary_form } from "./chunks/utils.js";
 import { i as set_public_env, n as public_env, r as set_private_env } from "./chunks/shared-server.js";
-import { S as compact, _ as add_resolution_suffix, b as strip_data_suffix, d as disable_search, f as make_trackable, g as add_data_suffix, h as noop_span, i as validate_page_server_exports, m as resolve, n as validate_layout_server_exports, o as find_route, p as normalize_path, r as validate_page_exports, s as hash, t as validate_layout_exports, u as decode_pathname, v as has_data_suffix, x as strip_resolution_suffix, y as has_resolution_suffix } from "./chunks/exports.js";
-import { T as writable, w as readable } from "./chunks/server.js";
+import { _ as has_data_suffix, b as strip_resolution_suffix, d as make_trackable, f as normalize_path, g as add_resolution_suffix, h as add_data_suffix, i as validate_page_server_exports, l as decode_pathname, m as noop_span, n as validate_layout_server_exports, o as find_route, p as resolve, r as validate_page_exports, s as hash, t as validate_layout_exports, u as disable_search, v as has_resolution_suffix, x as compact, y as strip_data_suffix } from "./chunks/exports.js";
+import { D as writable, E as readable } from "./chunks/server.js";
 import "./chunks/env.js";
 import { a as set_read_implementation, i as set_manifest, n as options, r as read_implementation, t as get_hooks } from "./chunks/internal2.js";
 import { t as set_app } from "./chunks/app.js";
@@ -347,9 +347,14 @@ function create_async_iterator() {
 			} };
 		},
 		add: (promise) => {
-			deferred.push(with_resolvers());
+			/** @type {import('./promise.js').PromiseWithResolvers<T>} */
+			const next = with_resolvers();
+			next.promise.catch(noop);
+			deferred.push(next);
 			promise.then((value) => {
 				deferred[++resolved].resolve(value);
+			}, (error) => {
+				deferred[++resolved].reject(error);
 			});
 		}
 	};
@@ -720,7 +725,7 @@ function create_universal_fetch(event, state, fetched, csr, resolve_opts) {
 				if (teed_body) return teed_body;
 				const [a, b] = response.body.tee();
 				(async () => {
-					let result = new Uint8Array();
+					let result = /* @__PURE__ */ new Uint8Array();
 					for await (const chunk of a) {
 						const combined = new Uint8Array(result.length + chunk.length);
 						combined.set(result, 0);
@@ -729,7 +734,7 @@ function create_universal_fetch(event, state, fetched, csr, resolve_opts) {
 					}
 					if (dependency) dependency.body = new Uint8Array(result);
 					push_fetched(base64_encode(result), true);
-				})();
+				})().catch(noop);
 				return teed_body = b;
 			}
 			if (key === "arrayBuffer") return async () => {
@@ -940,9 +945,9 @@ function sha256(data) {
 	return btoa(String.fromCharCode(...bytes));
 }
 /** The SHA-256 initialization vector */
-var init = new Uint32Array(8);
+var init = /* @__PURE__ */ new Uint32Array(8);
 /** The SHA-256 hash key */
-var key = new Uint32Array(64);
+var key = /* @__PURE__ */ new Uint32Array(64);
 /** Function to precompute init and key. */
 function precompute() {
 	/** @param {number} x */
@@ -992,12 +997,12 @@ function encode(str) {
 }
 //#endregion
 //#region node_modules/@sveltejs/kit/src/runtime/server/page/csp.js
-var array = new Uint8Array(16);
+var array = /* @__PURE__ */ new Uint8Array(16);
 function generate_nonce() {
 	crypto.getRandomValues(array);
 	return btoa(String.fromCharCode(...array));
 }
-var quoted = new Set([
+var quoted = /* @__PURE__ */ new Set([
 	"self",
 	"unsafe-eval",
 	"unsafe-hashes",
@@ -1722,7 +1727,7 @@ async function render_response({ branch, fetched, options, manifest, state, page
 			state: {}
 		};
 		const render_opts = {
-			context: new Map([["__request__", { page: props.page }]]),
+			context: /* @__PURE__ */ new Map([["__request__", { page: props.page }]]),
 			csp: csp.script_needs_nonce ? { nonce: csp.nonce } : { hash: csp.script_needs_hash },
 			transformError: error_components ? async (e) => {
 				if (isRedirect(e)) throw e;
@@ -2493,11 +2498,12 @@ async function render_data(event, event_state, route, options, manifest, state, 
 			return once(async () => {
 				try {
 					if (aborted) return { type: "skip" };
+					const node = n == void 0 ? n : await manifest._.nodes[n]();
 					return load_server_data({
 						event: new_event,
 						event_state,
 						state,
-						node: n == void 0 ? n : await manifest._.nodes[n](),
+						node,
 						parent: async () => {
 							/** @type {Record<string, any>} */
 							const data = {};
@@ -2934,23 +2940,6 @@ function get_public_env(request) {
 	if (script) return new Response(`globalThis.__sveltekit_sw={env:${payload}}`, { headers });
 	return new Response(`export const env=${payload}`, { headers });
 }
-new Set([
-	"max-age",
-	"public",
-	"private",
-	"no-cache",
-	"no-store",
-	"must-revalidate",
-	"proxy-revalidate",
-	"s-maxage",
-	"immutable",
-	"stale-while-revalidate",
-	"stale-if-error",
-	"no-transform",
-	"only-if-cached",
-	"max-stale",
-	"min-fresh"
-]);
 //#endregion
 //#region node_modules/@sveltejs/kit/src/runtime/server/respond.js
 /** @import { RequestState, SSRNode } from 'types' */
@@ -2960,12 +2949,12 @@ var default_transform = ({ html }) => html;
 var default_filter = () => false;
 /** @type {import('types').RequiredResolveOptions['preload']} */
 var default_preload = ({ type }) => type === "js" || type === "css";
-var page_methods = new Set([
+var page_methods = /* @__PURE__ */ new Set([
 	"GET",
 	"HEAD",
 	"POST"
 ]);
-var allowed_page_methods = new Set([
+var allowed_page_methods = /* @__PURE__ */ new Set([
 	"GET",
 	"HEAD",
 	"OPTIONS"
@@ -3044,7 +3033,7 @@ async function internal_respond(request, options, manifest, state) {
 		cookies,
 		fetch: null,
 		getClientAddress: state.getClientAddress || (() => {
-			throw new Error(`@sveltejs/adapter-vercel does not specify getClientAddress. Please raise an issue`);
+			throw new Error(`@sveltejs/adapter-auto does not specify getClientAddress. Please raise an issue`);
 		}),
 		locals: {},
 		params: {},

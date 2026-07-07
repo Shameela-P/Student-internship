@@ -5,6 +5,6 @@ let component_cache;
 export const component = async () => component_cache ??= (await import('../entries/pages/admin/email-templates/_page.svelte.js')).default;
 export { server };
 export const server_id = "src/routes/admin/email-templates/+page.server.js";
-export const imports = ["_app/immutable/nodes/8.Bd8_28WD.js","_app/immutable/chunks/CrKY3KsX.js","_app/immutable/chunks/xihTtKlq.js"];
+export const imports = ["_app/immutable/nodes/8.CDRLq_3j.js","_app/immutable/chunks/DHkQu-Co.js","_app/immutable/chunks/xihTtKlq.js"];
 export const stylesheets = [];
 export const fonts = [];

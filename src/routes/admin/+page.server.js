@@ -24,7 +24,7 @@ export async function load({ cookies }) {
 	const certificatesGenerated = db.applications.filter(a => a.certificateHash).length;
 
 	// Active companies for moderation
-	const activeCompanies = db.companies.filter(c => c.status === 'Approved' && !c.isSuspended).map(c => ({
+	const activeCompanies = db.companies.filter(c => c.status === 'Approved' && !c.isSuspended).slice(0, 100).map(c => ({
 		id: c.id,
 		companyName: c.companyName,
 		companyEmail: c.companyEmail,

@@ -11,17 +11,17 @@
 
 <div class="mb-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
 	<div>
-		<h1 class="font-display font-black text-3xl md:text-4xl text-slate-900 dark:text-white tracking-tight">
+		<h1 class="font-display font-black text-3xl md:text-4xl text-primary dark:text-primary-dark tracking-tight">
 			Corporate Overview
 		</h1>
-		<p class="text-sm text-slate-500 dark:text-slate-400 mt-1">
+		<p class="text-sm text-muted dark:text-muted-dark mt-1">
 			Recruiter Dashboard for {company.companyName} • Sector: {company.industryType}
 		</p>
 	</div>
 	{#if company.status === 'Approved'}
 		<a
 			href="/company/internships"
-			class="px-5 py-3 rounded-xl text-sm font-bold text-slate-900 dark:text-white bg-indigo-600 hover:bg-indigo-500 hover:shadow-lg shadow-indigo-500/10 flex items-center gap-1.5 transition cursor-pointer"
+			class="px-5 py-3 rounded-xl text-sm font-bold text-primary dark:text-primary-dark bg-indigo-600 hover:bg-indigo-500 hover:shadow-lg shadow-indigo-500/10 flex items-center gap-1.5 transition cursor-pointer"
 		>
 			<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" x2="12" y1="5" y2="19"/><line x1="5" x2="19" y1="12" y2="12"/></svg>
 			Post Internship
@@ -32,25 +32,25 @@
 <!-- Stats Grid -->
 <div class="grid grid-cols-2 lg:grid-cols-4 gap-5 mb-10">
 	<div class="p-6 rounded-2xl glass-card border border-slate-200/15 dark:border-slate-800/40">
-		<span class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Active Postings</span>
+		<span class="text-xs font-bold text-muted dark:text-muted-dark uppercase tracking-wider">Active Postings</span>
 		<h2 class="font-display font-black text-3xl text-indigo-600 dark:text-indigo-400 mt-3">{stats.activePostings}</h2>
 		<p class="text-xs text-slate-600 dark:text-slate-400 mt-1">Open for submissions</p>
 	</div>
 	
 	<div class="p-6 rounded-2xl glass-card border border-slate-200/15 dark:border-slate-800/40">
-		<span class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Total Received</span>
+		<span class="text-xs font-bold text-muted dark:text-muted-dark uppercase tracking-wider">Total Received</span>
 		<h2 class="font-display font-black text-3xl text-purple-500 mt-3">{stats.totalApplications}</h2>
 		<p class="text-xs text-slate-600 dark:text-slate-400 mt-1">Hiring funnel entries</p>
 	</div>
 
 	<div class="p-6 rounded-2xl glass-card border border-slate-200/15 dark:border-slate-800/40">
-		<span class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Pending Audit</span>
+		<span class="text-xs font-bold text-muted dark:text-muted-dark uppercase tracking-wider">Pending Audit</span>
 		<h2 class="font-display font-black text-3xl text-amber-500 mt-3">{stats.pendingApplications}</h2>
 		<p class="text-xs text-slate-600 dark:text-slate-400 mt-1">Awaiting reviewer feedback</p>
 	</div>
 
 	<div class="p-6 rounded-2xl glass-card border border-slate-200/15 dark:border-slate-800/40">
-		<span class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Shortlisted</span>
+		<span class="text-xs font-bold text-muted dark:text-muted-dark uppercase tracking-wider">Shortlisted</span>
 		<h2 class="font-display font-black text-3xl text-emerald-500 mt-3">{stats.shortlistedCandidates}</h2>
 		<p class="text-xs text-slate-600 dark:text-slate-400 mt-1">Passed initial screenings</p>
 	</div>
@@ -60,10 +60,10 @@
 	<!-- SVG Chart Section -->
 	<div class="lg:col-span-2 p-6 rounded-3xl glass border border-slate-200/10 dark:border-slate-800/40 flex flex-col justify-between">
 		<div>
-			<h3 class="font-display font-bold text-base text-slate-900 dark:text-white mb-2">
+			<h3 class="font-display font-bold text-base text-primary dark:text-primary-dark mb-2">
 				Application Distribution
 			</h3>
-			<p class="text-xs text-slate-500 dark:text-slate-400">
+			<p class="text-xs text-muted dark:text-muted-dark">
 				Applications count per active internship opening.
 			</p>
 		</div>
@@ -80,7 +80,7 @@
 					<div class="space-y-1.5">
 						<div class="flex items-center justify-between text-xs font-semibold">
 							<span class="text-slate-700 dark:text-slate-300 truncate max-w-sm">{bar.title}</span>
-							<span class="text-slate-500 dark:text-slate-400">{bar.value} applicants</span>
+							<span class="text-muted dark:text-muted-dark">{bar.value} applicants</span>
 						</div>
 						<!-- Progress bar container -->
 						<div class="h-3.5 w-full bg-slate-100 dark:bg-slate-900 rounded-full overflow-hidden border border-slate-200/5 dark:border-slate-800/20">
@@ -98,10 +98,10 @@
 	<!-- Pipeline Summary Circular Chart (simulated with styled bars) -->
 	<div class="p-6 rounded-3xl glass border border-slate-200/10 dark:border-slate-800/40 flex flex-col justify-between">
 		<div>
-			<h3 class="font-display font-bold text-base text-slate-900 dark:text-white mb-2">
+			<h3 class="font-display font-bold text-base text-primary dark:text-primary-dark mb-2">
 				Candidate Pipeline
 			</h3>
-			<p class="text-xs text-slate-500 dark:text-slate-400">Current status breakdowns</p>
+			<p class="text-xs text-muted dark:text-muted-dark">Current status breakdowns</p>
 		</div>
 
 		<div class="space-y-4 my-6">
@@ -139,7 +139,7 @@
 <!-- Recent Applications Section -->
 <div>
 	<div class="flex items-center justify-between mb-6">
-		<h2 class="font-display font-bold text-xl text-slate-900 dark:text-white">
+		<h2 class="font-display font-bold text-xl text-primary dark:text-primary-dark">
 			Incoming Candidate Feed
 		</h2>
 		<a href="/company/applications" class="text-xs font-bold text-indigo-500 dark:text-indigo-400 hover:underline">
@@ -149,7 +149,7 @@
 
 	{#if recentApps.length === 0}
 		<div class="p-12 rounded-3xl glass border border-slate-200/10 dark:border-slate-800/40 text-center">
-			<p class="text-sm text-slate-500 dark:text-slate-400">
+			<p class="text-sm text-muted dark:text-muted-dark">
 				No applications have been received yet for your postings.
 			</p>
 		</div>
@@ -159,10 +159,10 @@
 				<div class="p-5 rounded-2xl glass-card border border-slate-200/15 dark:border-slate-800/40 flex flex-col md:flex-row md:items-center justify-between gap-4">
 					<div>
 						<div class="flex items-center gap-2 flex-wrap">
-							<span class="text-xs font-bold text-slate-900 dark:text-white">{app.studentName}</span>
+							<span class="text-xs font-bold text-primary dark:text-primary-dark">{app.studentName}</span>
 							<span class="text-[10px] text-slate-600 dark:text-slate-400">• {app.studentCollege}</span>
 						</div>
-						<p class="text-xs text-slate-500 dark:text-slate-400 mt-1">
+						<p class="text-xs text-muted dark:text-muted-dark mt-1">
 							Applied for: <strong class="text-slate-700 dark:text-slate-300 font-bold">"{app.internshipTitle}"</strong>
 						</p>
 					</div>

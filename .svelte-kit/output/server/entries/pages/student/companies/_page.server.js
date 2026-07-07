@@ -45,7 +45,7 @@ async function load({ cookies, url }) {
 				if (!companyInternships.some((i) => i.type.toLowerCase() === filterType.toLowerCase())) return false;
 			}
 			return true;
-		}).map((c) => {
+		}).slice(0, 60).map((c) => {
 			const companyInternships = activeInternshipsMap.get(c.id) || [];
 			const rating = (4 + c.companyName.length % 10 * .1).toFixed(1);
 			return {

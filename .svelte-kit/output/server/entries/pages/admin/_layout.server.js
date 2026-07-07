@@ -6,8 +6,7 @@ async function load({ cookies }) {
 	const sessionUser = requireRole(cookies, ["admin"]);
 	const db = {
 		admins: await getCollection("admins"),
-		notifications: await getCollection("notifications"),
-		messages: await getCollection("messages")
+		notifications: await getCollection("notifications")
 	};
 	const admin = db.admins.find((a) => a.id === sessionUser.id);
 	if (!admin) {
@@ -17,8 +16,7 @@ async function load({ cookies }) {
 	return {
 		user: sessionUser,
 		admin,
-		unreadNotifications: db.notifications ? db.notifications.filter((n) => n.recipientEmail === admin.email && !n.read).length : 0,
-		unreadMessages: db.messages ? db.messages.filter((m) => m.recipientEmail === admin.email && !m.read).length : 0
+		unreadMessages: db.notifications ? db.notifications.filter((m) => m.recipientEmail === admin.email && !m.read).length : 0
 	};
 }
 //#endregion

@@ -1,24 +1,75 @@
 <script>
+	import { invalidateAll } from '$app/navigation';
+	import { onMount, onDestroy } from 'svelte';
+	import { getDatabase, ref, onValue } from 'firebase/database';
+	import { app } from '$lib/firebase';
+
 	let { data } = $props();
-	const notifications = $derived(data.notifications);
+	const student = $derived(data.student);
+
+	let notifications = $state(data.notifications || []);
+	let unsubscribe = null;
+	const db = getDatabase(app);
+
+	onMount(() => {
+		const notifRef = ref(db, 'notifications');
+		unsubscribe = onValue(notifRef, (snapshot) => {
+			const val = snapshot.val();
+			if (val) {
+				let allNotifs = [];
+				if (Array.isArray(val)) {
+					allNotifs = val.filter(item => item !== null);
+				} else if (typeof val === 'object') {
+					allNotifs = Object.values(val).filter(item => item !== null);
+				}
+				// Filter for this student email
+				notifications = allNotifs
+					.filter(n => n.recipientEmail.toLowerCase() === student.email.toLowerCase())
+					.sort((a, b) => new Date(b.date) - new Date(a.date));
+			} else {
+				notifications = [];
+			}
+		});
+	});
+
+	onDestroy(() => {
+		if (unsubscribe) {
+			unsubscribe();
+		}
+	});
 
 	// Accordion state to open/close details
 	let activeIndex = $state(null);
 
-	function toggleDetails(index) {
+	async function toggleDetails(index) {
 		if (activeIndex === index) {
 			activeIndex = null;
 		} else {
 			activeIndex = index;
+			const notif = notifications[index];
+			if (!notif.read) {
+				// Optimistically update UI
+				notif.read = true;
+				try {
+					await fetch('/api/notifications/mark-read', {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({ id: notif.id })
+					});
+					await invalidateAll(); // Refresh layout badge counts
+				} catch (e) {
+					console.error('Failed to mark read', e);
+				}
+			}
 		}
 	}
 </script>
 
 <div class="mb-8">
-	<h1 class="font-display font-black text-3xl text-slate-900 dark:text-white tracking-tight">
+	<h1 class="font-display font-black text-3xl text-primary dark:text-primary-dark tracking-tight">
 		Interactive Alert Inbox
 	</h1>
-	<p class="text-sm text-slate-500 dark:text-slate-400 mt-1">
+	<p class="text-sm text-muted dark:text-muted-dark mt-1">
 		Nexora email simulation inbox. Check automated emails, alerts, and registration notifications.
 	</p>
 </div>
@@ -56,7 +107,7 @@
 							<span class="text-[10px] text-slate-600 dark:text-slate-400 font-semibold">{new Date(notif.date).toLocaleString()}</span>
 						</div>
 
-						<h3 class="font-display font-bold text-sm md:text-base text-slate-900 dark:text-white mt-2 truncate">
+						<h3 class="font-display font-bold text-sm md:text-base text-primary dark:text-primary-dark mt-2 truncate">
 							{notif.subject}
 						</h3>
 					</div>

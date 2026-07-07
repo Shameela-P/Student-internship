@@ -1,4 +1,4 @@
-import { W as async_mode_flag, _ as hydratable_serialization_failed, at as noop, d as getAllContexts, et as experimental_async_required, f as getContext, h as ssr_context, l as get_render_context, m as setContext, ot as run, p as hasContext, u as createContext, v as lifecycle_function_unavailable, y as getAbortSignal } from "./server.js";
+import { K as async_mode_flag, _ as ssr_context, b as lifecycle_function_unavailable, ct as run, d as get_render_context, f as createContext, g as setContext, h as hasContext, m as getContext, nt as experimental_async_required, p as getAllContexts, st as noop, x as getAbortSignal, y as hydratable_serialization_failed } from "./server.js";
 import * as devalue from "devalue";
 //#region \0rolldown/runtime.js
 var __defProp = Object.defineProperty;
@@ -142,4 +142,4 @@ function fork() {
 async function tick() {}
 async function settled() {}
 //#endregion
-export { settled as n, tick as r, index_server_exports as t };
+export { onDestroy as n, tick as r, index_server_exports as t };

@@ -333,7 +333,7 @@ function hint_for_supported_files(key, ext = ".js") {
 	if (valid_server_exports.has(key)) supported_files.push(`+server${ext}`);
 	if (supported_files.length > 0) return `'${key}' is a valid export in ${supported_files.slice(0, -1).join(", ")}${supported_files.length > 1 ? " or " : ""}${supported_files.at(-1)}`;
 }
-var valid_layout_exports = new Set([
+var valid_layout_exports = /* @__PURE__ */ new Set([
 	"load",
 	"prerender",
 	"csr",
@@ -341,14 +341,14 @@ var valid_layout_exports = new Set([
 	"trailingSlash",
 	"config"
 ]);
-var valid_page_exports = new Set([...valid_layout_exports, "entries"]);
-var valid_layout_server_exports = new Set([...valid_layout_exports]);
-var valid_page_server_exports = new Set([
+var valid_page_exports = /* @__PURE__ */ new Set([...valid_layout_exports, "entries"]);
+var valid_layout_server_exports = /* @__PURE__ */ new Set([...valid_layout_exports]);
+var valid_page_server_exports = /* @__PURE__ */ new Set([
 	...valid_layout_server_exports,
 	"actions",
 	"entries"
 ]);
-var valid_server_exports = new Set([
+var valid_server_exports = /* @__PURE__ */ new Set([
 	"GET",
 	"POST",
 	"PATCH",
@@ -368,4 +368,4 @@ var validate_layout_server_exports = validator(valid_layout_server_exports);
 var validate_page_server_exports = validator(valid_page_server_exports);
 var validate_server_exports = validator(valid_server_exports);
 //#endregion
-export { compact as S, add_resolution_suffix as _, validate_server_exports as a, strip_data_suffix as b, SCHEME as c, disable_search as d, make_trackable as f, add_data_suffix as g, noop_span as h, validate_page_server_exports as i, decode_params as l, resolve as m, validate_layout_server_exports as n, find_route as o, normalize_path as p, validate_page_exports as r, hash as s, validate_layout_exports as t, decode_pathname as u, has_data_suffix as v, strip_resolution_suffix as x, has_resolution_suffix as y };
+export { has_data_suffix as _, validate_server_exports as a, strip_resolution_suffix as b, SCHEME as c, make_trackable as d, normalize_path as f, add_resolution_suffix as g, add_data_suffix as h, validate_page_server_exports as i, decode_pathname as l, noop_span as m, validate_layout_server_exports as n, find_route as o, resolve as p, validate_page_exports as r, hash as s, validate_layout_exports as t, disable_search as u, has_resolution_suffix as v, compact as x, strip_data_suffix as y };

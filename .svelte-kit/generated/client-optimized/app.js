@@ -3,7 +3,7 @@
 // (including user hooks) evaluates. In build it's inert.
 import.meta.hot;
 
-import * as client_hooks from '../../../src/hooks.client.js';
+
 
 
 export { matchers } from './matchers.js';
@@ -34,9 +34,7 @@ export const nodes = [
 	() => import('./nodes/22'),
 	() => import('./nodes/23'),
 	() => import('./nodes/24'),
-	() => import('./nodes/25'),
-	() => import('./nodes/26'),
-	() => import('./nodes/27')
+	() => import('./nodes/25')
 ];
 
 export const server_loads = [0,2,3,4];
@@ -47,29 +45,27 @@ export const dictionary = {
 		"/admin/companies": [~7,[2]],
 		"/admin/email-templates": [~8,[2]],
 		"/admin/messages": [~9,[2]],
-		"/admin/notifications": [~10,[2]],
-		"/admin/students": [~11,[2]],
-		"/company": [~12,[3]],
-		"/company/applications": [~13,[3]],
-		"/company/internships": [~14,[3]],
-		"/company/messages": [~15,[3]],
-		"/company/notifications": [~16,[3]],
-		"/login": [~17],
-		"/register": [~18],
-		"/student": [~19,[4]],
-		"/student/certificates": [~20,[4]],
-		"/student/companies": [~21,[4]],
-		"/student/internships": [~22,[4]],
-		"/student/messages": [~23,[4]],
-		"/student/notifications": [~24,[4]],
-		"/student/profile": [~25,[4]],
-		"/student/settings": [~26,[4]],
-		"/verify": [~27]
+		"/admin/students": [~10,[2]],
+		"/company": [~11,[3]],
+		"/company/applications": [~12,[3]],
+		"/company/internships": [~13,[3]],
+		"/company/messages": [~14,[3]],
+		"/company/notifications": [~15,[3]],
+		"/login": [~16],
+		"/register": [~17],
+		"/student": [~18,[4]],
+		"/student/certificates": [~19,[4]],
+		"/student/companies": [~20,[4]],
+		"/student/internships": [~21,[4]],
+		"/student/messages": [~22,[4]],
+		"/student/notifications": [~23,[4]],
+		"/student/profile": [~24,[4]],
+		"/student/settings": [~25,[4]]
 	};
 
 export const hooks = {
-	handleError: client_hooks.handleError || (({ error }) => { console.error(error) }),
-	init: client_hooks.init,
+	handleError: (({ error }) => { console.error(error) }),
+	
 	reroute: (() => {}),
 	transport: {}
 };

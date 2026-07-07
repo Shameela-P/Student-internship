@@ -51,10 +51,10 @@
 {/if}
 
 <div class="mb-8">
-	<h1 class="font-display font-black text-3xl text-slate-900 dark:text-white tracking-tight">
+	<h1 class="font-display font-black text-3xl text-primary dark:text-primary-dark tracking-tight">
 		Applications Queue
 	</h1>
-	<p class="text-sm text-slate-500 dark:text-slate-400 mt-1">
+	<p class="text-sm text-muted dark:text-muted-dark mt-1">
 		Review student profiles, inspect uploaded resume files, shortlist candidates, and approve placements.
 	</p>
 </div>
@@ -68,7 +68,7 @@
 			type="text"
 			bind:value={searchName}
 			placeholder="Search by student name or internship..."
-			class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-950/20 text-xs focus:border-indigo-500 focus:outline-none"
+			class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-divider dark:border-divider-dark bg-white/50 dark:bg-slate-950/20 text-xs focus:border-indigo-500 focus:outline-none"
 		/>
 		<svg class="absolute left-3 top-3 h-4 w-4 text-slate-600 dark:text-slate-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><circle cx="11" cy="11" r="8" stroke-width="2"/><line x1="21" x2="16.65" y1="21" y2="16.65" stroke-width="2" stroke-linecap="round"/></svg>
 	</div>
@@ -100,10 +100,10 @@
 					<!-- Student and internship details -->
 					<div class="flex-grow min-w-0">
 						<div class="flex items-center gap-2 flex-wrap">
-							<h3 class="font-display font-bold text-base text-slate-900 dark:text-white">{app.student.fullName}</h3>
+							<h3 class="font-display font-bold text-base text-primary dark:text-primary-dark">{app.student.fullName}</h3>
 							<span class="text-[10px] text-slate-600 dark:text-slate-400 font-semibold">• {app.student.collegeName}</span>
 						</div>
-						<p class="text-xs text-slate-500 dark:text-slate-400 mt-1">
+						<p class="text-xs text-muted dark:text-muted-dark mt-1">
 							Applied for: <strong class="text-slate-700 dark:text-slate-300 font-semibold">"{app.internshipTitle}"</strong> ({app.domain})
 						</p>
 					</div>
@@ -127,7 +127,7 @@
 						<!-- Toggle detailed folder action -->
 						<button
 							onclick={() => toggleDetails(app.id)}
-							class="px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/50 hover:bg-slate-100 dark:hover:bg-slate-900 text-xs font-bold text-indigo-500 transition cursor-pointer"
+							class="px-3 py-1.5 rounded-lg border border-divider dark:border-divider-dark bg-white/50 dark:bg-slate-900/50 hover:bg-slate-100 dark:hover:bg-slate-900 text-xs font-bold text-indigo-500 transition cursor-pointer"
 						>
 							{#if activeAppId === app.id}Close{:else}View Profile{/if}
 						</button>
@@ -182,11 +182,10 @@
 								
 								<!-- Resume file link -->
 								{#if app.student.resumePath}
-									<a
-										href={`/api/resumes/${app.student.resumePath}`}
-										target="_blank"
-										rel="noopener noreferrer"
-										class="p-4 rounded-xl border border-dashed border-slate-200 dark:border-slate-800 bg-white/20 dark:bg-slate-950/10 flex items-center gap-3 hover:border-indigo-500/30 transition group cursor-pointer"
+									<a 
+										href={app.student.resumePath.startsWith('http') ? app.student.resumePath : `/api/resumes/${app.student.resumePath}`}
+										target="_blank" 
+										class="inline-flex items-center justify-center gap-1.5 px-4 py-2 bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 font-bold text-xs rounded-lg hover:bg-indigo-100 dark:hover:bg-indigo-500/20 transition-colors mt-4 w-full"
 									>
 										<div class="h-9 w-9 bg-indigo-500/10 text-indigo-500 rounded-lg flex items-center justify-center font-black text-xs">
 											PDF

@@ -8,7 +8,10 @@ async function load({ cookies }) {
 		notifications: await getCollection("notifications")
 	};
 	const student = db.students.find((s) => s.id === sessionUser.id);
-	return { notifications: db.notifications.filter((n) => n.recipientEmail.toLowerCase() === student.email.toLowerCase()) };
+	return {
+		notifications: db.notifications.filter((n) => n.recipientEmail.toLowerCase() === student.email.toLowerCase()),
+		student: { email: student.email }
+	};
 }
 //#endregion
 export { load };

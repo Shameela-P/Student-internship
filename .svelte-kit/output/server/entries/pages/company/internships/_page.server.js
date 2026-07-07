@@ -49,8 +49,8 @@ var actions = {
 		const stipendAmount = parseFloat(formData.get("stipendAmount")?.toString() || "0");
 		const openings = parseInt(formData.get("openings")?.toString() || "1");
 		const location = formData.get("location")?.toString().trim();
-		const certificateAvailable = type.includes("Paid") ? "No" : formData.get("certificateAvailable")?.toString() || "No";
-		const jobOpportunity = type.includes("Paid") ? "No" : formData.get("jobOpportunity")?.toString() || "No";
+		const certificateAvailable = formData.get("certificateAvailable")?.toString() || "No";
+		const jobOpportunity = formData.get("jobOpportunity")?.toString() || "No";
 		const bannerFile = formData.get("banner");
 		if (!title || !domain || !subCategory || !skillsRaw || !description || !responsibilities || !eligibilityCriteria || !duration || !startDate || !lastDateToApply || !mode || !type || !location) return fail(400, {
 			success: false,
@@ -144,8 +144,8 @@ var actions = {
 		const stipendAmount = parseFloat(formData.get("stipendAmount")?.toString() || "0");
 		const openings = parseInt(formData.get("openings")?.toString() || "1");
 		const location = formData.get("location")?.toString().trim();
-		const certificateAvailable = type.includes("Paid") ? "No" : formData.get("certificateAvailable")?.toString() || "No";
-		const jobOpportunity = type.includes("Paid") ? "No" : formData.get("jobOpportunity")?.toString() || "No";
+		const certificateAvailable = formData.get("certificateAvailable")?.toString() || "No";
+		const jobOpportunity = formData.get("jobOpportunity")?.toString() || "No";
 		const bannerFile = formData.get("banner");
 		if (!id || !title || !domain || !subCategory || !skillsRaw || !description || !responsibilities || !eligibilityCriteria || !duration || !startDate || !lastDateToApply || !mode || !type || !location) return fail(400, {
 			success: false,

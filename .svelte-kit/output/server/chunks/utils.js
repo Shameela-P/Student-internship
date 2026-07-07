@@ -1,4 +1,4 @@
-import { d as get_message, f as get_status, u as coalesce_to_error } from "./shared.js";
+import { _ as noop, d as get_message, f as get_status, u as coalesce_to_error } from "./shared.js";
 import { json, text } from "@sveltejs/kit";
 import { HttpError, SvelteKitError } from "@sveltejs/kit/internal";
 import { with_request_store } from "@sveltejs/kit/internal/server";
@@ -52,6 +52,8 @@ function set_nested_value(object, path_string, value) {
 	}
 	deep_set(object, split_path(path_string), value);
 }
+/** Pass this to set_nested_value to delete the last part of the given path */
+var DELETE_KEY = {};
 /**
 * Convert `FormData` into a POJO
 * @param {FormData} data
@@ -64,7 +66,6 @@ function convert_formdata(data) {
 		/** @type {any[]} */
 		let values = data.getAll(key);
 		if (is_array) key = key.slice(0, -2);
-		if (values.length > 1 && !is_array) throw new Error(`Form cannot contain duplicated keys — "${key}" has ${values.length} values`);
 		values = values.filter((entry) => typeof entry === "string" || entry.name !== "" || entry.size > 0);
 		if (values.length === 0 && !is_array) continue;
 		if (key.startsWith("n:")) {
@@ -74,6 +75,7 @@ function convert_formdata(data) {
 			key = key.slice(2);
 			values = values.map((v) => v === "on");
 		}
+		if (values.length > 1 && !is_array) throw new Error(`Form cannot contain duplicated keys — "${key}" has ${values.length} values`);
 		set_nested_value(result, key, is_array ? values : values[0]);
 	}
 	return result;
@@ -198,7 +200,7 @@ async function deserialize_binary_form(request) {
 	(async () => {
 		let has_more = true;
 		while (has_more) has_more = !!await get_chunk(chunks.length);
-	})();
+	})().catch(noop);
 	return {
 		data,
 		meta,
@@ -336,12 +338,16 @@ function deep_set(object, keys, value) {
 		const inner = Object.hasOwn(current, key) ? current[key] : void 0;
 		const exists = inner != null;
 		if (exists && is_array !== Array.isArray(inner)) throw new Error(`Invalid array key ${keys[i + 1]}`);
-		if (!exists) current[key] = is_array ? [] : {};
+		if (!exists) {
+			if (value === DELETE_KEY) return;
+			current[key] = is_array ? [] : {};
+		}
 		current = current[key];
 	}
 	const final_key = keys[keys.length - 1];
 	check_prototype_pollution(final_key);
-	current[final_key] = value;
+	if (value === DELETE_KEY) delete current[final_key];
+	else current[final_key] = value;
 }
 /**
 * @param {StandardSchemaV1.Issue} issue
@@ -415,6 +421,23 @@ function get_type_prefix(field_type, is_array, input_value) {
 	return "";
 }
 /**
+* A deep-clone implementation specifically for form data, where
+* we don't need to worry about cycles and whatnot
+* @param {any} value
+* @returns {any}
+*/
+function deep_clone(value) {
+	if (value !== null && typeof value === "object") {
+		if (value instanceof File) return value;
+		if (Array.isArray(value)) return value.map(deep_clone);
+		/** @type {Record<string, any>} */
+		const clone = {};
+		for (const key of Object.keys(value)) clone[key] = deep_clone(value[key]);
+		return clone;
+	}
+	return value;
+}
+/**
 * Creates a proxy-based field accessor for form data
 * @param {any} target - Function or empty POJO
 * @param {() => Record<string, any>} get_input - Function to get current input data
@@ -425,7 +448,7 @@ function get_type_prefix(field_type, is_array, input_value) {
 */
 function create_field_proxy(target, get_input, set_input, get_issues, path = []) {
 	const get_value = () => {
-		return deep_get(get_input(), path);
+		return deep_clone(deep_get(get_input(), path));
 	};
 	return new Proxy(target, { get(target, prop) {
 		if (typeof prop === "symbol") return target[prop];
@@ -446,10 +469,11 @@ function create_field_proxy(target, get_input, set_input, get_issues, path = [])
 					path: issue.path,
 					message: issue.message
 				}));
-				return all_issues?.filter((issue) => issue.name === key)?.map((issue) => ({
+				const issues = all_issues?.filter((issue) => issue.name === key)?.map((issue) => ({
 					path: issue.path,
 					message: issue.message
 				}));
+				return issues?.length ? issues : void 0;
 			};
 			return create_field_proxy(issues_func, get_input, set_input, get_issues, [...path, prop]);
 		}
@@ -464,7 +488,8 @@ function create_field_proxy(target, get_input, set_input, get_issues, path = [])
 				const base_props = {
 					name: get_type_prefix(type, is_array, input_value) + key + (is_array ? "[]" : ""),
 					get "aria-invalid"() {
-						return key in get_issues() ? "true" : void 0;
+						const issues = get_issues();
+						return key in issues ? "true" : void 0;
 					}
 				};
 				if (type !== "text" && type !== "select" && type !== "select multiple") base_props.type = type === "file multiple" ? "file" : type;

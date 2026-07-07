@@ -8,7 +8,11 @@ function verifyPassword(password, stored) {
 	try {
 		if (!stored || !stored.includes(":")) return false;
 		const [salt, hash] = stored.split(":");
-		return hash === crypto.scryptSync(password, salt, 64).toString("hex");
+		const verify = crypto.scryptSync(password, salt, 64).toString("hex");
+		const hashBuf = Buffer.from(hash, "hex");
+		const verifyBuf = Buffer.from(verify, "hex");
+		if (hashBuf.length !== verifyBuf.length) return false;
+		return crypto.timingSafeEqual(hashBuf, verifyBuf);
 	} catch (e) {
 		console.error("Password verification failed:", e);
 		return false;

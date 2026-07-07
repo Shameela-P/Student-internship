@@ -1,8 +1,6 @@
 import { getCollection, updateEntireDatabase } from '$lib/db';
 import { requireRole } from '$lib/auth';
 import { fail } from '@sveltejs/kit';
-import fs from 'fs';
-import path from 'path';
 
 export async function load({ cookies }) {
 	const sessionUser = requireRole(cookies, ['student']);
@@ -37,6 +35,7 @@ export async function load({ cookies }) {
 
 	// Contacts list: All verified companies + Admin Support
 	const companies = db.companies.filter(c => c.status === 'Approved' && !c.isSuspended)
+		.slice(0, 100)
 		.map(c => ({
 			name: c.companyName,
 			email: c.companyEmail,
@@ -70,33 +69,9 @@ export const actions = {
 		const recipientRole = formData.get('recipientRole')?.toString().trim();
 		const recipientName = formData.get('recipientName')?.toString().trim();
 		const content = formData.get('content')?.toString().trim();
-		const attachmentFile = formData.get('attachment');
 
-		if (!recipientEmail || !recipientRole || (!content && (!attachmentFile || attachmentFile.size === 0))) {
+		if (!recipientEmail || !recipientRole || !content) {
 			return fail(400, { success: false, error: 'Recipient details or content is required' });
-		}
-
-		// Handle Attachment upload
-		let attachmentPath = '';
-		let attachmentType = '';
-		
-		if (attachmentFile && attachmentFile instanceof File && attachmentFile.size > 0) {
-			const ext = path.extname(attachmentFile.name) || '.pdf';
-			const filename = `attachment_${Date.now()}_${Math.random().toString(36).substr(2, 6)}${ext}`;
-			const dest = path.resolve('uploads/attachments', filename);
-			
-			try {
-				if (!fs.existsSync(path.resolve('uploads/attachments'))) {
-					fs.mkdirSync(path.resolve('uploads/attachments'), { recursive: true });
-				}
-				const buffer = Buffer.from(await attachmentFile.arrayBuffer());
-				fs.writeFileSync(dest, buffer);
-				attachmentPath = filename;
-				attachmentType = ext.toLowerCase() === '.pdf' ? 'resume' : 'file';
-			} catch (err) {
-				console.error('Chat attachment upload error:', err);
-				return fail(500, { success: false, error: 'Failed to upload attachment file' });
-			}
 		}
 
 		if (!db.messages) {
@@ -111,11 +86,9 @@ export const actions = {
 			recipientEmail,
 			recipientRole,
 			recipientName: recipientName || 'User',
-			content: content || '',
+			content: content,
 			timestamp: new Date().toISOString(),
-			read: false,
-			attachmentPath,
-			attachmentType
+			read: false
 		};
 
 		db.messages.push(newMessage);

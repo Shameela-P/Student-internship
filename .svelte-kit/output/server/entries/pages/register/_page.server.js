@@ -1,21 +1,9 @@
 import { i as updateEntireDatabase, n as getCollection, r as logAction } from "../../../chunks/db.js";
-import { i as hashPassword, n as createToken } from "../../../chunks/auth.js";
+import { i as hashPassword } from "../../../chunks/auth.js";
+import { t as uploadFileBuffer } from "../../../chunks/storageHelper.js";
 import { fail, redirect } from "@sveltejs/kit";
+import path from "path";
 //#region src/routes/register/+page.server.js
-function isValidIndianPhone(number) {
-	return /^(?:\+91[\s-]?)?(?:[6-9]\d{9})$/.test(number || "");
-}
-function isValidCompanyPhone(number) {
-	return /^(?:\+?\d[\s-]?)?(?:\d{3,4}[\s-]?\d{3,4}[\s-]?\d{3,4})$/.test(number || "");
-}
-function isValidUrl(value) {
-	try {
-		const url = new URL(value);
-		return ["http:", "https:"].includes(url.protocol);
-	} catch {
-		return false;
-	}
-}
 async function load({ url }) {
 	return { role: url.searchParams.get("role") || "student" };
 }
@@ -26,10 +14,6 @@ var actions = {
 		const email = formData.get("email")?.toString().trim().toLowerCase();
 		const mobileNumber = formData.get("mobileNumber")?.toString().trim();
 		const password = formData.get("password")?.toString();
-		if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[$_@#!])[A-Za-z0-9$_@#!]{8,14}$/.test(password || "")) return fail(400, {
-			success: false,
-			error: "Password does not meet the security requirements."
-		});
 		const collegeName = formData.get("collegeName")?.toString().trim();
 		const degreeCourse = formData.get("degreeCourse")?.toString().trim();
 		const department = formData.get("department")?.toString().trim();
@@ -38,14 +22,10 @@ var actions = {
 		const skillsRaw = formData.get("skills")?.toString().trim();
 		const address = formData.get("address")?.toString().trim();
 		const profilePhoto = formData.get("profilePhoto")?.toString().trim() || "";
-		const resumeUrl = formData.get("resumeUrl")?.toString().trim() || "";
+		const resumeFile = formData.get("resume");
 		if (!fullName || !email || !mobileNumber || !password || !collegeName || !degreeCourse || !department || !yearOfStudy || !currentStatus || !skillsRaw || !address) return fail(400, {
 			success: false,
 			error: "Please fill out all required student profile fields"
-		});
-		if (!isValidIndianPhone(mobileNumber)) return fail(400, {
-			success: false,
-			error: "Please enter a valid 10-digit Indian mobile number."
 		});
 		const db = {
 			students: await getCollection("students"),
@@ -58,9 +38,22 @@ var actions = {
 			success: false,
 			error: "This email is already registered on Nexora"
 		});
-		if (!resumeUrl || !isValidUrl(resumeUrl)) return fail(400, {
+		let resumePath = "";
+		if (resumeFile && resumeFile instanceof File && resumeFile.size > 0) {
+			const ext = path.extname(resumeFile.name) || ".pdf";
+			const filename = `resumes/resume_${Date.now()}_${Math.random().toString(36).substr(2, 6)}${ext}`;
+			try {
+				resumePath = await uploadFileBuffer(await resumeFile.arrayBuffer(), filename, resumeFile.type || "application/pdf");
+			} catch (err) {
+				console.error("File save error:", err);
+				return fail(500, {
+					success: false,
+					error: "Failed to upload resume to storage. Please try again."
+				});
+			}
+		} else return fail(400, {
 			success: false,
-			error: "A valid PDF/DOC resume upload is required."
+			error: "A PDF/DOC resume file upload is required"
 		});
 		const skills = skillsRaw.split(",").map((s) => s.trim()).filter(Boolean);
 		const newStudent = {
@@ -77,7 +70,7 @@ var actions = {
 			skills,
 			address,
 			profilePhoto,
-			resumePath: resumeUrl,
+			resumePath,
 			isBlocked: false,
 			createdAt: (/* @__PURE__ */ new Date()).toISOString()
 		};
@@ -100,20 +93,7 @@ var actions = {
 		});
 		await updateEntireDatabase(db);
 		logAction("STUDENT_REGISTER", `New student ${fullName} (${email}) registered.`);
-		const token = createToken({
-			id: newStudent.id,
-			email: newStudent.email,
-			name: newStudent.fullName,
-			role: "student"
-		});
-		cookies.set("nexora_session", token, {
-			path: "/",
-			httpOnly: true,
-			secure: true,
-			sameSite: "lax",
-			maxAge: 3600 * 24
-		});
-		throw redirect(303, "/student");
+		throw redirect(303, "/login?registered=true");
 	},
 	registerCompany: async ({ request, cookies }) => {
 		const formData = await request.formData();
@@ -126,21 +106,9 @@ var actions = {
 		const industryType = formData.get("industryType")?.toString();
 		const companyLogo = formData.get("companyLogo")?.toString().trim() || "";
 		const password = formData.get("password")?.toString();
-		if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[$_@#!])[A-Za-z0-9$_@#!]{8,14}$/.test(password || "")) return fail(400, {
-			success: false,
-			error: "Password does not meet the security requirements."
-		});
 		if (!companyName || !companyEmail || !companyContactNumber || !website || !companyAddress || !companyDescription || !industryType || !password) return fail(400, {
 			success: false,
 			error: "Please fill out all required company profile fields"
-		});
-		if (!isValidCompanyPhone(companyContactNumber)) return fail(400, {
-			success: false,
-			error: "Please enter a valid company contact number."
-		});
-		if (!isValidUrl(website)) return fail(400, {
-			success: false,
-			error: "Please enter a valid company website URL."
 		});
 		const db = {
 			students: await getCollection("students"),
@@ -164,7 +132,7 @@ var actions = {
 			industryType,
 			companyLogo,
 			password: hashPassword(password),
-			status: "Pending",
+			status: "Approved",
 			isSuspended: false,
 			createdAt: (/* @__PURE__ */ new Date()).toISOString()
 		};
@@ -187,20 +155,7 @@ var actions = {
 		});
 		await updateEntireDatabase(db);
 		logAction("COMPANY_REGISTER", `New company ${companyName} (${companyEmail}) submitted for approval.`);
-		const token = createToken({
-			id: newCompany.id,
-			email: newCompany.companyEmail,
-			name: newCompany.companyName,
-			role: "company"
-		});
-		cookies.set("nexora_session", token, {
-			path: "/",
-			httpOnly: true,
-			secure: true,
-			sameSite: "lax",
-			maxAge: 3600 * 24
-		});
-		throw redirect(303, "/company");
+		throw redirect(303, "/login?registered=true");
 	}
 };
 //#endregion

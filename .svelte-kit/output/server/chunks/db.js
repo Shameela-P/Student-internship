@@ -1,12 +1,10 @@
 import { t as app } from "./firebase.js";
-import fs from "fs";
-import path from "path";
 import { child, get, getDatabase, ref, set, update } from "firebase/database";
 import "crypto";
+import fs from "fs";
+import path from "path";
 //#region src/lib/db.js
 var dbRef = ref(getDatabase(app), "/");
-var dbCache = {};
-var CACHE_TTL_MS = 5e3;
 var DOMAINS = [
 	{
 		id: 1,
@@ -759,6 +757,18 @@ var DOMAINS = [
 		category: "Government & Public Services"
 	}
 ];
+var cache = {};
+var cacheTimestamps = {};
+var CACHE_DURATION = 120 * 1e3;
+function invalidateCache(collectionName = null) {
+	if (collectionName) {
+		delete cache[collectionName];
+		delete cacheTimestamps[collectionName];
+	} else {
+		cache = {};
+		cacheTimestamps = {};
+	}
+}
 /**
 * Gets an entire collection (array of items)
 * Stored as an array in Firebase, but might be fetched as an object with numeric keys.
@@ -766,48 +776,42 @@ var DOMAINS = [
 */
 async function getCollection(collectionName) {
 	const now = Date.now();
-	const cached = dbCache[collectionName];
-	if (cached && now - cached.timestamp < CACHE_TTL_MS) {
-		const data = cached.data;
-		if (!data) return [];
-		if (Array.isArray(data)) return data.filter((item) => item !== null);
-		if (typeof data === "object") return Object.values(data).filter((item) => item !== null);
-		return [];
-	}
+	if (cache[collectionName] && cacheTimestamps[collectionName] && now - cacheTimestamps[collectionName] < CACHE_DURATION) return [...cache[collectionName]];
 	const snapshot = await get(child(dbRef, collectionName));
-	const data = snapshot.exists() ? snapshot.val() : null;
-	dbCache[collectionName] = {
-		data,
-		timestamp: Date.now()
-	};
-	if (!data) return [];
-	if (Array.isArray(data)) return data.filter((item) => item !== null);
-	else if (typeof data === "object") return Object.values(data).filter((item) => item !== null);
-	return [];
+	if (!snapshot.exists()) return [];
+	const data = snapshot.val();
+	let result = [];
+	if (Array.isArray(data)) result = data.filter((item) => item !== null);
+	else if (typeof data === "object") result = Object.values(data).filter((item) => item !== null);
+	cache[collectionName] = result;
+	cacheTimestamps[collectionName] = now;
+	return [...result];
 }
 /**
 * Update multiple collections at once (used by refactored routes)
 */
 async function updateEntireDatabase(data) {
-	for (const key in data) dbCache[key] = {
-		data: data[key],
-		timestamp: Date.now()
-	};
 	await update(dbRef, data);
+	invalidateCache();
 }
 /**
-* Unified Logger
+* Unified Logger for System Audits
 */
-async function logAction(action, details) {
+async function logAction(action, details, user = "System", role = "System", email = "N/A", target = "N/A", ip = "N/A") {
 	const newLog = {
 		id: `log_${Date.now()}_${Math.random().toString(36).substr(2, 5)}`,
 		action,
 		details,
+		user,
+		role,
+		email,
+		target,
+		ip,
 		timestamp: (/* @__PURE__ */ new Date()).toISOString()
 	};
 	const logs = await getCollection("systemLogs");
 	logs.unshift(newLog);
-	if (logs.length > 200) logs.length = 200;
+	if (logs.length > 500) logs.length = 500;
 	await set(child(dbRef, "systemLogs"), logs);
 }
 function ensureMockResumes() {

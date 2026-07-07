@@ -10,7 +10,7 @@ return {
 	assets: new Set(["robots.txt"]),
 	mimeTypes: {".txt":"text/plain"},
 	_: {
-		client: {start:"_app/immutable/entry/start.v2b83Hn1.js",app:"_app/immutable/entry/app.BBq-wZVP.js",imports:["_app/immutable/entry/start.v2b83Hn1.js","_app/immutable/chunks/5W_Zh4Rl.js","_app/immutable/chunks/CrKY3KsX.js","_app/immutable/entry/app.BBq-wZVP.js","_app/immutable/chunks/CrKY3KsX.js","_app/immutable/chunks/kNaey6uv.js","_app/immutable/chunks/xihTtKlq.js"],stylesheets:[],fonts:[],uses_env_dynamic_public:false},
+		client: {start:"_app/immutable/entry/start.DNhkMeYQ.js",app:"_app/immutable/entry/app.CVloy2RN.js",imports:["_app/immutable/entry/start.DNhkMeYQ.js","_app/immutable/chunks/DLDGiC2b.js","_app/immutable/chunks/DHkQu-Co.js","_app/immutable/entry/app.CVloy2RN.js","_app/immutable/chunks/DHkQu-Co.js","_app/immutable/chunks/DYl5dUZ5.js","_app/immutable/chunks/xihTtKlq.js"],stylesheets:[],fonts:[],uses_env_dynamic_public:false},
 		nodes: [
 			__memo(() => import('./nodes/0.js')),
 			__memo(() => import('./nodes/1.js')),
@@ -37,9 +37,7 @@ return {
 			__memo(() => import('./nodes/22.js')),
 			__memo(() => import('./nodes/23.js')),
 			__memo(() => import('./nodes/24.js')),
-			__memo(() => import('./nodes/25.js')),
-			__memo(() => import('./nodes/26.js')),
-			__memo(() => import('./nodes/27.js'))
+			__memo(() => import('./nodes/25.js'))
 		],
 		remotes: {
 			
@@ -81,39 +79,18 @@ return {
 				endpoint: null
 			},
 			{
-				id: "/admin/notifications",
-				pattern: /^\/admin\/notifications\/?$/,
+				id: "/admin/students",
+				pattern: /^\/admin\/students\/?$/,
 				params: [],
 				page: { layouts: [0,2,], errors: [1,,], leaf: 10 },
 				endpoint: null
 			},
 			{
-				id: "/admin/students",
-				pattern: /^\/admin\/students\/?$/,
-				params: [],
-				page: { layouts: [0,2,], errors: [1,,], leaf: 11 },
-				endpoint: null
-			},
-			{
-				id: "/api/attachments/[filename]",
-				pattern: /^\/api\/attachments\/([^/]+?)\/?$/,
-				params: [{"name":"filename","optional":false,"rest":false,"chained":false}],
-				page: null,
-				endpoint: __memo(() => import('./entries/endpoints/api/attachments/_filename_/_server.js'))
-			},
-			{
-				id: "/api/messages/read",
-				pattern: /^\/api\/messages\/read\/?$/,
+				id: "/api/notifications/mark-read",
+				pattern: /^\/api\/notifications\/mark-read\/?$/,
 				params: [],
 				page: null,
-				endpoint: __memo(() => import('./entries/endpoints/api/messages/read/_server.js'))
-			},
-			{
-				id: "/api/notifications/read",
-				pattern: /^\/api\/notifications\/read\/?$/,
-				params: [],
-				page: null,
-				endpoint: __memo(() => import('./entries/endpoints/api/notifications/read/_server.js'))
+				endpoint: __memo(() => import('./entries/endpoints/api/notifications/mark-read/_server.js'))
 			},
 			{
 				id: "/api/refresh",
@@ -133,42 +110,42 @@ return {
 				id: "/company",
 				pattern: /^\/company\/?$/,
 				params: [],
-				page: { layouts: [0,3,], errors: [1,,], leaf: 12 },
+				page: { layouts: [0,3,], errors: [1,,], leaf: 11 },
 				endpoint: null
 			},
 			{
 				id: "/company/applications",
 				pattern: /^\/company\/applications\/?$/,
 				params: [],
-				page: { layouts: [0,3,], errors: [1,,], leaf: 13 },
+				page: { layouts: [0,3,], errors: [1,,], leaf: 12 },
 				endpoint: null
 			},
 			{
 				id: "/company/internships",
 				pattern: /^\/company\/internships\/?$/,
 				params: [],
-				page: { layouts: [0,3,], errors: [1,,], leaf: 14 },
+				page: { layouts: [0,3,], errors: [1,,], leaf: 13 },
 				endpoint: null
 			},
 			{
 				id: "/company/messages",
 				pattern: /^\/company\/messages\/?$/,
 				params: [],
-				page: { layouts: [0,3,], errors: [1,,], leaf: 15 },
+				page: { layouts: [0,3,], errors: [1,,], leaf: 14 },
 				endpoint: null
 			},
 			{
 				id: "/company/notifications",
 				pattern: /^\/company\/notifications\/?$/,
 				params: [],
-				page: { layouts: [0,3,], errors: [1,,], leaf: 16 },
+				page: { layouts: [0,3,], errors: [1,,], leaf: 15 },
 				endpoint: null
 			},
 			{
 				id: "/login",
 				pattern: /^\/login\/?$/,
 				params: [],
-				page: { layouts: [0,], errors: [1,], leaf: 17 },
+				page: { layouts: [0,], errors: [1,], leaf: 16 },
 				endpoint: null
 			},
 			{
@@ -189,70 +166,63 @@ return {
 				id: "/register",
 				pattern: /^\/register\/?$/,
 				params: [],
-				page: { layouts: [0,], errors: [1,], leaf: 18 },
+				page: { layouts: [0,], errors: [1,], leaf: 17 },
 				endpoint: null
 			},
 			{
 				id: "/student",
 				pattern: /^\/student\/?$/,
 				params: [],
-				page: { layouts: [0,4,], errors: [1,,], leaf: 19 },
+				page: { layouts: [0,4,], errors: [1,,], leaf: 18 },
 				endpoint: null
 			},
 			{
 				id: "/student/certificates",
 				pattern: /^\/student\/certificates\/?$/,
 				params: [],
-				page: { layouts: [0,4,], errors: [1,,], leaf: 20 },
+				page: { layouts: [0,4,], errors: [1,,], leaf: 19 },
 				endpoint: null
 			},
 			{
 				id: "/student/companies",
 				pattern: /^\/student\/companies\/?$/,
 				params: [],
-				page: { layouts: [0,4,], errors: [1,,], leaf: 21 },
+				page: { layouts: [0,4,], errors: [1,,], leaf: 20 },
 				endpoint: null
 			},
 			{
 				id: "/student/internships",
 				pattern: /^\/student\/internships\/?$/,
 				params: [],
-				page: { layouts: [0,4,], errors: [1,,], leaf: 22 },
+				page: { layouts: [0,4,], errors: [1,,], leaf: 21 },
 				endpoint: null
 			},
 			{
 				id: "/student/messages",
 				pattern: /^\/student\/messages\/?$/,
 				params: [],
-				page: { layouts: [0,4,], errors: [1,,], leaf: 23 },
+				page: { layouts: [0,4,], errors: [1,,], leaf: 22 },
 				endpoint: null
 			},
 			{
 				id: "/student/notifications",
 				pattern: /^\/student\/notifications\/?$/,
 				params: [],
-				page: { layouts: [0,4,], errors: [1,,], leaf: 24 },
+				page: { layouts: [0,4,], errors: [1,,], leaf: 23 },
 				endpoint: null
 			},
 			{
 				id: "/student/profile",
 				pattern: /^\/student\/profile\/?$/,
 				params: [],
-				page: { layouts: [0,4,], errors: [1,,], leaf: 25 },
+				page: { layouts: [0,4,], errors: [1,,], leaf: 24 },
 				endpoint: null
 			},
 			{
 				id: "/student/settings",
 				pattern: /^\/student\/settings\/?$/,
 				params: [],
-				page: { layouts: [0,4,], errors: [1,,], leaf: 26 },
-				endpoint: null
-			},
-			{
-				id: "/verify",
-				pattern: /^\/verify\/?$/,
-				params: [],
-				page: { layouts: [0,], errors: [1,], leaf: 27 },
+				page: { layouts: [0,4,], errors: [1,,], leaf: 25 },
 				endpoint: null
 			}
 		],

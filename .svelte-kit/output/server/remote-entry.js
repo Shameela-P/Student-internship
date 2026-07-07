@@ -1,4 +1,4 @@
-import { i as parse_remote_arg, o as stringify, r as create_remote_key, s as stringify_remote_arg, v as noop } from "./chunks/shared.js";
+import { _ as noop, i as parse_remote_arg, o as stringify, r as create_remote_key, s as stringify_remote_arg } from "./chunks/shared.js";
 import { a as app_dir, s as base, t as prerendering } from "./chunks/internal.js";
 import { C as normalize_issue, D as MUTATIVE_METHODS, S as flatten_issues, b as deep_set, s as handle_error_and_jsonify, w as set_nested_value, y as create_field_proxy } from "./chunks/utils.js";
 import { error, json } from "@sveltejs/kit";
@@ -379,6 +379,7 @@ function form(validate_or_fn, maybe_fn) {
 			}
 		} });
 		Object.defineProperty(instance, "pending", { get: () => 0 });
+		Object.defineProperty(instance, "submitted", { get: () => false });
 		Object.defineProperty(instance, "preflight", { value: () => instance });
 		Object.defineProperty(instance, "validate", { value: () => {
 			throw new Error("Cannot call validate() on the server");
@@ -854,7 +855,8 @@ function query(validate_or_fn, maybe_fn) {
 	const wrapper = (arg) => {
 		if (prerendering) throw new Error(`Cannot call query '${__.name}' while prerendering, as prerendered pages need static data. Use 'prerender' from $app/server instead`);
 		const { event, state } = get_request_store();
-		return create_query_resource(__, stringify_remote_arg(arg, state.transport), event, state, () => run_remote_function(event, {
+		const payload = stringify_remote_arg(arg, state.transport);
+		return create_query_resource(__, payload, event, state, () => run_remote_function(event, {
 			...state,
 			is_in_remote_query: true
 		}, false, () => validate(arg), fn));
@@ -926,7 +928,8 @@ function live(validate_or_fn, maybe_fn) {
 	const wrapper = (arg) => {
 		if (prerendering) throw new Error(`Cannot call query.live '${__.name}' while prerendering, as prerendered pages need static data. Use 'prerender' from $app/server instead`);
 		const { event, state } = get_request_store();
-		return create_live_query_resource(__, stringify_remote_arg(arg, state.transport), event, state, () => run(event, state, () => validate(arg)));
+		const payload = stringify_remote_arg(arg, state.transport);
+		return create_live_query_resource(__, payload, event, state, () => run(event, state, () => validate(arg)));
 	};
 	Object.defineProperty(wrapper, "__", { value: __ });
 	return wrapper;
@@ -1297,8 +1300,8 @@ Object.defineProperty(query, "live", {
 /** @import { RemoteLiveQuery, RemoteLiveQueryFunction, RemoteQuery, RemoteQueryFunction, RequestedResult, QueryRequestedResult, LiveQueryRequestedResult } from '@sveltejs/kit' */
 /** @import { MaybePromise, RemoteAnyQueryInternals } from 'types' */
 /**
-* In the context of a remote `command` or `form` request, returns an iterable
-* of `{ arg, query }` entries for the refreshes requested by the client, up to
+* Inside a remote `command` or `form` callback, returns an iterable
+* of `{ arg, query }` entries for the query instances the client asked to refresh, up to
 * the supplied `limit`. Each `query` is a `RemoteQuery` bound to the original
 * client-side cache key, so `refresh()` / `set()` propagate correctly even when
 * the query's schema transforms the input. `arg` is the *validated* argument,
@@ -1307,6 +1310,8 @@ Object.defineProperty(query, "live", {
 *
 * Arguments that fail validation or exceed `limit` are recorded as failures in
 * the response to the client.
+* See [Client-requested refreshes](https://svelte.dev/docs/kit/remote-functions#Single-flight-mutations-Client-requested-refreshes)
+* for usage in a remote `command` or `form`.
 *
 * @example
 * ```ts
@@ -1343,14 +1348,16 @@ Object.defineProperty(query, "live", {
 * @returns {QueryRequestedResult<Validated, Output>}
 */
 /**
-* In the context of a remote `command` or `form` request, returns an iterable
-* of `{ arg, query }` entries for the reconnects requested by the client, up to
+* Inside a remote `command` or `form` callback, returns an iterable
+* of `{ arg, query }` entries for the live query instances the client asked to reconnect, up to
 * the supplied `limit`. Each `query` is a `RemoteLiveQuery` bound to the original
 * client-side cache key, so `reconnect()` propagates correctly even when
 * the query's schema transforms the input. `arg` is the *validated* argument.
 *
 * Arguments that fail validation or exceed `limit` are recorded as failures in
 * the response to the client.
+* See [Client-requested refreshes](https://svelte.dev/docs/kit/remote-functions#Single-flight-mutations-Client-requested-refreshes)
+* for usage in a remote `command` or `form`.
 *
 * @example
 * ```ts

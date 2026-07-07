@@ -1,13 +1,12 @@
 import { i as updateEntireDatabase, n as getCollection, r as logAction } from "../../../../chunks/db.js";
+import { n as createToken } from "../../../../chunks/auth.js";
 import { json } from "@sveltejs/kit";
-import jwt from "jsonwebtoken";
 //#region src/routes/login/google/+server.js
-var JWT_SECRET = process.env.JWT_SECRET || "fallback-secret-key-for-jwt-signing";
+process.env.JWT_SECRET;
 async function POST({ request, cookies }) {
 	try {
-		let { email, name, photoURL, role } = await request.json();
-		if (!email || !role) return json({ error: "Missing required Google Auth payload fields." }, { status: 400 });
-		if (!name) name = email.split("@")[0];
+		const { email, name, photoURL, role } = await request.json();
+		if (!email || !name || !role) return json({ error: "Missing required Google Auth payload fields." }, { status: 400 });
 		const db = {
 			students: await getCollection("students"),
 			companies: await getCollection("companies"),
@@ -97,12 +96,12 @@ async function POST({ request, cookies }) {
 			};
 			redirectPath = "/company";
 		} else return json({ error: "Invalid role selection for new user." }, { status: 400 });
-		const token = jwt.sign({
+		const token = createToken({
 			id: user.id,
 			role: user.role,
 			email: user.email,
 			name
-		}, JWT_SECRET, { expiresIn: "24h" });
+		});
 		cookies.set("nexora_session", token, {
 			path: "/",
 			httpOnly: true,
@@ -111,7 +110,8 @@ async function POST({ request, cookies }) {
 			maxAge: 3600 * 24
 		});
 		const roleFormatted = user.role.charAt(0).toUpperCase() + user.role.slice(1);
-		logAction(`${user.role.toUpperCase()}_LOGIN`, `${roleFormatted} ${name} (${email}) logged in via Google.`);
+		const ip = request.headers.get("x-forwarded-for") || "Unknown IP";
+		logAction(`${user.role.toUpperCase()}_LOGIN`, `Logged in via Google`, name, roleFormatted, email, "Dashboard", ip);
 		return json({
 			success: true,
 			redirect: redirectPath
