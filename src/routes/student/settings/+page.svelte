@@ -174,7 +174,7 @@
 				<div class="pt-4 border-t border-divider dark:border-divider-dark/50">
 					<h4 class="font-bold text-slate-450 uppercase tracking-widest text-[9px] mb-3">Profile Discovery Controls</h4>
 					<label for="profileVisibility" class="block text-slate-600 dark:text-slate-400 mb-2 font-semibold">Corporate Visibility Status</label>
-					<select id="profileVisibility" name="profileVisibility" class="w-full px-3 py-2.5 rounded-lg border border-divider dark:border-divider-dark bg-slate-955 text-xs text-primary dark:text-primary-dark focus:outline-none focus:border-blue-500">
+					<select id="profileVisibility" name="profileVisibility" class="w-full px-3 py-2.5 rounded-lg border border-divider dark:border-divider-dark bg-slate-100 dark:bg-slate-900 text-xs text-primary dark:text-primary-dark focus:outline-none focus:border-blue-500">
 						<option value="public" selected={settings.profileVisibility === 'public'}>Public (Allow all verified companies to find my details)</option>
 						<option value="applied_only" selected={settings.profileVisibility === 'applied_only'}>Only Companies I Applied To (Restrict general searches)</option>
 						<option value="private" selected={settings.profileVisibility === 'private'}>Private (Hide my profile from all search registries)</option>

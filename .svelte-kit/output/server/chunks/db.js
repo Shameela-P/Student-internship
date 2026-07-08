@@ -757,18 +757,35 @@ var DOMAINS = [
 		category: "Government & Public Services"
 	}
 ];
+var cache = {};
+var cacheTimestamps = {};
+var CACHE_DURATION = 120 * 1e3;
+function invalidateCache(collectionName = null) {
+	if (collectionName) {
+		delete cache[collectionName];
+		delete cacheTimestamps[collectionName];
+	} else {
+		cache = {};
+		cacheTimestamps = {};
+	}
+}
 /**
 * Gets an entire collection (array of items)
 * Stored as an array in Firebase, but might be fetched as an object with numeric keys.
 * We normalize it back to an array.
 */
 async function getCollection(collectionName) {
+	const now = Date.now();
+	if (cache[collectionName] && cacheTimestamps[collectionName] && now - cacheTimestamps[collectionName] < CACHE_DURATION) return [...cache[collectionName]];
 	const snapshot = await get(child(dbRef, collectionName));
 	if (!snapshot.exists()) return [];
 	const data = snapshot.val();
-	if (Array.isArray(data)) return data.filter((item) => item !== null);
-	else if (typeof data === "object") return Object.values(data).filter((item) => item !== null);
-	return [];
+	let result = [];
+	if (Array.isArray(data)) result = data.filter((item) => item !== null);
+	else if (typeof data === "object") result = Object.values(data).filter((item) => item !== null);
+	cache[collectionName] = result;
+	cacheTimestamps[collectionName] = now;
+	return [...result];
 }
 /**
 * Add a new item to an array collection.
@@ -777,6 +794,7 @@ async function addDocument(collectionName, data) {
 	const collection = await getCollection(collectionName);
 	collection.push(data);
 	await set(child(dbRef, collectionName), collection);
+	invalidateCache(collectionName);
 }
 /**
 * Update an existing item in a collection.
@@ -790,6 +808,7 @@ async function updateDocument(collectionName, id, updates) {
 			...updates
 		};
 		await set(child(dbRef, `${collectionName}/${index}`), collection[index]);
+		invalidateCache(collectionName);
 	}
 }
 /**
@@ -797,20 +816,26 @@ async function updateDocument(collectionName, id, updates) {
 */
 async function updateEntireDatabase(data) {
 	await update(dbRef, data);
+	invalidateCache();
 }
 /**
-* Unified Logger
+* Unified Logger for System Audits
 */
-async function logAction(action, details) {
+async function logAction(action, details, user = "System", role = "System", email = "N/A", target = "N/A", ip = "N/A") {
 	const newLog = {
 		id: `log_${Date.now()}_${Math.random().toString(36).substr(2, 5)}`,
 		action,
 		details,
+		user,
+		role,
+		email,
+		target,
+		ip,
 		timestamp: (/* @__PURE__ */ new Date()).toISOString()
 	};
 	const logs = await getCollection("systemLogs");
 	logs.unshift(newLog);
-	if (logs.length > 200) logs.length = 200;
+	if (logs.length > 500) logs.length = 500;
 	await set(child(dbRef, "systemLogs"), logs);
 }
 function ensureMockResumes() {

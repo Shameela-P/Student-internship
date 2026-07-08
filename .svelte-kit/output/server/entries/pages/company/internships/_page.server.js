@@ -114,6 +114,10 @@ var actions = {
 			success: false,
 			error: "Registration fee cannot be negative"
 		});
+		if (new Date(startDate) <= new Date(lastDateToApply)) return fail(400, {
+			success: false,
+			error: "Internship start date must be after the last date to apply"
+		});
 		let bannerPath = "";
 		if (bannerFile && bannerFile instanceof File && bannerFile.size > 0) {
 			const ext = path.extname(bannerFile.name) || ".jpg";
@@ -211,6 +215,10 @@ var actions = {
 		if (type.includes("Paid") && fee < 0) return fail(400, {
 			success: false,
 			error: "Registration fee cannot be negative"
+		});
+		if (new Date(startDate) <= new Date(lastDateToApply)) return fail(400, {
+			success: false,
+			error: "Internship start date must be after the last date to apply"
 		});
 		const internshipIndex = db.internships.findIndex((i) => i.id === id && i.companyId === company.id);
 		if (internshipIndex === -1) return fail(404, {

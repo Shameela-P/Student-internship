@@ -1,5 +1,6 @@
 import { getApp, getApps, initializeApp } from "firebase/app";
 import { GoogleAuthProvider, getAuth } from "firebase/auth";
+import { getStorage } from "firebase/storage";
 //#endregion
 //#region src/lib/firebase.js
 var firebaseConfig = {
@@ -17,5 +18,6 @@ if (!getApps().length) app = initializeApp(firebaseConfig);
 else app = getApp();
 getAuth(app);
 new GoogleAuthProvider();
+var storage = getStorage(app);
 //#endregion
-export { app as t };
+export { storage as n, app as t };

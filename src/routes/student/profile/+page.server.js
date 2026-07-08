@@ -89,26 +89,19 @@ export const actions = {
 		const filename = `resumes/resume_${Date.now()}_${Math.random().toString(36).substr(2, 6)}${ext}`;
 
 		try {
-<<<<<<< HEAD
 			const buffer = Buffer.from(await resumeFile.arrayBuffer());
-			// Vercel Fix: Save as Base64 in Realtime Database instead of ephemeral filesystem
 			const base64Data = buffer.toString('base64');
-			
+
 			db.students[studentIndex].resumeData = base64Data;
 			db.students[studentIndex].resumeName = resumeFile.name;
 			db.students[studentIndex].resumeMimeType = resumeFile.type || 'application/pdf';
-			db.students[studentIndex].resumePath = db.students[studentIndex].id; // Use ID for URL lookup
-			
-=======
-			const buffer = await resumeFile.arrayBuffer();
-			const resumePath = await uploadFileBuffer(buffer, filename, resumeFile.type || 'application/pdf');
+			db.students[studentIndex].resumePath = db.students[studentIndex].id;
 
-			// We won't delete the old file from Firebase for now to avoid data loss, 
-			// but we will update the DB with the new Firebase URL.
-			db.students[studentIndex].resumePath = resumePath;
->>>>>>> 5d366a2a4dc395f3384571ee5f12913df8f6d8b8
+			const storagePath = await uploadFileBuffer(buffer, filename, resumeFile.type || 'application/pdf');
+			db.students[studentIndex].resumeStoragePath = storagePath;
+
 			await updateEntireDatabase(db);
-			
+
 			logAction('STUDENT_UPDATE_RESUME', `Student ${db.students[studentIndex].fullName} uploaded a new resume.`);
 			return { success: true, message: 'Resume file updated successfully' };
 		} catch (err) {

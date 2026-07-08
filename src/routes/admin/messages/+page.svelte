@@ -296,11 +296,7 @@
 			role="presentation"
 			onkeydown={(e) => e.stopPropagation()}
 		>
-<<<<<<< HEAD
-			<button onclick={() => showNewChatModal = false} aria-label="Close modal" class="absolute top-4 right-4 p-1.5 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:text-white cursor-pointer transition">
-=======
-			<button onclick={() => showNewChatModal = false} class="absolute top-4 right-4 p-1.5 rounded-lg text-slate-600 dark:text-slate-400 hover:text-primary dark:text-primary-dark cursor-pointer transition">
->>>>>>> 5d366a2a4dc395f3384571ee5f12913df8f6d8b8
+			<button onclick={() => showNewChatModal = false} aria-label="Close modal" class="absolute top-4 right-4 p-1.5 rounded-lg text-slate-600 dark:text-slate-400 hover:text-primary dark:text-primary-dark cursor-pointer transition">
 				<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" x2="6" y1="6" y2="18"/><line x1="6" x2="18" y1="6" y2="18"/></svg>
 			</button>
 

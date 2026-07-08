@@ -1,4 +1,4 @@
-import { o as updateEntireDatabase, r as getCollection } from "../../../../chunks/db.js";
+import { r as getCollection } from "../../../../chunks/db.js";
 import { a as requireRole } from "../../../../chunks/auth.js";
 //#region src/routes/student/notifications/+page.server.js
 async function load({ cookies }) {
@@ -9,16 +9,10 @@ async function load({ cookies }) {
 		notifications: notificationsData
 	};
 	const student = db.students.find((s) => s.id === sessionUser.id);
-	const studentNotifications = db.notifications.filter((n) => n.recipientEmail.toLowerCase() === student.email.toLowerCase());
-	let changed = false;
-	studentNotifications.forEach((n) => {
-		if (!n.read) {
-			n.read = true;
-			changed = true;
-		}
-	});
-	if (changed) await updateEntireDatabase(db);
-	return { notifications: studentNotifications };
+	return {
+		notifications: db.notifications.filter((n) => n.recipientEmail.toLowerCase() === student.email.toLowerCase()),
+		student: { email: student.email }
+	};
 }
 //#endregion
 export { load };

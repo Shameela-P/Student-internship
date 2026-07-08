@@ -1,7 +1,7 @@
 import { i as logAction, o as updateEntireDatabase, r as getCollection } from "../../../chunks/db.js";
-import { i as hashPassword, n as createToken } from "../../../chunks/auth.js";
+import { i as hashPassword } from "../../../chunks/auth.js";
+import { t as uploadFileBuffer } from "../../../chunks/storageHelper.js";
 import { fail, redirect } from "@sveltejs/kit";
-import fs from "fs";
 import path from "path";
 //#region src/routes/register/+page.server.js
 async function load({ url }) {
@@ -48,17 +48,14 @@ var actions = {
 		let resumePath = "";
 		if (resumeFile && resumeFile instanceof File && resumeFile.size > 0) {
 			const ext = path.extname(resumeFile.name) || ".pdf";
-			const filename = `resume_${Date.now()}_${Math.random().toString(36).substr(2, 6)}${ext}`;
-			const dest = path.resolve("uploads/resumes", filename);
+			const filename = `resumes/resume_${Date.now()}_${Math.random().toString(36).substr(2, 6)}${ext}`;
 			try {
-				const buffer = Buffer.from(await resumeFile.arrayBuffer());
-				fs.writeFileSync(dest, buffer);
-				resumePath = filename;
+				resumePath = await uploadFileBuffer(await resumeFile.arrayBuffer(), filename, resumeFile.type || "application/pdf");
 			} catch (err) {
 				console.error("File save error:", err);
 				return fail(500, {
 					success: false,
-					error: "Failed to upload resume file. Please try again."
+					error: "Failed to upload resume to storage. Please try again."
 				});
 			}
 		} else return fail(400, {
@@ -103,20 +100,7 @@ var actions = {
 		});
 		await updateEntireDatabase(db);
 		logAction("STUDENT_REGISTER", `New student ${fullName} (${email}) registered.`);
-		const token = createToken({
-			id: newStudent.id,
-			email: newStudent.email,
-			name: newStudent.fullName,
-			role: "student"
-		});
-		cookies.set("nexora_session", token, {
-			path: "/",
-			httpOnly: true,
-			secure: true,
-			sameSite: "lax",
-			maxAge: 3600 * 24
-		});
-		throw redirect(303, "/student");
+		throw redirect(303, "/login?registered=true");
 	},
 	registerCompany: async ({ request, cookies }) => {
 		const formData = await request.formData();
@@ -162,7 +146,7 @@ var actions = {
 			industryType,
 			companyLogo,
 			password: hashPassword(password),
-			status: "Pending",
+			status: "Approved",
 			isSuspended: false,
 			createdAt: (/* @__PURE__ */ new Date()).toISOString()
 		};
@@ -185,20 +169,7 @@ var actions = {
 		});
 		await updateEntireDatabase(db);
 		logAction("COMPANY_REGISTER", `New company ${companyName} (${companyEmail}) submitted for approval.`);
-		const token = createToken({
-			id: newCompany.id,
-			email: newCompany.companyEmail,
-			name: newCompany.companyName,
-			role: "company"
-		});
-		cookies.set("nexora_session", token, {
-			path: "/",
-			httpOnly: true,
-			secure: true,
-			sameSite: "lax",
-			maxAge: 3600 * 24
-		});
-		throw redirect(303, "/company");
+		throw redirect(303, "/login?registered=true");
 	}
 };
 //#endregion

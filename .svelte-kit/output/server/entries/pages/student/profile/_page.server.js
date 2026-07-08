@@ -1,7 +1,7 @@
 import { i as logAction, o as updateEntireDatabase, r as getCollection } from "../../../../chunks/db.js";
 import { a as requireRole } from "../../../../chunks/auth.js";
+import { t as uploadFileBuffer } from "../../../../chunks/storageHelper.js";
 import { fail } from "@sveltejs/kit";
-import "fs";
 import path from "path";
 //#region src/routes/student/profile/+page.server.js
 async function load({ cookies }) {
@@ -69,14 +69,16 @@ var actions = {
 			error: "Student profile not found"
 		});
 		const ext = path.extname(resumeFile.name) || ".pdf";
-		const filename = `resume_${Date.now()}_${Math.random().toString(36).substr(2, 6)}${ext}`;
-		path.resolve("uploads/resumes", filename);
+		const filename = `resumes/resume_${Date.now()}_${Math.random().toString(36).substr(2, 6)}${ext}`;
 		try {
-			const base64Data = Buffer.from(await resumeFile.arrayBuffer()).toString("base64");
+			const buffer = Buffer.from(await resumeFile.arrayBuffer());
+			const base64Data = buffer.toString("base64");
 			db.students[studentIndex].resumeData = base64Data;
 			db.students[studentIndex].resumeName = resumeFile.name;
 			db.students[studentIndex].resumeMimeType = resumeFile.type || "application/pdf";
 			db.students[studentIndex].resumePath = db.students[studentIndex].id;
+			const storagePath = await uploadFileBuffer(buffer, filename, resumeFile.type || "application/pdf");
+			db.students[studentIndex].resumeStoragePath = storagePath;
 			await updateEntireDatabase(db);
 			logAction("STUDENT_UPDATE_RESUME", `Student ${db.students[studentIndex].fullName} uploaded a new resume.`);
 			return {
@@ -87,7 +89,7 @@ var actions = {
 			console.error("Resume swap error:", err);
 			return fail(500, {
 				success: false,
-				error: "Failed to save resume. Please try again."
+				error: "Failed to save resume to storage. Please try again."
 			});
 		}
 	}

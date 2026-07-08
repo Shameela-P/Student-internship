@@ -41,11 +41,13 @@ async function load({ cookies, url }) {
 			const company = companyMap.get(internship.companyId);
 			if (!company || company.isSuspended || company.status !== "Approved") return false;
 			if (searchQuery) {
-				const titleMatch = internship.title.toLowerCase().includes(searchQuery);
-				const descMatch = internship.description.toLowerCase().includes(searchQuery);
-				const skillMatch = internship.skillsRequired.some((s) => s.toLowerCase().includes(searchQuery));
-				const companyMatch = company.companyName.toLowerCase().includes(searchQuery);
-				if (!titleMatch && !descMatch && !skillMatch && !companyMatch) return false;
+				if (!searchQuery.split(/\s+/).filter(Boolean).every((token) => {
+					const titleMatch = internship.title.toLowerCase().includes(token);
+					const descMatch = internship.description.toLowerCase().includes(token);
+					const skillMatch = internship.skillsRequired.some((s) => s.toLowerCase().includes(token));
+					const companyMatch = company.companyName.toLowerCase().includes(token);
+					return titleMatch || descMatch || skillMatch || companyMatch;
+				})) return false;
 			}
 			if (filterDomain && internship.domain !== filterDomain) return false;
 			if (filterLocation && !internship.location.toLowerCase().includes(filterLocation)) return false;
@@ -55,7 +57,7 @@ async function load({ cookies, url }) {
 			if (filterJobOpp && internship.jobOpportunity !== filterJobOpp) return false;
 			if (filterCert && internship.certificateAvailable !== filterCert) return false;
 			return true;
-		}).map((internship) => {
+		}).slice(0, 60).map((internship) => {
 			const company = companyMap.get(internship.companyId);
 			const hasApplied = db.applications.some((a) => a.studentId === student.id && a.internshipId === internship.id);
 			return {

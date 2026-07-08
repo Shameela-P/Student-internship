@@ -112,7 +112,8 @@ async function POST({ request, cookies }) {
 			maxAge: 3600 * 24
 		});
 		const roleFormatted = user.role.charAt(0).toUpperCase() + user.role.slice(1);
-		logAction(`${user.role.toUpperCase()}_LOGIN`, `${roleFormatted} ${name} (${email}) logged in via Google.`);
+		const ip = request.headers.get("x-forwarded-for") || "Unknown IP";
+		logAction(`${user.role.toUpperCase()}_LOGIN`, `Logged in via Google`, name, roleFormatted, email, "Dashboard", ip);
 		return json({
 			success: true,
 			redirect: redirectPath

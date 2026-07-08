@@ -13,9 +13,16 @@ async function GET({ params }) {
 			"Content-Disposition": `inline; filename="${studentWithResume.resumeName || "resume.pdf"}"`
 		} });
 	}
-	const filePath = path.resolve("uploads/resumes", filenameOrId);
+	const resumesDir = !!(process.env.VERCEL || process.env.AWS_REGION || process.env.AWS_EXECUTION_ENV) ? "/tmp/resumes" : path.resolve("uploads/resumes");
+	const filePath = path.join(resumesDir, filenameOrId);
 	if (!fs.existsSync(filePath)) return new Response("Not Found", { status: 404 });
-	const fileBuffer = fs.readFileSync(filePath);
+	let fileBuffer;
+	try {
+		fileBuffer = fs.readFileSync(filePath);
+	} catch (err) {
+		console.error("Error reading resume file:", err);
+		return new Response("Internal Server Error", { status: 500 });
+	}
 	let contentType = "application/octet-stream";
 	if (filenameOrId.endsWith(".pdf")) contentType = "application/pdf";
 	else if (filenameOrId.endsWith(".doc") || filenameOrId.endsWith(".docx")) contentType = "application/msword";

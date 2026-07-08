@@ -45,26 +45,22 @@
 			}
 		} catch (error) {
 			console.error("Google Auth Error", error);
-<<<<<<< HEAD
-			googleError = error?.code === 'auth/popup-blocked' ? 'Popup was blocked by your browser. Please allow popups and try again.' : 'Google authentication was cancelled or failed.';
-=======
-			if (error.code === 'auth/popup-closed-by-user') {
-				googleError = "Sign-in popup was closed before completion.";
-			} else if (error.code === 'auth/popup-blocked') {
-				googleError = "Sign-in popup was blocked by your browser.";
-			} else if (error.message && error.message.toLowerCase().includes('third-party cookies')) {
-				googleError = "Please enable third-party cookies for Google Login.";
+			if (error?.code === 'auth/popup-closed-by-user') {
+				googleError = 'Sign-in popup was closed before completion.';
+			} else if (error?.code === 'auth/popup-blocked') {
+				googleError = 'Sign-in popup was blocked by your browser.';
+			} else if (error?.message && error.message.toLowerCase().includes('third-party cookies')) {
+				googleError = 'Please enable third-party cookies for Google Login.';
 			} else {
-				googleError = "Google authentication failed. Please try again later.";
+				googleError = error?.message || 'Google authentication failed. Please try again later.';
 			}
->>>>>>> 5d366a2a4dc395f3384571ee5f12913df8f6d8b8
 		} finally {
 			googleLoading = false;
 		}
 	}
 </script>
 
-<div class="min-h-screen flex items-center justify-center p-6 relative">
+<div class="flex-1 w-full h-full flex flex-col items-center justify-center p-4 sm:p-8 relative">
 	<!-- Ambient Background Glows -->
 	<div class="absolute top-1/4 left-1/4 w-80 h-80 rounded-full bg-indigo-500/10 blur-[100px] pointer-events-none"></div>
 	<div class="absolute bottom-1/4 right-1/4 w-96 h-96 rounded-full bg-emerald-500/10 blur-[120px] pointer-events-none"></div>
@@ -121,9 +117,9 @@
 		{/if}
 
 		<!-- Error Feedback -->
-		{#if form?.error || googleError}
-			<div class="mb-6 p-4 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-600 dark:text-rose-400 text-xs font-semibold flex items-center gap-2">
-				<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg>
+		{#if (form && form.error) || (googleError && googleError.length > 0)}
+			<div class="mb-6 p-4 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-600 dark:text-rose-400 text-sm font-semibold flex items-center gap-2 shadow-sm animate-in fade-in slide-in-from-top-2">
+				<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="shrink-0"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg>
 				{form?.error || googleError}
 			</div>
 		{/if}
@@ -138,17 +134,13 @@
 					update();
 				};
 			}}
-			class="space-y-5"
+			class="space-y-6 w-full"
 		>
 			<!-- Hidden field for active role -->
 			<input type="hidden" name="role" value={activeRole} />
 
 			<div>
-<<<<<<< HEAD
-				<label for="email" class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2" aria-label="Email address">
-=======
 				<label for="email" class="block text-xs font-bold text-muted dark:text-muted-dark uppercase tracking-wider mb-2">
->>>>>>> 5d366a2a4dc395f3384571ee5f12913df8f6d8b8
 					{#if activeRole === 'company'}
 						Company Email Address
 					{:else}
@@ -167,11 +159,7 @@
 
 			<div>
 				<div class="flex items-center justify-between mb-2">
-<<<<<<< HEAD
-					<label for="password" class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider" aria-label="Password">
-=======
 					<label for="password" class="block text-xs font-bold text-muted dark:text-muted-dark uppercase tracking-wider">
->>>>>>> 5d366a2a4dc395f3384571ee5f12913df8f6d8b8
 						Password
 					</label>
 				</div>
@@ -199,29 +187,16 @@
 			</button>
 
 			<div class="relative flex items-center py-2">
-<<<<<<< HEAD
-				<div class="grow border-t border-slate-200 dark:border-slate-800"></div>
-				<span class="shrink-0 mx-4 text-xs text-slate-600 dark:text-slate-500">or</span>
-				<div class="grow border-t border-slate-200 dark:border-slate-800"></div>
-			</div>
-
-			<div>
-				<label for="googleRole" class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2" aria-label="Google sign-in role">
-					ROLE (ONLY FOR FIRST-TIME GOOGLE SIGN-UP)
-				</label>
-				<select id="googleRole" bind:value={googleRole} class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-950/30 focus:border-indigo-500 dark:focus:border-indigo-400 focus:outline-none transition text-sm text-slate-900 dark:text-white cursor-pointer">
-=======
 				<div class="flex-grow border-t border-divider dark:border-divider-dark"></div>
-				<span class="flex-shrink-0 mx-4 text-xs text-slate-600 dark:text-slate-400 dark:text-slate-500">or</span>
+				<span class="flex-shrink-0 mx-4 text-xs text-slate-600 dark:text-slate-400">or</span>
 				<div class="flex-grow border-t border-divider dark:border-divider-dark"></div>
 			</div>
 
 			<div>
-				<label class="block text-xs font-bold text-muted dark:text-muted-dark uppercase tracking-wider mb-2">
+				<label for="googleRole" class="block text-xs font-bold text-muted dark:text-muted-dark uppercase tracking-wider mb-2">
 					ROLE (ONLY FOR FIRST-TIME GOOGLE SIGN-UP)
 				</label>
-				<select bind:value={googleRole} class="w-full px-4 py-3 rounded-xl border border-divider dark:border-divider-dark bg-white/50 dark:bg-slate-950/30 focus:border-indigo-500 dark:focus:border-indigo-400 focus:outline-none transition text-sm text-primary dark:text-primary-dark cursor-pointer">
->>>>>>> 5d366a2a4dc395f3384571ee5f12913df8f6d8b8
+				<select id="googleRole" bind:value={googleRole} class="w-full px-4 py-3 rounded-xl border border-divider dark:border-divider-dark bg-white/50 dark:bg-slate-950/30 focus:border-indigo-500 dark:focus:border-indigo-400 focus:outline-none transition text-sm text-primary dark:text-primary-dark cursor-pointer">
 					<option value="student">Student / Intern</option>
 					<option value="company">Company / Employer</option>
 				</select>

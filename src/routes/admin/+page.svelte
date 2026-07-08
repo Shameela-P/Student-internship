@@ -258,15 +258,9 @@
 
 <!-- Warning Modal -->
 {#if modWarnCompany}
-<<<<<<< HEAD
 	<div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm" onclick={() => modWarnCompany = null} role="button" tabindex="0" onkeydown={(e) => { if(e.key === 'Escape' || e.key === 'Enter' || e.key === ' ') modWarnCompany = null; }}>
-		<div class="w-full max-w-md rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 shadow-2xl relative" onclick={(e) => e.stopPropagation()} role="presentation" onkeydown={(e) => e.stopPropagation()}>
-			<button onclick={() => modWarnCompany = null} aria-label="Close modal" class="absolute top-4 right-4 p-1.5 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-600 dark:hover:text-slate-900 dark:text-white cursor-pointer transition">
-=======
-	<div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm" onclick={() => modWarnCompany = null}>
-		<div class="w-full max-w-md rounded-2xl bg-surface dark:bg-surface-dark border border-divider dark:border-divider-dark p-6 shadow-2xl relative" onclick={(e) => e.stopPropagation()}>
-			<button onclick={() => modWarnCompany = null} class="absolute top-4 right-4 p-1.5 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-600 dark:hover:text-primary dark:text-primary-dark cursor-pointer transition">
->>>>>>> 5d366a2a4dc395f3384571ee5f12913df8f6d8b8
+		<div class="w-full max-w-md rounded-2xl bg-surface dark:bg-surface-dark border border-divider dark:border-divider-dark p-6 shadow-2xl relative" onclick={(e) => e.stopPropagation()} role="presentation" onkeydown={(e) => e.stopPropagation()}>
+			<button onclick={() => modWarnCompany = null} aria-label="Close modal" class="absolute top-4 right-4 p-1.5 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-600 dark:hover:text-primary dark:text-primary-dark cursor-pointer transition">
 				<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" x2="6" y1="6" y2="18"/><line x1="6" x2="18" y1="6" y2="18"/></svg>
 			</button>
 

@@ -2,7 +2,7 @@
 	import { onMount } from 'svelte';
 	import './layout.css';
 	import favicon from '$lib/assets/favicon.svg';
-	import CookieConsent from '$lib/components/CookieConsent.svelte';
+	// CookieConsent moved to page level
 
 	let { data, children } = $props();
 
@@ -59,8 +59,8 @@
 	<div class="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] rounded-full bg-indigo-500/10 blur-[150px] pointer-events-none"></div>
 	<div class="absolute bottom-[-10%] right-[-10%] w-[60%] h-[60%] rounded-full bg-emerald-500/10 blur-[180px] pointer-events-none"></div>
 
-	<!-- Theme toggler float button (Bottom Left) -->
-	<div class="fixed bottom-6 left-6 z-50">
+	<!-- Theme toggler float button (Top Right) -->
+	<div class="fixed top-6 right-6 z-50">
 		{#if themeMenuOpen}
 			<div class="absolute bottom-16 left-0 flex flex-col gap-2 p-2 rounded-2xl bg-surface dark:bg-surface-dark shadow-2xl border border-divider dark:border-divider-dark animate-in slide-in-from-bottom-2">
 				<button onclick={() => setTheme('light')} class="px-4 py-2 text-xs font-bold text-left rounded-xl transition hover:bg-slate-100 dark:hover:bg-slate-800 {theme === 'light' ? 'text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-500/10' : 'text-slate-600 dark:text-slate-400'}">Light</button>
@@ -88,5 +88,5 @@
 		{@render children()}
 	</main>
 	
-	<CookieConsent />
+	<!-- Cookie consent removed from global layout (moved to landing page) -->
 </div>

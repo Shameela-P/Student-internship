@@ -63,11 +63,7 @@
 			{#if selectedTemplate}
 				<div class="space-y-6">
 					<div>
-<<<<<<< HEAD
-						<label for="templateName" class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Template Name</label>
-=======
 						<label for="templateName" class="block text-xs font-bold text-muted dark:text-muted-dark uppercase tracking-wider mb-2">Template Name</label>
->>>>>>> 5d366a2a4dc395f3384571ee5f12913df8f6d8b8
 						<input 
 							id="templateName"
 							type="text" 
@@ -76,11 +72,7 @@
 						/>
 					</div>
 					<div>
-<<<<<<< HEAD
-						<label for="templateSubject" class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Email Subject</label>
-=======
 						<label for="templateSubject" class="block text-xs font-bold text-muted dark:text-muted-dark uppercase tracking-wider mb-2">Email Subject</label>
->>>>>>> 5d366a2a4dc395f3384571ee5f12913df8f6d8b8
 						<input 
 							id="templateSubject"
 							type="text" 
@@ -89,11 +81,7 @@
 						/>
 					</div>
 					<div>
-<<<<<<< HEAD
-						<label for="templateBody" class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Email Body</label>
-=======
 						<label for="templateBody" class="block text-xs font-bold text-muted dark:text-muted-dark uppercase tracking-wider mb-2">Email Body</label>
->>>>>>> 5d366a2a4dc395f3384571ee5f12913df8f6d8b8
 						<textarea 
 							id="templateBody"
 							bind:value={selectedTemplate.body}

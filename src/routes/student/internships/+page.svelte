@@ -304,13 +304,7 @@
 {#if showModal && selectedInternship}
 	<!-- svelte-ignore a11y_click_events_have_key_events -->
 	<!-- svelte-ignore a11y_no_static_element_interactions -->
-<<<<<<< HEAD
-	<div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm" onclick={closeModal} role="button" tabindex="0" onkeydown={(e) => { if(e.key === 'Escape' || e.key === 'Enter' || e.key === ' ') closeModal(); }}>
-=======
-	<div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 dark:bg-slate-950/80 backdrop-blur-md" onclick={closeModal}>
-		<!-- svelte-ignore a11y_click_events_have_key_events -->
-		<!-- svelte-ignore a11y_no_static_element_interactions -->
->>>>>>> 5d366a2a4dc395f3384571ee5f12913df8f6d8b8
+	<div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 dark:bg-slate-950/80 backdrop-blur-md" onclick={closeModal} role="button" tabindex="0" onkeydown={(e) => { if(e.key === 'Escape' || e.key === 'Enter' || e.key === ' ') closeModal(); }}>
 		<div
 			class="w-full max-w-xl rounded-3xl glass-card relative max-h-[90vh] overflow-y-auto"
 			onclick={(e) => e.stopPropagation()}
@@ -318,13 +312,8 @@
 			onkeydown={(e) => e.stopPropagation()}
 		>
 			<!-- Close button -->
-<<<<<<< HEAD
-			<button onclick={closeModal} aria-label="Close modal" class="absolute top-4 right-4 p-1.5 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:text-white cursor-pointer transition">
-				<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" x2="6" y1="6" y2="18"/><line x1="6" x2="18" y1="6" y2="18"/></svg>
-=======
-			<button onclick={closeModal} class="absolute top-6 right-6 p-2 rounded-xl text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white cursor-pointer transition-all duration-200">
+			<button onclick={closeModal} aria-label="Close modal" class="absolute top-6 right-6 p-2 rounded-xl text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white cursor-pointer transition-all duration-200">
 				<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" x2="6" y1="6" y2="18"/><line x1="6" x2="18" y1="6" y2="18"/></svg>
->>>>>>> 5d366a2a4dc395f3384571ee5f12913df8f6d8b8
 			</button>
 
 			<div class="p-8 border-b border-slate-200/50 dark:border-slate-700/50 bg-gradient-to-br from-indigo-50/50 to-transparent dark:from-indigo-900/10 dark:to-transparent">

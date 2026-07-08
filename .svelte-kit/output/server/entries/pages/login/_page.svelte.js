@@ -1,32 +1,70 @@
-import { S as escape_html, b as attr, s as stringify, t as attr_class } from "../../../chunks/server.js";
+import "../../../chunks/index-server.js";
+import { C as attr, T as escape_html, c as store_get, h as getContext, l as stringify, t as attr_class, u as unsubscribe_stores } from "../../../chunks/server.js";
 import "../../../chunks/firebase.js";
+import "../../../chunks/client.js";
 import "../../../chunks/forms.js";
 import "firebase/auth";
+//#region node_modules/@sveltejs/kit/src/runtime/app/stores.js
+/**
+* A function that returns all of the contextual stores. On the server, this must be called during component initialization.
+* Only use this if you need to defer store subscription until after the component has mounted, for some reason.
+*
+* @deprecated Use `$app/state` instead (requires Svelte 5, [see docs for more info](https://svelte.dev/docs/kit/migrating-to-sveltekit-2#SvelteKit-2.12:-$app-stores-deprecated))
+*/
+var getStores = () => {
+	const stores$1 = getContext("__svelte__");
+	return {
+		/** @type {typeof page} */
+		page: { subscribe: stores$1.page.subscribe },
+		/** @type {typeof navigating} */
+		navigating: { subscribe: stores$1.navigating.subscribe },
+		/** @type {typeof updated} */
+		updated: stores$1.updated
+	};
+};
+/**
+* A readable store whose value contains page data.
+*
+* On the server, this store can only be subscribed to during component initialization. In the browser, it can be subscribed to at any time.
+*
+* @deprecated Use `page` from `$app/state` instead (requires Svelte 5, [see docs for more info](https://svelte.dev/docs/kit/migrating-to-sveltekit-2#SvelteKit-2.12:-$app-stores-deprecated))
+* @type {import('svelte/store').Readable<import('@sveltejs/kit').Page>}
+*/
+var page = { subscribe(fn) {
+	return getStores().page.subscribe(fn);
+} };
+//#endregion
 //#region src/routes/login/+page.svelte
 function _page($$renderer, $$props) {
 	$$renderer.component(($$renderer) => {
+		var $$store_subs;
 		let { form } = $$props;
 		let activeRole = "student";
 		let loading = false;
 		let googleRole = "student";
 		let googleLoading = false;
 		let googleError = "";
-		$$renderer.push(`<div class="min-h-screen flex items-center justify-center p-6 relative"><div class="absolute top-1/4 left-1/4 w-80 h-80 rounded-full bg-indigo-500/10 blur-[100px] pointer-events-none"></div> <div class="absolute bottom-1/4 right-1/4 w-96 h-96 rounded-full bg-emerald-500/10 blur-[120px] pointer-events-none"></div> <div class="w-full max-w-lg rounded-3xl glass p-8 md:p-10 shadow-2xl relative border border-slate-200/20 dark:border-slate-800/40"><a href="/" class="inline-flex items-center gap-1 text-xs font-semibold text-slate-500 hover:text-indigo-500 dark:text-slate-400 dark:hover:text-indigo-400 mb-8 transition cursor-pointer"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"></path></svg> Back to home</a> <div class="text-center mb-8"><h1 class="font-display font-black text-3xl text-slate-900 dark:text-white tracking-tight">Welcome Back</h1> <p class="text-sm text-slate-500 dark:text-slate-400 mt-2">Sign in to access your Nexora dashboard.</p></div> <div class="grid grid-cols-3 gap-2 p-1.5 bg-slate-100 dark:bg-slate-900/60 rounded-2xl mb-8 border border-slate-200/5 dark:border-slate-800/40"><button type="button"${attr_class(`py-2.5 rounded-xl text-xs font-bold transition duration-200 cursor-pointer bg-white dark:bg-slate-800 text-indigo-600 dark:text-white shadow-sm`)}>Student</button> <button type="button"${attr_class(`py-2.5 rounded-xl text-xs font-bold transition duration-200 cursor-pointer text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200`)}>Company</button> <button type="button"${attr_class(`py-2.5 rounded-xl text-xs font-bold transition duration-200 cursor-pointer text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200`)}>Admin</button></div> `);
+		$$renderer.push(`<div class="min-h-screen flex items-center justify-center p-6 relative"><div class="absolute top-1/4 left-1/4 w-80 h-80 rounded-full bg-indigo-500/10 blur-[100px] pointer-events-none"></div> <div class="absolute bottom-1/4 right-1/4 w-96 h-96 rounded-full bg-emerald-500/10 blur-[120px] pointer-events-none"></div> <div class="w-full max-w-lg rounded-3xl glass p-8 md:p-10 shadow-2xl relative border border-slate-200/20 dark:border-slate-800/40"><a href="/" class="inline-flex items-center gap-1 text-xs font-semibold text-slate-500 hover:text-indigo-500 dark:text-slate-400 dark:hover:text-indigo-400 mb-8 transition cursor-pointer"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"></path></svg> Back to home</a> <div class="text-center mb-8"><h1 class="font-display font-black text-3xl text-primary dark:text-primary-dark tracking-tight">Welcome Back</h1> <p class="text-sm text-muted dark:text-muted-dark mt-2">Sign in to access your Nexora dashboard.</p></div> <div class="grid grid-cols-3 gap-2 p-1.5 bg-slate-100 dark:bg-slate-900/60 rounded-2xl mb-8 border border-slate-200/5 dark:border-slate-800/40"><button type="button"${attr_class(`py-2.5 rounded-xl text-xs font-bold transition duration-200 cursor-pointer bg-white dark:bg-slate-800 text-indigo-600 dark:text-white shadow-sm`)}>Student</button> <button type="button"${attr_class(`py-2.5 rounded-xl text-xs font-bold transition duration-200 cursor-pointer text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200`)}>Company</button> <button type="button"${attr_class(`py-2.5 rounded-xl text-xs font-bold transition duration-200 cursor-pointer text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200`)}>Admin</button></div> `);
+		if (store_get($$store_subs ??= {}, "$page", page).url.searchParams.get("registered") === "true") {
+			$$renderer.push("<!--[0-->");
+			$$renderer.push(`<div class="mb-6 p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-xs font-semibold flex items-center gap-2"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg> Registration successful! Please sign in.</div>`);
+		} else $$renderer.push("<!--[-1-->");
+		$$renderer.push(`<!--]--> `);
 		if (form?.error || googleError) {
 			$$renderer.push("<!--[0-->");
 			$$renderer.push(`<div class="mb-6 p-4 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-600 dark:text-rose-400 text-xs font-semibold flex items-center gap-2"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" x2="12" y1="8" y2="12"></line><line x1="12" x2="12.01" y1="16" y2="16"></line></svg> ${escape_html(form?.error || googleError)}</div>`);
 		} else $$renderer.push("<!--[-1-->");
-		$$renderer.push(`<!--]--> <form method="POST" class="space-y-5"><input type="hidden" name="role"${attr("value", activeRole)}/> <div><label for="email" class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2" aria-label="Email address">`);
+		$$renderer.push(`<!--]--> <form method="POST" class="space-y-5"><input type="hidden" name="role"${attr("value", activeRole)}/> <div><label for="email" class="block text-xs font-bold text-muted dark:text-muted-dark uppercase tracking-wider mb-2">`);
 		$$renderer.push("<!--[-1-->");
 		$$renderer.push(`Email Address`);
-		$$renderer.push(`<!--]--></label> <input type="email" id="email" name="email" required="" placeholder="name@example.com" class="w-full px-4 py-3.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-950/30 focus:border-indigo-500 dark:focus:border-indigo-400 focus:ring-2 focus:ring-indigo-500/10 focus:outline-none transition text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-600"/></div> <div><div class="flex items-center justify-between mb-2"><label for="password" class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider" aria-label="Password">Password</label></div> <input type="password" id="password" name="password" required="" placeholder="••••••••" class="w-full px-4 py-3.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-950/30 focus:border-indigo-500 dark:focus:border-indigo-400 focus:ring-2 focus:ring-indigo-500/10 focus:outline-none transition text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-600"/></div> <button type="submit"${attr("disabled", loading, true)} class="w-full py-3.5 rounded-xl font-bold text-slate-900 dark:text-white bg-[#cc2233] hover:bg-[#b01e2c] active:scale-95 transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50">`);
+		$$renderer.push(`<!--]--></label> <input type="email" id="email" name="email" required="" placeholder="name@example.com" class="w-full px-4 py-3.5 rounded-xl border border-divider dark:border-divider-dark bg-white/50 dark:bg-slate-950/30 focus:border-indigo-500 dark:focus:border-indigo-400 focus:ring-2 focus:ring-indigo-500/10 focus:outline-none transition text-sm text-primary dark:text-primary-dark placeholder-slate-400 dark:placeholder-slate-600"/></div> <div><div class="flex items-center justify-between mb-2"><label for="password" class="block text-xs font-bold text-muted dark:text-muted-dark uppercase tracking-wider">Password</label></div> <input type="password" id="password" name="password" required="" placeholder="••••••••" class="w-full px-4 py-3.5 rounded-xl border border-divider dark:border-divider-dark bg-white/50 dark:bg-slate-950/30 focus:border-indigo-500 dark:focus:border-indigo-400 focus:ring-2 focus:ring-indigo-500/10 focus:outline-none transition text-sm text-primary dark:text-primary-dark placeholder-slate-400 dark:placeholder-slate-600"/></div> <button type="submit"${attr("disabled", loading, true)} class="w-full py-3.5 rounded-xl font-bold text-primary dark:text-primary-dark bg-surface hover:bg-surface active:scale-95 transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50">`);
 		$$renderer.push("<!--[-1-->");
 		$$renderer.push(`Sign In`);
-		$$renderer.push(`<!--]--></button> <div class="relative flex items-center py-2"><div class="grow border-t border-slate-200 dark:border-slate-800"></div> <span class="shrink-0 mx-4 text-xs text-slate-600 dark:text-slate-500">or</span> <div class="grow border-t border-slate-200 dark:border-slate-800"></div></div> <div><label for="googleRole" class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2" aria-label="Google sign-in role">ROLE (ONLY FOR FIRST-TIME GOOGLE SIGN-UP)</label> `);
+		$$renderer.push(`<!--]--></button> <div class="relative flex items-center py-2"><div class="flex-grow border-t border-divider dark:border-divider-dark"></div> <span class="flex-shrink-0 mx-4 text-xs text-slate-600 dark:text-slate-400">or</span> <div class="flex-grow border-t border-divider dark:border-divider-dark"></div></div> <div><label for="googleRole" class="block text-xs font-bold text-muted dark:text-muted-dark uppercase tracking-wider mb-2">ROLE (ONLY FOR FIRST-TIME GOOGLE SIGN-UP)</label> `);
 		$$renderer.select({
 			id: "googleRole",
 			value: googleRole,
-			class: "w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-950/30 focus:border-indigo-500 dark:focus:border-indigo-400 focus:outline-none transition text-sm text-slate-900 dark:text-white cursor-pointer"
+			class: "w-full px-4 py-3 rounded-xl border border-divider dark:border-divider-dark bg-white/50 dark:bg-slate-950/30 focus:border-indigo-500 dark:focus:border-indigo-400 focus:outline-none transition text-sm text-primary dark:text-primary-dark cursor-pointer"
 		}, ($$renderer) => {
 			$$renderer.option({ value: "student" }, ($$renderer) => {
 				$$renderer.push(`Student / Intern`);
@@ -42,6 +80,7 @@ function _page($$renderer, $$props) {
 		$$renderer.push("<!--[0-->");
 		$$renderer.push(`<div class="mt-8 pt-6 border-t border-slate-200/10 dark:border-slate-800/40 text-center text-sm"><span class="text-slate-500">New to Nexora?</span> <a${attr("href", `/register?role=${stringify(activeRole)}`)} class="font-bold text-indigo-500 dark:text-indigo-400 hover:underline ml-1">Create an Account</a></div>`);
 		$$renderer.push(`<!--]--></div></div>`);
+		if ($$store_subs) unsubscribe_stores($$store_subs);
 	});
 }
 //#endregion

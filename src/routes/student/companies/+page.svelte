@@ -9,16 +9,7 @@
 	const domains = $derived(data.domains);
 	const stats = $derived(data.stats);
 	const filters = $derived(data.filters);
-	// svelte-ignore state_referenced_locally
-	const initialFilters = { ...data.filters };
-
-	// svelte-ignore state_referenced_locally
-	let searchVal = $state(initialFilters.query);
-	let selectedIndustry = $state(initialFilters.industry);
-	let selectedDomain = $state(initialFilters.domain);
-	let searchLocation = $state(initialFilters.location);
-	let selectedMode = $state(initialFilters.mode);
-	let selectedType = $state(initialFilters.type);
+	// We will use filters directly for values to keep them in sync with URL
 
 	let savedCompanies = $state(new Set());
 	let selectedCompanyDetail = $state(null);
@@ -250,20 +241,15 @@
 </section>
 
 <!-- Auto Scrolling Recruiters Marquee -->
-<<<<<<< HEAD
-<section class="mb-16 py-5 border-y border-slate-200 dark:border-slate-800/80 bg-slate-100 dark:bg-slate-900/30 overflow-hidden w-full">
+<section class="mb-16 py-5 border-y border-divider dark:border-divider-dark/80 bg-slate-100 dark:bg-slate-900/30 overflow-hidden w-full">
 	<div class="max-w-6xl mx-auto px-6 flex flex-col md:flex-row items-center gap-6 w-full">
-=======
-<section class="mb-16 py-5 border-y border-divider dark:border-divider-dark/80 bg-slate-100 dark:bg-slate-900/30">
-	<div class="max-w-6xl mx-auto px-6 flex flex-col md:flex-row items-center gap-6">
->>>>>>> 5d366a2a4dc395f3384571ee5f12913df8f6d8b8
 		<div class="shrink-0 text-xs font-bold text-slate-600 dark:text-slate-400 uppercase tracking-widest">Top Recruiters:</div>
 		<div class="marquee-container flex-grow w-full overflow-hidden">
 			<div class="marquee-track">
 				{#each [...featuredRecruiters, ...featuredRecruiters] as recruiter}
-					<span class="text-sm font-black font-display text-slate-600 dark:text-slate-400 hover:text-blue-400 transition-colors duration-200 cursor-default">
+					<a href="?query={encodeURIComponent(recruiter)}" class="text-sm font-black font-display text-slate-600 dark:text-slate-400 hover:text-blue-400 transition-colors duration-200">
 						{recruiter}
-					</span>
+					</a>
 				{/each}
 			</div>
 		</div>
@@ -286,7 +272,7 @@
 				<input
 					type="text"
 					name="query"
-					bind:value={searchVal}
+					value={filters.query}
 					placeholder="Search company or description..."
 					class="w-full pl-9 pr-4 py-2.5 rounded-xl border border-divider dark:border-divider-dark bg-surface dark:bg-surface-dark/50 text-xs text-primary dark:text-primary-dark focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500/20"
 				/>
@@ -300,12 +286,11 @@
 			<div class="min-w-[140px]">
 				<select
 					name="industry"
-					bind:value={selectedIndustry}
-					class="w-full px-3 py-2.5 rounded-xl border border-divider dark:border-divider-dark bg-slate-900 text-xs text-primary dark:text-primary-dark focus:outline-none focus:border-blue-500"
+					class="w-full px-3 py-2.5 rounded-xl border border-divider dark:border-divider-dark bg-surface dark:bg-surface-dark/50 text-xs text-primary dark:text-primary-dark focus:outline-none focus:border-blue-500"
 				>
-					<option value="">All Sectors</option>
+					<option value="" selected={!filters.industry}>All Sectors</option>
 					{#each industries as industry}
-						<option value={industry}>{industry}</option>
+						<option value={industry} selected={filters.industry === industry}>{industry}</option>
 					{/each}
 				</select>
 			</div>
@@ -314,12 +299,11 @@
 			<div class="min-w-[140px]">
 				<select
 					name="domain"
-					bind:value={selectedDomain}
-					class="w-full px-3 py-2.5 rounded-xl border border-divider dark:border-divider-dark bg-slate-900 text-xs text-primary dark:text-primary-dark focus:outline-none focus:border-blue-500"
+					class="w-full px-3 py-2.5 rounded-xl border border-divider dark:border-divider-dark bg-surface dark:bg-surface-dark/50 text-xs text-primary dark:text-primary-dark focus:outline-none focus:border-blue-500"
 				>
-					<option value="">All Domains</option>
+					<option value="" selected={!filters.domain}>All Domains</option>
 					{#each domains as domain}
-						<option value={domain}>{domain}</option>
+						<option value={domain} selected={filters.domain === domain}>{domain}</option>
 					{/each}
 				</select>
 			</div>
@@ -329,7 +313,7 @@
 				<input
 					type="text"
 					name="location"
-					bind:value={searchLocation}
+					value={filters.location}
 					placeholder="Location..."
 					class="w-full pl-9 pr-4 py-2.5 rounded-xl border border-divider dark:border-divider-dark bg-surface dark:bg-surface-dark/50 text-xs text-primary dark:text-primary-dark focus:outline-none focus:border-blue-500"
 				/>
@@ -343,13 +327,12 @@
 			<div class="min-w-[110px]">
 				<select
 					name="mode"
-					bind:value={selectedMode}
-					class="w-full px-3 py-2.5 rounded-xl border border-divider dark:border-divider-dark bg-slate-900 text-xs text-primary dark:text-primary-dark focus:outline-none focus:border-blue-500"
+					class="w-full px-3 py-2.5 rounded-xl border border-divider dark:border-divider-dark bg-surface dark:bg-surface-dark/50 text-xs text-primary dark:text-primary-dark focus:outline-none focus:border-blue-500"
 				>
-					<option value="">All Modes</option>
-					<option value="Online">Online</option>
-					<option value="Offline">Offline</option>
-					<option value="Hybrid">Hybrid</option>
+					<option value="" selected={!filters.mode}>All Modes</option>
+					<option value="Online" selected={filters.mode === 'Online'}>Online</option>
+					<option value="Offline" selected={filters.mode === 'Offline'}>Offline</option>
+					<option value="Hybrid" selected={filters.mode === 'Hybrid'}>Hybrid</option>
 				</select>
 			</div>
 
@@ -357,14 +340,13 @@
 			<div class="min-w-[130px]">
 				<select
 					name="type"
-					bind:value={selectedType}
-					class="w-full px-3 py-2.5 rounded-xl border border-divider dark:border-divider-dark bg-slate-900 text-xs text-primary dark:text-primary-dark focus:outline-none focus:border-blue-500"
+					class="w-full px-3 py-2.5 rounded-xl border border-divider dark:border-divider-dark bg-surface dark:bg-surface-dark/50 text-xs text-primary dark:text-primary-dark focus:outline-none focus:border-blue-500"
 				>
-					<option value="">All Types</option>
-					<option value="Free Internship">Free Internship</option>
-					<option value="Paid Internship">Paid Internship</option>
-					<option value="Free + Stipend">Free + Stipend</option>
-					<option value="Paid + Stipend">Paid + Stipend</option>
+					<option value="" selected={!filters.type}>All Types</option>
+					<option value="Free Internship" selected={filters.type === 'Free Internship'}>Free Internship</option>
+					<option value="Paid Internship" selected={filters.type === 'Paid Internship'}>Paid Internship</option>
+					<option value="Free + Stipend" selected={filters.type === 'Free + Stipend'}>Free + Stipend</option>
+					<option value="Paid + Stipend" selected={filters.type === 'Paid + Stipend'}>Paid + Stipend</option>
 				</select>
 			</div>
 
@@ -481,12 +463,12 @@
 						</span>
 
 						<div class="flex items-center gap-3">
-							<button
-								onclick={() => selectedCompanyDetail = comp}
+							<a
+								href="/student/companies/{comp.id}"
 								class="text-[10px] font-bold text-slate-600 dark:text-slate-400 hover:text-primary dark:text-primary-dark transition duration-200 cursor-pointer"
 							>
 								View Info
-							</button>
+							</a>
 							<a
 								href={`/student/internships?query=${encodeURIComponent(comp.companyName)}`}
 								class="text-[10px] font-bold text-blue-400 hover:text-blue-300 transition duration-200 cursor-pointer"
@@ -552,11 +534,7 @@
 			role="presentation"
 			onkeydown={(e) => e.stopPropagation()}
 		>
-<<<<<<< HEAD
-			<button onclick={() => selectedCompanyDetail = null} aria-label="Close modal" class="absolute top-4 right-4 p-1.5 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:text-white cursor-pointer transition">
-=======
-			<button onclick={() => selectedCompanyDetail = null} class="absolute top-4 right-4 p-1.5 rounded-lg text-slate-600 dark:text-slate-400 hover:text-primary dark:text-primary-dark cursor-pointer transition">
->>>>>>> 5d366a2a4dc395f3384571ee5f12913df8f6d8b8
+			<button onclick={() => selectedCompanyDetail = null} aria-label="Close modal" class="absolute top-4 right-4 p-1.5 rounded-lg text-slate-600 dark:text-slate-400 hover:text-primary dark:text-primary-dark cursor-pointer transition">
 				<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" x2="6" y1="6" y2="18"/><line x1="6" x2="18" y1="6" y2="18"/></svg>
 			</button>
 

@@ -2,13 +2,17 @@ import { t as private_env } from "./shared-server.js";
 import { redirect } from "@sveltejs/kit";
 import crypto from "crypto";
 //#region src/lib/auth.js
-var SECRET_KEY = private_env.JWT_SECRET || "nexora_super_secret_key_2026_safe";
-var REFRESH_SECRET = private_env.JWT_REFRESH_SECRET || "nx_refresh_token_very_secure_99";
+var SECRET_KEY = private_env.JWT_SECRET;
+var REFRESH_SECRET = private_env.JWT_REFRESH_SECRET;
 function verifyPassword(password, stored) {
 	try {
 		if (!stored || !stored.includes(":")) return false;
 		const [salt, hash] = stored.split(":");
-		return hash === crypto.scryptSync(password, salt, 64).toString("hex");
+		const verify = crypto.scryptSync(password, salt, 64).toString("hex");
+		const hashBuf = Buffer.from(hash, "hex");
+		const verifyBuf = Buffer.from(verify, "hex");
+		if (hashBuf.length !== verifyBuf.length) return false;
+		return crypto.timingSafeEqual(hashBuf, verifyBuf);
 	} catch (e) {
 		console.error("Password verification failed:", e);
 		return false;

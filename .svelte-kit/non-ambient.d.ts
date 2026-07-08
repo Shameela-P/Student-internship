@@ -29,13 +29,14 @@ declare module "$app/types" {
 	type MatcherParam<M> = M extends (param : string) => param is (infer U extends string) ? U : string;
 
 	export interface AppTypes {
-		RouteId(): "/" | "/admin" | "/admin/companies" | "/admin/email-templates" | "/admin/messages" | "/admin/notifications" | "/admin/students" | "/api" | "/api/banners" | "/api/banners/[filename]" | "/api/messages" | "/api/messages/read" | "/api/notifications" | "/api/notifications/mark-read" | "/api/notifications/read" | "/api/refresh" | "/api/resumes" | "/api/resumes/[filename]" | "/company" | "/company/applications" | "/company/internships" | "/company/messages" | "/company/notifications" | "/login" | "/login/google" | "/logout" | "/privacy-policy" | "/register" | "/student" | "/student/certificates" | "/student/companies" | "/student/internships" | "/student/messages" | "/student/notifications" | "/student/profile" | "/student/settings" | "/terms" | "/verify";
+		RouteId(): "/" | "/admin" | "/admin/companies" | "/admin/email-templates" | "/admin/messages" | "/admin/notifications" | "/admin/students" | "/api" | "/api/banners" | "/api/banners/[filename]" | "/api/messages" | "/api/messages/read" | "/api/notifications" | "/api/notifications/mark-read" | "/api/notifications/read" | "/api/refresh" | "/api/resumes" | "/api/resumes/[filename]" | "/company" | "/company/applications" | "/company/internships" | "/company/messages" | "/company/notifications" | "/login" | "/login/google" | "/logout" | "/privacy-policy" | "/register" | "/student" | "/student/certificates" | "/student/companies" | "/student/companies/[id]" | "/student/internships" | "/student/messages" | "/student/notifications" | "/student/profile" | "/student/settings" | "/terms" | "/verify";
 		RouteParams(): {
 			"/api/banners/[filename]": { filename: string };
-			"/api/resumes/[filename]": { filename: string }
+			"/api/resumes/[filename]": { filename: string };
+			"/student/companies/[id]": { id: string }
 		};
 		LayoutParams(): {
-			"/": { filename?: string | undefined };
+			"/": { filename?: string | undefined; id?: string | undefined };
 			"/admin": Record<string, never>;
 			"/admin/companies": Record<string, never>;
 			"/admin/email-templates": Record<string, never>;
@@ -63,9 +64,10 @@ declare module "$app/types" {
 			"/logout": Record<string, never>;
 			"/privacy-policy": Record<string, never>;
 			"/register": Record<string, never>;
-			"/student": Record<string, never>;
+			"/student": { id?: string | undefined };
 			"/student/certificates": Record<string, never>;
-			"/student/companies": Record<string, never>;
+			"/student/companies": { id?: string | undefined };
+			"/student/companies/[id]": { id: string };
 			"/student/internships": Record<string, never>;
 			"/student/messages": Record<string, never>;
 			"/student/notifications": Record<string, never>;
@@ -74,7 +76,7 @@ declare module "$app/types" {
 			"/terms": Record<string, never>;
 			"/verify": Record<string, never>
 		};
-		Pathname(): "/" | "/admin" | "/admin/companies" | "/admin/email-templates" | "/admin/messages" | "/admin/students" | `/api/banners/${string}` & {} | "/api/refresh" | `/api/resumes/${string}` & {} | "/company" | "/company/applications" | "/company/internships" | "/company/messages" | "/company/notifications" | "/login" | "/login/google" | "/logout" | "/privacy-policy" | "/register" | "/student" | "/student/certificates" | "/student/companies" | "/student/internships" | "/student/messages" | "/student/notifications" | "/student/profile" | "/student/settings" | "/terms";
+		Pathname(): "/" | "/admin" | "/admin/companies" | "/admin/email-templates" | "/admin/messages" | "/admin/students" | `/api/banners/${string}` & {} | "/api/notifications/mark-read" | "/api/refresh" | `/api/resumes/${string}` & {} | "/company" | "/company/applications" | "/company/internships" | "/company/messages" | "/company/notifications" | "/login" | "/login/google" | "/logout" | "/privacy-policy" | "/register" | "/student" | "/student/certificates" | "/student/companies" | `/student/companies/${string}` & {} | "/student/internships" | "/student/messages" | "/student/notifications" | "/student/profile" | "/student/settings" | "/terms";
 		ResolvedPathname(): `${"" | `/${string}`}${ReturnType<AppTypes['Pathname']>}`;
 		Asset(): "/robots.txt" | string & {};
 	}

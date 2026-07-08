@@ -10,7 +10,7 @@ return {
 	assets: new Set(["robots.txt"]),
 	mimeTypes: {".txt":"text/plain"},
 	_: {
-		client: {start:"_app/immutable/entry/start.DVlVi1_4.js",app:"_app/immutable/entry/app.B9T_pLif.js",imports:["_app/immutable/entry/start.DVlVi1_4.js","_app/immutable/chunks/DLrS9xGv.js","_app/immutable/chunks/GSFvJ3-1.js","_app/immutable/entry/app.B9T_pLif.js","_app/immutable/chunks/GSFvJ3-1.js","_app/immutable/chunks/kNaey6uv.js","_app/immutable/chunks/xihTtKlq.js"],stylesheets:[],fonts:[],uses_env_dynamic_public:false},
+		client: {start:"_app/immutable/entry/start.C_m-kohl.js",app:"_app/immutable/entry/app.Bak7oyWP.js",imports:["_app/immutable/entry/start.C_m-kohl.js","_app/immutable/chunks/XHrSed5o.js","_app/immutable/chunks/CB82KsP5.js","_app/immutable/entry/app.Bak7oyWP.js","_app/immutable/chunks/CB82KsP5.js","_app/immutable/chunks/DYl5dUZ5.js","_app/immutable/chunks/xihTtKlq.js"],stylesheets:[],fonts:[],uses_env_dynamic_public:false},
 		nodes: [
 			__memo(() => import('./nodes/0.js')),
 			__memo(() => import('./nodes/1.js')),
@@ -39,7 +39,8 @@ return {
 			__memo(() => import('./nodes/24.js')),
 			__memo(() => import('./nodes/25.js')),
 			__memo(() => import('./nodes/26.js')),
-			__memo(() => import('./nodes/27.js'))
+			__memo(() => import('./nodes/27.js')),
+			__memo(() => import('./nodes/28.js'))
 		],
 		remotes: {
 			
@@ -93,6 +94,13 @@ return {
 				params: [{"name":"filename","optional":false,"rest":false,"chained":false}],
 				page: null,
 				endpoint: __memo(() => import('./entries/endpoints/api/banners/_filename_/_server.js'))
+			},
+			{
+				id: "/api/notifications/mark-read",
+				pattern: /^\/api\/notifications\/mark-read\/?$/,
+				params: [],
+				page: null,
+				endpoint: __memo(() => import('./entries/endpoints/api/notifications/mark-read/_server.js'))
 			},
 			{
 				id: "/api/refresh",
@@ -200,45 +208,52 @@ return {
 				endpoint: null
 			},
 			{
+				id: "/student/companies/[id]",
+				pattern: /^\/student\/companies\/([^/]+?)\/?$/,
+				params: [{"name":"id","optional":false,"rest":false,"chained":false}],
+				page: { layouts: [0,4,], errors: [1,,], leaf: 22 },
+				endpoint: null
+			},
+			{
 				id: "/student/internships",
 				pattern: /^\/student\/internships\/?$/,
 				params: [],
-				page: { layouts: [0,4,], errors: [1,,], leaf: 22 },
+				page: { layouts: [0,4,], errors: [1,,], leaf: 23 },
 				endpoint: null
 			},
 			{
 				id: "/student/messages",
 				pattern: /^\/student\/messages\/?$/,
 				params: [],
-				page: { layouts: [0,4,], errors: [1,,], leaf: 23 },
+				page: { layouts: [0,4,], errors: [1,,], leaf: 24 },
 				endpoint: null
 			},
 			{
 				id: "/student/notifications",
 				pattern: /^\/student\/notifications\/?$/,
 				params: [],
-				page: { layouts: [0,4,], errors: [1,,], leaf: 24 },
+				page: { layouts: [0,4,], errors: [1,,], leaf: 25 },
 				endpoint: null
 			},
 			{
 				id: "/student/profile",
 				pattern: /^\/student\/profile\/?$/,
 				params: [],
-				page: { layouts: [0,4,], errors: [1,,], leaf: 25 },
+				page: { layouts: [0,4,], errors: [1,,], leaf: 26 },
 				endpoint: null
 			},
 			{
 				id: "/student/settings",
 				pattern: /^\/student\/settings\/?$/,
 				params: [],
-				page: { layouts: [0,4,], errors: [1,,], leaf: 26 },
+				page: { layouts: [0,4,], errors: [1,,], leaf: 27 },
 				endpoint: null
 			},
 			{
 				id: "/terms",
 				pattern: /^\/terms\/?$/,
 				params: [],
-				page: { layouts: [0,], errors: [1,], leaf: 27 },
+				page: { layouts: [0,], errors: [1,], leaf: 28 },
 				endpoint: null
 			}
 		],

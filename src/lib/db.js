@@ -237,17 +237,8 @@ export async function getDocument(collectionName, id) {
 	return Object.values(data)[0] || null;
 }
 
-let cache = { companies: null, lastFetch: 0 };
-
 export async function getCachedCompanies() {
-    const now = Date.now();
-    // Cache for 60 seconds
-    if (cache.companies && now - cache.lastFetch < 60000) {
-        return cache.companies;
-    }
-    cache.companies = await getCollection('companies');
-    cache.lastFetch = now;
-    return cache.companies;
+    return await getCollection('companies');
 }
 
 /**

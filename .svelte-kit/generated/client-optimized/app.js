@@ -36,7 +36,8 @@ export const nodes = [
 	() => import('./nodes/24'),
 	() => import('./nodes/25'),
 	() => import('./nodes/26'),
-	() => import('./nodes/27')
+	() => import('./nodes/27'),
+	() => import('./nodes/28')
 ];
 
 export const server_loads = [0,2,3,4];
@@ -59,12 +60,13 @@ export const dictionary = {
 		"/student": [~19,[4]],
 		"/student/certificates": [~20,[4]],
 		"/student/companies": [~21,[4]],
-		"/student/internships": [~22,[4]],
-		"/student/messages": [~23,[4]],
-		"/student/notifications": [~24,[4]],
-		"/student/profile": [~25,[4]],
-		"/student/settings": [~26,[4]],
-		"/terms": [27]
+		"/student/companies/[id]": [~22,[4]],
+		"/student/internships": [~23,[4]],
+		"/student/messages": [~24,[4]],
+		"/student/notifications": [~25,[4]],
+		"/student/profile": [~26,[4]],
+		"/student/settings": [~27,[4]],
+		"/terms": [28]
 	};
 
 export const hooks = {

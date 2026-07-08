@@ -158,7 +158,7 @@
 
 					<div>
 						<label for="yearOfStudy" class="block text-xs font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wider mb-2">Year of Study *</label>
-						<select id="yearOfStudy" name="yearOfStudy" required class="w-full px-3 py-2.5 rounded-lg border border-divider dark:border-divider-dark bg-slate-955 text-sm text-slate-300 focus:outline-none focus:border-blue-500">
+						<select id="yearOfStudy" name="yearOfStudy" required class="w-full px-3 py-2.5 rounded-lg border border-divider dark:border-divider-dark bg-slate-100 dark:bg-slate-900 text-sm text-primary dark:text-primary-dark focus:outline-none focus:border-blue-500">
 							<option value="1" selected={student.yearOfStudy === '1'}>1st Year</option>
 							<option value="2" selected={student.yearOfStudy === '2'}>2nd Year</option>
 							<option value="3" selected={student.yearOfStudy === '3'}>3rd Year</option>
@@ -169,7 +169,7 @@
 
 					<div>
 						<label for="currentStatus" class="block text-xs font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wider mb-2">Current Status *</label>
-						<select id="currentStatus" name="currentStatus" required class="w-full px-3 py-2.5 rounded-lg border border-divider dark:border-divider-dark bg-slate-955 text-sm text-slate-300 focus:outline-none focus:border-blue-500">
+						<select id="currentStatus" name="currentStatus" required class="w-full px-3 py-2.5 rounded-lg border border-divider dark:border-divider-dark bg-slate-100 dark:bg-slate-900 text-sm text-primary dark:text-primary-dark focus:outline-none focus:border-blue-500">
 							<option value="Student" selected={student.currentStatus === 'Student'}>Currently Studying (Student)</option>
 							<option value="Graduate" selected={student.currentStatus === 'Graduate'}>Graduated (Graduate)</option>
 						</select>
