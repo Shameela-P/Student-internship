@@ -1,6 +1,6 @@
 import "./index-server.js";
 import "./internal.js";
-import { A as active_reaction, B as mutable_source, E as is_passive_event, F as clear_text_content, G as pop, H as flushSync, I as create_text, J as hydrate_node, K as push, L as get_first_child, M as set_active_effect, N as set_active_reaction, P as component_root, Q as hydration_mismatch, R as get_next_sibling, U as boundary, V as set, W as component_context, X as set_hydrate_node, Y as hydrating, Z as set_hydrating, _ as setContext, i as derived, it as LEGACY_PROPS, j as get, k as active_effect, nt as hydration_failed, ot as array_from, q as async_mode_flag, s as render, st as define_property, tt as HYDRATION_ERROR, z as init_operations } from "./server.js";
+import { $ as hydration_mismatch, A as active_effect, B as init_operations, D as is_passive_event, F as component_root, G as component_context, H as set, I as clear_text_content, J as async_mode_flag, K as pop, L as create_text, M as get, N as set_active_effect, P as set_active_reaction, Q as set_hydrating, R as get_first_child, U as flushSync, V as mutable_source, W as boundary, X as hydrating, Y as hydrate_node, Z as set_hydrate_node, a as derived, at as LEGACY_PROPS, c as render, ct as define_property, j as active_reaction, nt as HYDRATION_ERROR, q as push, rt as hydration_failed, st as array_from, v as setContext, z as get_next_sibling } from "./server.js";
 //#region \0virtual:__sveltekit/server
 var read_implementation = null;
 function set_read_implementation(fn) {
@@ -606,7 +606,7 @@ var options = {
 		app: ({ head, body, assets, nonce, env }) => "<!doctype html>\r\n<html lang=\"en\">\r\n	<head>\r\n		<meta charset=\"utf-8\" />\r\n		<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\r\n		<meta name=\"text-scale\" content=\"scale\" />\r\n		<script>\r\n			// Check local storage or system preference to set initial theme and avoid FOUC\r\n			if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {\r\n				document.documentElement.classList.add('dark');\r\n			} else {\r\n				document.documentElement.classList.remove('dark');\r\n			}\r\n		<\/script>\r\n		" + head + "\r\n	</head>\r\n	<body data-sveltekit-preload-data=\"hover\">\r\n		<div style=\"display: contents\">" + body + "</div>\r\n	</body>\r\n</html>\r\n",
 		error: error_template_default
 	},
-	version_hash: "1r2s40j"
+	version_hash: "mvuqm3"
 };
 async function get_hooks() {
 	let handle;

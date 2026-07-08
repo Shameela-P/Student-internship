@@ -1,4 +1,4 @@
-import { logAction, getCollection, updateEntireDatabase } from '$lib/db';
+import { logAction, getCollection, updateEntireDatabase, updateDocument } from '$lib/db';
 import { requireRole } from '$lib/auth';
 import { fail, error } from '@sveltejs/kit';
 
@@ -6,57 +6,62 @@ export async function load({ cookies }) {
 	try {
 		const sessionUser = requireRole(cookies, ['admin']);
 		
-		// Optimization: Only fetch what is absolutely required for the dashboard overview.
-		// Excluded heavy collections like notifications and emailTemplates.
-		const [studentsData, companiesData, internshipsData, applicationsData, systemLogsData] = await Promise.all([
-			getCollection('students'),
-			getCollection('companies'),
-			getCollection('internships'),
-			getCollection('applications'),
-			getCollection('systemLogs')
-		]);
-		
-		const totalStudents = studentsData.length;
-		const totalCompanies = companiesData.length;
-		const pendingCompanies = companiesData.filter(c => c.status === 'Pending');
-		const activeInternships = internshipsData.filter(i => i.status === 'Active').length;
-		const totalApplications = applicationsData.length;
-		
-		const placementsCount = applicationsData.filter(a => a.status === 'Approved').length;
-		const certificatesGenerated = applicationsData.filter(a => a.certificateHash).length;
-
-		// Active companies for moderation (limit to 100 for memory)
-		const activeCompanies = companiesData.filter(c => c.status === 'Approved' && !c.isSuspended).slice(0, 100).map(c => ({
-			id: c.id,
-			companyName: c.companyName,
-			companyEmail: c.companyEmail,
-			industryType: c.industryType
-		}));
-
-		// Audit Logs stream (only top 30)
-		const logs = systemLogsData.slice(0, 30);
-
+		// Return admin profile synchronously, but defer heavy listings/stats
 		return {
 			user: sessionUser,
-			stats: {
-				totalStudents,
-				totalCompanies,
-				pendingCompaniesCount: pendingCompanies.length,
-				activeInternships,
-				totalApplications,
-				successfulPlacements: placementsCount,
-				certificatesGenerated
-			},
-			verificationQueue: pendingCompanies.map(c => ({
-				id: c.id,
-				companyName: c.companyName,
-				companyEmail: c.companyEmail,
-				industryType: c.industryType,
-				website: c.website,
-				createdAt: c.createdAt
-			})),
-			activeCompanies,
-			logs
+			lazy: {
+				dashboardData: (async () => {
+					const [studentsData, companiesData, internshipsData, applicationsData, systemLogsData] = await Promise.all([
+						getCollection('students'),
+						getCollection('companies'),
+						getCollection('internships'),
+						getCollection('applications'),
+						getCollection('systemLogs')
+					]);
+
+					const totalStudents = studentsData.length;
+					const totalCompanies = companiesData.length;
+					const pendingCompanies = companiesData.filter(c => c.status === 'Pending');
+					const activeInternships = internshipsData.filter(i => i.status === 'Active').length;
+					const totalApplications = applicationsData.length;
+					
+					const placementsCount = applicationsData.filter(a => a.status === 'Approved').length;
+					const certificatesGenerated = applicationsData.filter(a => a.certificateHash).length;
+
+					// Active companies for moderation (limit to 100 for memory)
+					const activeCompanies = companiesData.filter(c => c.status === 'Approved' && !c.isSuspended).slice(0, 100).map(c => ({
+						id: c.id,
+						companyName: c.companyName,
+						companyEmail: c.companyEmail,
+						industryType: c.industryType
+					}));
+
+					// Audit Logs stream (only top 30)
+					const logs = systemLogsData.slice(0, 30);
+
+					return {
+						stats: {
+							totalStudents,
+							totalCompanies,
+							pendingCompaniesCount: pendingCompanies.length,
+							activeInternships,
+							totalApplications,
+							successfulPlacements: placementsCount,
+							certificatesGenerated
+						},
+						verificationQueue: pendingCompanies.map(c => ({
+							id: c.id,
+							companyName: c.companyName,
+							companyEmail: c.companyEmail,
+							industryType: c.industryType,
+							website: c.website,
+							createdAt: c.createdAt
+						})),
+						activeCompanies,
+						logs
+					};
+				})()
+			}
 		};
 	} catch (err) {
 		console.error('Vercel Load Error:', err);
@@ -69,19 +74,12 @@ export const actions = {
 		try {
 			const sessionUser = requireRole(cookies, ['admin']);
 			const data = await request.formData();
-			const companyId = data.get('companyId');
+			const companyId = data.get('companyId')?.toString();
 
-			const companies = await getCollection('companies');
-			const companyIndex = companies.findIndex(c => c.id === companyId);
-			if (companyIndex === -1) return fail(404, { error: 'Company not found' });
+			if (!companyId) return fail(400, { error: 'Company ID is required' });
 
-			companies[companyIndex].status = 'Approved';
-			
-			const dbPayload = {
-				'companies': companies
-			};
-			await updateEntireDatabase(dbPayload);
-			await logAction('APPROVE_COMPANY', `Approved company registration: ${companies[companyIndex].companyName}`, sessionUser.name, 'Admin', sessionUser.email, 'Admin Board');
+			await updateDocument('companies', companyId, { status: 'Approved' });
+			await logAction('APPROVE_COMPANY', `Approved company registration: ${companyId}`, sessionUser.name, 'Admin', sessionUser.email, 'Admin Board');
 
 			return { success: true };
 		} catch (err) {
@@ -93,19 +91,12 @@ export const actions = {
 		try {
 			const sessionUser = requireRole(cookies, ['admin']);
 			const data = await request.formData();
-			const companyId = data.get('companyId');
+			const companyId = data.get('companyId')?.toString();
 
-			const companies = await getCollection('companies');
-			const companyIndex = companies.findIndex(c => c.id === companyId);
-			if (companyIndex === -1) return fail(404, { error: 'Company not found' });
+			if (!companyId) return fail(400, { error: 'Company ID is required' });
 
-			companies[companyIndex].status = 'Rejected';
-			
-			const dbPayload = {
-				'companies': companies
-			};
-			await updateEntireDatabase(dbPayload);
-			await logAction('REJECT_COMPANY', `Rejected company registration: ${companies[companyIndex].companyName}`, sessionUser.name, 'Admin', sessionUser.email, 'Admin Board');
+			await updateDocument('companies', companyId, { status: 'Rejected' });
+			await logAction('REJECT_COMPANY', `Rejected company registration: ${companyId}`, sessionUser.name, 'Admin', sessionUser.email, 'Admin Board');
 
 			return { success: true };
 		} catch (err) {
@@ -117,19 +108,12 @@ export const actions = {
 		try {
 			const sessionUser = requireRole(cookies, ['admin']);
 			const data = await request.formData();
-			const companyId = data.get('companyId');
+			const companyId = data.get('companyId')?.toString();
 
-			const companies = await getCollection('companies');
-			const companyIndex = companies.findIndex(c => c.id === companyId);
-			if (companyIndex === -1) return fail(404, { error: 'Company not found' });
+			if (!companyId) return fail(400, { error: 'Company ID is required' });
 
-			companies[companyIndex].isSuspended = true;
-			
-			const dbPayload = {
-				'companies': companies
-			};
-			await updateEntireDatabase(dbPayload);
-			await logAction('SUSPEND_COMPANY', `Suspended company account: ${companies[companyIndex].companyName}`, sessionUser.name, 'Admin', sessionUser.email, 'Admin Board');
+			await updateDocument('companies', companyId, { isSuspended: true });
+			await logAction('SUSPEND_COMPANY', `Suspended company account: ${companyId}`, sessionUser.name, 'Admin', sessionUser.email, 'Admin Board');
 
 			return { success: true };
 		} catch (err) {
@@ -141,19 +125,12 @@ export const actions = {
 		try {
 			const sessionUser = requireRole(cookies, ['admin']);
 			const data = await request.formData();
-			const companyId = data.get('companyId');
+			const companyId = data.get('companyId')?.toString();
 
-			const companies = await getCollection('companies');
-			const companyIndex = companies.findIndex(c => c.id === companyId);
-			if (companyIndex === -1) return fail(404, { error: 'Company not found' });
+			if (!companyId) return fail(400, { error: 'Company ID is required' });
 
-			companies[companyIndex].isSuspended = false;
-			
-			const dbPayload = {
-				'companies': companies
-			};
-			await updateEntireDatabase(dbPayload);
-			await logAction('UNSUSPEND_COMPANY', `Unsuspended company account: ${companies[companyIndex].companyName}`, sessionUser.name, 'Admin', sessionUser.email, 'Admin Board');
+			await updateDocument('companies', companyId, { isSuspended: false });
+			await logAction('UNSUSPEND_COMPANY', `Unsuspended company account: ${companyId}`, sessionUser.name, 'Admin', sessionUser.email, 'Admin Board');
 
 			return { success: true };
 		} catch (err) {

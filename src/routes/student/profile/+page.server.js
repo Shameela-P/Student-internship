@@ -106,7 +106,7 @@ export const actions = {
 			return { success: true, message: 'Resume file updated successfully' };
 		} catch (err) {
 			console.error('Resume swap error:', err);
-			return fail(500, { success: false, error: 'Failed to save resume to storage. Please try again.' });
+			return fail(500, { success: false, error: `Failed to save resume: ${err.message || err}` });
 		}
 	}
 };

@@ -4,7 +4,17 @@ import { hashPassword, createToken } from '$lib/auth';
 import { uploadFileBuffer } from '$lib/storageHelper';
 import path from 'path';
 
-export async function load({ url }) {
+import { verifyToken } from '$lib/auth';
+
+export async function load({ url, cookies }) {
+	const sessionCookie = cookies.get('nexora_session');
+	if (sessionCookie) {
+		const session = verifyToken(sessionCookie);
+		if (session) {
+			throw redirect(303, `/${session.role}`);
+		}
+	}
+
 	const role = url.searchParams.get('role') || 'student';
 	return {
 		role
@@ -63,7 +73,7 @@ export const actions = {
 				resumePath = await uploadFileBuffer(buffer, filename, resumeFile.type || 'application/pdf');
 			} catch (err) {
 				console.error('File save error:', err);
-				return fail(500, { success: false, error: 'Failed to upload resume to storage. Please try again.' });
+				return fail(500, { success: false, error: `Failed to upload resume: ${err.message || err}` });
 			}
 		} else {
 			return fail(400, { success: false, error: 'A PDF/DOC resume file upload is required' });

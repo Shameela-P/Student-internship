@@ -1,4 +1,4 @@
-import { C as attr, T as escape_html, a as ensure_array_like, i as derived, t as attr_class } from "../../../../chunks/server.js";
+import { E as escape_html, a as derived, o as ensure_array_like, t as attr_class, w as attr } from "../../../../chunks/server.js";
 //#region src/routes/admin/students/+page.svelte
 function _page($$renderer, $$props) {
 	$$renderer.component(($$renderer) => {

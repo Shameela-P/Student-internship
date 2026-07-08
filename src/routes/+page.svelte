@@ -10,12 +10,12 @@
 
 <!-- Header & Nav (Midnight Ocean dark glass style) -->
 <header class="w-full py-4 px-6 md:px-12 border-b border-divider dark:border-divider-dark bg-slate-100 dark:bg-slate-950/40 backdrop-blur-md sticky top-0 z-50 flex items-center justify-between">
-	<div class="flex items-center gap-3">
+	<a href={data.user ? `/${data.user.role}` : '/'} class="flex items-center gap-3 cursor-pointer">
 		<img loading="lazy" src={logo} alt="Nexora Logo" class="h-10 w-10 drop-shadow-md" />
 		<span class="font-display font-extrabold text-2xl tracking-wide bg-gradient-to-r from-slate-900 to-slate-700 dark:from-white dark:to-slate-300 text-gradient">
 			Nexora
 		</span>
-	</div>
+	</a>
 
 	<!-- Navigation links -->
 	<nav class="flex items-center gap-4">
@@ -283,8 +283,8 @@
 					<a href="/" class="hover:text-blue-500 hover:translate-x-1 transition-all duration-300 w-fit">Home</a>
 					<a href="/about" class="hover:text-blue-500 hover:translate-x-1 transition-all duration-300 w-fit">About</a>
 					<a href="/features" class="hover:text-blue-500 hover:translate-x-1 transition-all duration-300 w-fit">Features</a>
-					<a href="/register?role=student" class="hover:text-blue-500 hover:translate-x-1 transition-all duration-300 w-fit">Explore Internships</a>
-					<a href="/register?role=company" class="hover:text-blue-500 hover:translate-x-1 transition-all duration-300 w-fit">Explore Companies</a>
+					<a href="/internships" class="hover:text-blue-500 hover:translate-x-1 transition-all duration-300 w-fit">Explore Internships</a>
+					<a href="/companies" class="hover:text-blue-500 hover:translate-x-1 transition-all duration-300 w-fit">Explore Companies</a>
 					<a href="/contact" class="hover:text-blue-500 hover:translate-x-1 transition-all duration-300 w-fit">Contact</a>
 				</nav>
 			</div>

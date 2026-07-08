@@ -20,6 +20,11 @@ export async function load({ cookies }) {
 	return {
 		user: sessionUser,
 		admin,
-		unreadMessages
+		lazy: {
+			unreadMessages: (async () => {
+				const notifications = await queryDocuments('notifications', 'recipientEmail', admin.email);
+				return notifications.filter(n => !n.read).length;
+			})()
+		}
 	};
 }

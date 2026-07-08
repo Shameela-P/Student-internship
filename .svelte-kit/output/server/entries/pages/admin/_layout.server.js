@@ -9,10 +9,13 @@ async function load({ cookies }) {
 		cookies.delete("nexora_session", { path: "/" });
 		throw redirect(303, "/login");
 	}
+	(await queryDocuments("notifications", "recipientEmail", admin.email)).filter((n) => !n.read).length;
 	return {
 		user: sessionUser,
 		admin,
-		unreadMessages: (await queryDocuments("notifications", "recipientEmail", admin.email)).filter((n) => !n.read).length
+		lazy: { unreadMessages: (async () => {
+			return (await queryDocuments("notifications", "recipientEmail", admin.email)).filter((n) => !n.read).length;
+		})() }
 	};
 }
 //#endregion

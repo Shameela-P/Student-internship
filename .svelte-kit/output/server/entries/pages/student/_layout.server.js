@@ -9,12 +9,17 @@ async function load({ cookies }) {
 		cookies.delete("nexora_session", { path: "/" });
 		throw redirect(303, "/login");
 	}
-	const [unreadNotifs, unreadMsgs] = await Promise.all([queryDocuments("notifications", "recipientEmail", student.email), queryDocuments("messages", "recipientEmail", student.email)]);
 	return {
 		user: sessionUser,
 		student,
-		unreadNotifications: unreadNotifs.filter((n) => !n.read).length,
-		unreadMessages: unreadMsgs.filter((m) => !m.read).length
+		lazy: {
+			unreadNotifications: (async () => {
+				return (await queryDocuments("notifications", "recipientEmail", student.email)).filter((n) => !n.read).length;
+			})(),
+			unreadMessages: (async () => {
+				return (await queryDocuments("messages", "recipientEmail", student.email)).filter((m) => !m.read).length;
+			})()
+		}
 	};
 }
 //#endregion

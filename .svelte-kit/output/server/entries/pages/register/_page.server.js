@@ -1,10 +1,15 @@
 import { i as getCollection, l as updateEntireDatabase, o as logAction } from "../../../chunks/db.js";
-import { i as hashPassword } from "../../../chunks/auth.js";
+import { i as hashPassword, s as verifyToken } from "../../../chunks/auth.js";
 import { t as uploadFileBuffer } from "../../../chunks/storageHelper.js";
 import { fail, redirect } from "@sveltejs/kit";
 import path from "path";
 //#region src/routes/register/+page.server.js
-async function load({ url }) {
+async function load({ url, cookies }) {
+	const sessionCookie = cookies.get("nexora_session");
+	if (sessionCookie) {
+		const session = verifyToken(sessionCookie);
+		if (session) throw redirect(303, `/${session.role}`);
+	}
 	return { role: url.searchParams.get("role") || "student" };
 }
 var actions = {

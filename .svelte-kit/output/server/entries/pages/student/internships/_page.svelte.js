@@ -1,4 +1,4 @@
-import { C as attr, T as escape_html, a as ensure_array_like, i as derived } from "../../../../chunks/server.js";
+import { E as escape_html, a as derived, o as ensure_array_like, w as attr } from "../../../../chunks/server.js";
 import "../../../../chunks/state.js";
 import "../../../../chunks/forms.js";
 //#region src/routes/student/internships/+page.svelte

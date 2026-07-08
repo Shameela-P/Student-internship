@@ -13,15 +13,18 @@ async function load({ cookies }) {
 		cookies.delete("nexora_session", { path: "/" });
 		throw redirect(303, "/login");
 	}
-	const [unreadNotifs, unreadMsgs] = await Promise.all([queryDocuments("notifications", "recipientEmail", company.companyEmail), queryDocuments("messages", "recipientEmail", company.companyEmail)]);
-	const unreadNotifications = unreadNotifs.filter((n) => !n.read).length;
-	const unreadMessages = unreadMsgs.filter((m) => !m.read).length;
 	return {
 		user: sessionUser,
 		company,
 		pendingApproval: company.status === "Pending",
-		unreadNotifications,
-		unreadMessages
+		lazy: {
+			unreadNotifications: (async () => {
+				return (await queryDocuments("notifications", "recipientEmail", company.companyEmail)).filter((n) => !n.read).length;
+			})(),
+			unreadMessages: (async () => {
+				return (await queryDocuments("messages", "recipientEmail", company.companyEmail)).filter((m) => !m.read).length;
+			})()
+		}
 	};
 }
 //#endregion

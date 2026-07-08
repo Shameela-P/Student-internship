@@ -8,24 +8,14 @@
 	--animate-pulse-slow: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 	--animate-float: float 6s ease-in-out infinite;
 
-	--color-midnight-navy: #050816;
-	--color-midnight-sidebar: #111827;
-	--color-midnight-card: rgba(17, 24, 39, 0.8);
-	--color-midnight-blue: #3B82F6;
-	--color-midnight-cyan: #8B5CF6;
-	--color-midnight-purple: #7C3AED;
-	--color-midnight-glow: #A855F7;
-	--color-midnight-emerald: #10B981;
-	--color-midnight-amber: #F59E0B;
-
 	/* Semantic Design Tokens */
 	--color-surface: #FFFFFF;
-	--color-surface-dark: #1E293B;
-	--color-primary: #0F172A;
+	--color-surface-dark: #0F172A;
+	--color-primary: #111827;
 	--color-primary-dark: #F8FAFC;
-	--color-muted: #64748B;
-	--color-muted-dark: #94A3B8;
-	--color-divider: #E2E8F0;
+	--color-muted: #6B7280;
+	--color-muted-dark: #9CA3AF;
+	--color-divider: #E5E7EB;
 	--color-divider-dark: #1E293B;
 }
 
@@ -46,26 +36,26 @@ html, body {
 	@apply bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100;
 }
 
-/* Base Glassmorphism custom classes */
+/* Premium Card & Layouts */
 .glass {
-	@apply bg-white/60 dark:bg-slate-900/60 backdrop-blur-md border border-slate-200 dark:border-slate-800;
+	@apply bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm rounded-[14px] transition-all duration-300;
 }
 
 .glass-card {
-	@apply bg-white/80 dark:bg-slate-900/80 backdrop-blur-lg border border-slate-200 dark:border-slate-800 shadow-sm dark:shadow-none;
+	@apply bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md transition-all duration-300 rounded-[14px];
 }
 
-/* Card Hover Animation - Indigo Glow */
+/* Premium card hover actions */
 .premium-card-hover {
 	transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .premium-card-hover:hover {
-	transform: translateY(-4px) scale(1.02);
-	@apply border-indigo-500/50 shadow-[0_10px_25px_-5px_rgba(99,102,241,0.2)];
+	transform: translateY(-4px) scale(1.01);
+	@apply border-indigo-500/30 shadow-[0_10px_25px_-5px_rgba(79,70,229,0.1)];
 }
 
-/* Scrollbar styling */
+/* Scrollbars */
 ::-webkit-scrollbar {
 	width: 6px;
 	height: 6px;
@@ -76,14 +66,14 @@ html, body {
 }
 
 ::-webkit-scrollbar-thumb {
-	@apply bg-slate-300 dark:bg-slate-700 rounded-full;
+	@apply bg-slate-200 dark:bg-slate-850 rounded-full;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-	@apply bg-slate-400 dark:bg-slate-600;
+	@apply bg-slate-300 dark:bg-slate-800;
 }
 
-/* Custom animations and gradient text */
+/* Custom utility styles */
 .text-gradient {
 	background-clip: text;
 	-webkit-background-clip: text;
@@ -91,5 +81,5 @@ html, body {
 }
 
 .bg-radial-glow {
-	background: radial-gradient(circle at 50% 50%, rgba(99, 102, 241, 0.1) 0%, transparent 60%);
+	background: radial-gradient(circle at 50% 50%, rgba(79, 70, 229, 0.05) 0%, transparent 60%);
 }

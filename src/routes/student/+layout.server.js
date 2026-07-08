@@ -13,19 +13,19 @@ export async function load({ cookies }) {
 		throw redirect(303, '/login');
 	}
 
-	// Query unread counts using indexed queries
-	const [unreadNotifs, unreadMsgs] = await Promise.all([
-		queryDocuments('notifications', 'recipientEmail', student.email),
-		queryDocuments('messages', 'recipientEmail', student.email)
-	]);
-
-	const unreadNotifications = unreadNotifs.filter(n => !n.read).length;
-	const unreadMessages = unreadMsgs.filter(m => !m.read).length;
-
+	// Defer unread counts to prevent blocking page render
 	return {
 		user: sessionUser,
 		student,
-		unreadNotifications,
-		unreadMessages
+		lazy: {
+			unreadNotifications: (async () => {
+				const unreadNotifs = await queryDocuments('notifications', 'recipientEmail', student.email);
+				return unreadNotifs.filter(n => !n.read).length;
+			})(),
+			unreadMessages: (async () => {
+				const unreadMsgs = await queryDocuments('messages', 'recipientEmail', student.email);
+				return unreadMsgs.filter(m => !m.read).length;
+			})()
+		}
 	};
 }
