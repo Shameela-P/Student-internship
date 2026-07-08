@@ -1,7 +1,7 @@
 import { t as app } from "./firebase.js";
 import fs from "fs";
 import path from "path";
-import { child, get, getDatabase, ref, set, update } from "firebase/database";
+import { child, get, getDatabase, ref, remove, set, update } from "firebase/database";
 import "crypto";
 //#region src/lib/db.js
 var dbRef = ref(getDatabase(app), "/");
@@ -777,7 +777,14 @@ function invalidateCache(collectionName = null) {
 async function getCollection(collectionName) {
 	const now = Date.now();
 	if (cache[collectionName] && cacheTimestamps[collectionName] && now - cacheTimestamps[collectionName] < CACHE_DURATION) return [...cache[collectionName]];
-	const snapshot = await get(child(dbRef, collectionName));
+	const timeout = new Promise((_, reject) => setTimeout(() => reject(/* @__PURE__ */ new Error(`Firebase timeout fetching '${collectionName}'`)), 1e4));
+	let snapshot;
+	try {
+		snapshot = await Promise.race([get(child(dbRef, collectionName)), timeout]);
+	} catch (err) {
+		console.error(`getCollection('${collectionName}') failed:`, err.message);
+		return [];
+	}
 	if (!snapshot.exists()) return [];
 	const data = snapshot.val();
 	let result = [];
@@ -786,6 +793,12 @@ async function getCollection(collectionName) {
 	cache[collectionName] = result;
 	cacheTimestamps[collectionName] = now;
 	return [...result];
+}
+/**
+* Fetch a specific item from a collection by its array index OR by its unique 'id' property.
+*/
+async function getDocument(collectionName, id) {
+	return (await getCollection(collectionName)).find((item) => item && item.id === id) || null;
 }
 /**
 * Add a new item to an array collection.
@@ -812,11 +825,32 @@ async function updateDocument(collectionName, id, updates) {
 	}
 }
 /**
+* Delete an item from a collection
+*/
+async function deleteDocument(collectionName, id) {
+	const index = (await getCollection(collectionName)).findIndex((item) => item && item.id === id);
+	if (index !== -1) {
+		await remove(child(dbRef, `${collectionName}/${index}`));
+		invalidateCache(collectionName);
+	}
+}
+/**
 * Update multiple collections at once (used by refactored routes)
 */
 async function updateEntireDatabase(data) {
 	await update(dbRef, data);
 	invalidateCache();
+}
+/**
+* Fetch documents where a specific field equals a value
+*/
+async function queryDocuments(collectionName, field, value) {
+	try {
+		return (await getCollection(collectionName)).filter((item) => item && item[field] === value);
+	} catch (e) {
+		console.error(`Error querying ${collectionName} where ${field} === ${value}`, e);
+		return [];
+	}
 }
 /**
 * Unified Logger for System Audits
@@ -852,4 +886,4 @@ function ensureMockResumes() {
 }
 ensureMockResumes();
 //#endregion
-export { updateDocument as a, logAction as i, addDocument as n, updateEntireDatabase as o, getCollection as r, DOMAINS as t };
+export { getDocument as a, updateDocument as c, getCollection as i, updateEntireDatabase as l, addDocument as n, logAction as o, deleteDocument as r, queryDocuments as s, DOMAINS as t };

@@ -1,4 +1,4 @@
-import { i as logAction, o as updateEntireDatabase, r as getCollection, t as DOMAINS } from "../../../../chunks/db.js";
+import { a as getDocument, c as updateDocument, n as addDocument, o as logAction, r as deleteDocument, s as queryDocuments, t as DOMAINS } from "../../../../chunks/db.js";
 import { a as requireRole } from "../../../../chunks/auth.js";
 import { fail } from "@sveltejs/kit";
 import fs from "fs";
@@ -46,37 +46,16 @@ function buildInternshipPayload({ companyId, formValues, bannerPath = "", existi
 //#region src/routes/company/internships/+page.server.js
 async function load({ cookies }) {
 	const sessionUser = requireRole(cookies, ["company"]);
-	const [companiesData, internshipsData, applicationsData] = await Promise.all([
-		getCollection("companies"),
-		getCollection("internships"),
-		getCollection("applications")
-	]);
-	const db = {
-		companies: companiesData,
-		internships: internshipsData,
-		applications: applicationsData
-	};
-	const company = db.companies.find((c) => c.id === sessionUser.id);
+	const [company, companyInternships] = await Promise.all([getDocument("companies", sessionUser.id), queryDocuments("internships", "companyId", sessionUser.id)]);
 	return {
 		company,
-		internships: db.internships.filter((i) => i.companyId === company.id),
+		internships: companyInternships,
 		domains: DOMAINS
 	};
 }
 var actions = {
 	postInternship: async ({ request, cookies }) => {
-		const sessionUser = requireRole(cookies, ["company"]);
-		const [companiesData, internshipsData, applicationsData] = await Promise.all([
-			getCollection("companies"),
-			getCollection("internships"),
-			getCollection("applications")
-		]);
-		const db = {
-			companies: companiesData,
-			internships: internshipsData,
-			applications: applicationsData
-		};
-		const company = db.companies.find((c) => c.id === sessionUser.id);
+		const company = await getDocument("companies", requireRole(cookies, ["company"]).id);
 		if (company.status !== "Approved") return fail(403, {
 			success: false,
 			error: "Your corporate profile must be approved by an administrator before posting new opportunities"
@@ -161,27 +140,15 @@ var actions = {
 				jobOpportunity
 			}
 		});
-		db.internships.push(newInternship);
-		await updateEntireDatabase(db);
-		logAction("INTERNSHIP_CREATE", `Company ${company.companyName} posted new internship: "${title}" (ID: ${newInternship.id})`);
+		await addDocument("internships", newInternship);
+		await logAction("INTERNSHIP_CREATE", `Company ${company.companyName} posted new internship: "${title}" (ID: ${newInternship.id})`);
 		return {
 			success: true,
 			message: "Internship opportunity published successfully"
 		};
 	},
 	editInternship: async ({ request, cookies }) => {
-		const sessionUser = requireRole(cookies, ["company"]);
-		const [companiesData, internshipsData, applicationsData] = await Promise.all([
-			getCollection("companies"),
-			getCollection("internships"),
-			getCollection("applications")
-		]);
-		const db = {
-			companies: companiesData,
-			internships: internshipsData,
-			applications: applicationsData
-		};
-		const company = db.companies.find((c) => c.id === sessionUser.id);
+		const company = await getDocument("companies", requireRole(cookies, ["company"]).id);
 		const formData = await request.formData();
 		const id = formData.get("id")?.toString();
 		const title = formData.get("title")?.toString().trim();
@@ -220,12 +187,12 @@ var actions = {
 			success: false,
 			error: "Internship start date must be after the last date to apply"
 		});
-		const internshipIndex = db.internships.findIndex((i) => i.id === id && i.companyId === company.id);
-		if (internshipIndex === -1) return fail(404, {
+		const existingInternship = await getDocument("internships", id);
+		if (!existingInternship || existingInternship.companyId !== company.id) return fail(404, {
 			success: false,
 			error: "Internship posting not found"
 		});
-		let bannerPath = db.internships[internshipIndex].bannerPath || "";
+		let bannerPath = existingInternship.bannerPath || "";
 		if (bannerFile && bannerFile instanceof File && bannerFile.size > 0) {
 			const ext = path.extname(bannerFile.name) || ".jpg";
 			const filename = `banner_${Date.now()}_${Math.random().toString(36).substr(2, 6)}${ext}`;
@@ -239,37 +206,33 @@ var actions = {
 				console.error("Banner upload error on edit:", err);
 			}
 		}
-		db.internships[internshipIndex] = {
-			...db.internships[internshipIndex],
-			...buildInternshipPayload({
-				companyId: company.id,
-				bannerPath,
-				existingId: id,
-				formValues: {
-					title,
-					domain,
-					subCategory,
-					skillsRequired: skillsRaw,
-					description,
-					learningOutcomes,
-					responsibilities,
-					eligibilityCriteria,
-					duration,
-					startDate,
-					lastDateToApply,
-					mode,
-					type,
-					fee,
-					stipendAmount,
-					openings,
-					location,
-					certificateAvailable,
-					jobOpportunity
-				}
-			})
-		};
-		await updateEntireDatabase(db);
-		logAction("INTERNSHIP_EDIT", `Company ${company.companyName} updated internship details for "${title}" (ID: ${id})`);
+		await updateDocument("internships", id, buildInternshipPayload({
+			companyId: company.id,
+			bannerPath,
+			existingId: id,
+			formValues: {
+				title,
+				domain,
+				subCategory,
+				skillsRequired: skillsRaw,
+				description,
+				learningOutcomes,
+				responsibilities,
+				eligibilityCriteria,
+				duration,
+				startDate,
+				lastDateToApply,
+				mode,
+				type,
+				fee,
+				stipendAmount,
+				openings,
+				location,
+				certificateAvailable,
+				jobOpportunity
+			}
+		}));
+		await logAction("INTERNSHIP_EDIT", `Company ${company.companyName} updated internship details for "${title}" (ID: ${id})`);
 		return {
 			success: true,
 			message: "Internship details updated successfully"
@@ -282,26 +245,14 @@ var actions = {
 			success: false,
 			error: "Reference ID is missing"
 		});
-		const [companiesData, internshipsData, applicationsData] = await Promise.all([
-			getCollection("companies"),
-			getCollection("internships"),
-			getCollection("applications")
-		]);
-		const db = {
-			companies: companiesData,
-			internships: internshipsData,
-			applications: applicationsData
-		};
-		const index = db.internships.findIndex((i) => i.id === id && i.companyId === sessionUser.id);
-		if (index === -1) return fail(404, {
+		const internship = await getDocument("internships", id);
+		if (!internship || internship.companyId !== sessionUser.id) return fail(404, {
 			success: false,
 			error: "Internship listing not found"
 		});
-		const deletedTitle = db.internships[index].title;
-		db.internships.splice(index, 1);
-		db.applications = db.applications.filter((a) => a.internshipId !== id);
-		await updateEntireDatabase(db);
-		logAction("INTERNSHIP_DELETE", `Company ID ${sessionUser.id} deleted internship: "${deletedTitle}" (ID: ${id})`);
+		const deletedTitle = internship.title;
+		await deleteDocument("internships", id);
+		await logAction("INTERNSHIP_DELETE", `Company ID ${sessionUser.id} deleted internship: "${deletedTitle}" (ID: ${id})`);
 		return {
 			success: true,
 			message: "Internship posting removed successfully"
@@ -314,24 +265,13 @@ var actions = {
 			success: false,
 			error: "Reference ID is missing"
 		});
-		const [companiesData, internshipsData, applicationsData] = await Promise.all([
-			getCollection("companies"),
-			getCollection("internships"),
-			getCollection("applications")
-		]);
-		const db = {
-			companies: companiesData,
-			internships: internshipsData,
-			applications: applicationsData
-		};
-		const index = db.internships.findIndex((i) => i.id === id && i.companyId === sessionUser.id);
-		if (index === -1) return fail(404, {
+		const internship = await getDocument("internships", id);
+		if (!internship || internship.companyId !== sessionUser.id) return fail(404, {
 			success: false,
 			error: "Internship listing not found"
 		});
-		db.internships[index].status = "Archived";
-		await updateEntireDatabase(db);
-		logAction("INTERNSHIP_ARCHIVE", `Company ID ${sessionUser.id} archived internship: "${db.internships[index].title}" (ID: ${id})`);
+		await updateDocument("internships", id, { status: "Archived" });
+		await logAction("INTERNSHIP_ARCHIVE", `Company ID ${sessionUser.id} archived internship: "${internship.title}" (ID: ${id})`);
 		return {
 			success: true,
 			message: "Internship archived successfully"

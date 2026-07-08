@@ -1,31 +1,18 @@
-import { i as logAction, o as updateEntireDatabase, r as getCollection } from "../../../../chunks/db.js";
+import { a as getDocument, c as updateDocument, n as addDocument, o as logAction, s as queryDocuments } from "../../../../chunks/db.js";
 import { a as requireRole } from "../../../../chunks/auth.js";
 import { fail } from "@sveltejs/kit";
 import crypto from "crypto";
 //#region src/routes/company/applications/+page.server.js
 async function load({ cookies }) {
 	const sessionUser = requireRole(cookies, ["company"]);
-	const [studentsData, companiesData, internshipsData, applicationsData, notificationsData, emailTemplatesData] = await Promise.all([
-		getCollection("students"),
-		getCollection("companies"),
-		getCollection("internships"),
-		getCollection("applications"),
-		getCollection("notifications"),
-		getCollection("emailTemplates")
-	]);
-	const db = {
-		students: studentsData,
-		companies: companiesData,
-		internships: internshipsData,
-		applications: applicationsData,
-		notifications: notificationsData,
-		emailTemplates: emailTemplatesData
-	};
-	const company = db.companies.find((c) => c.id === sessionUser.id);
-	const postedInternships = db.internships.filter((i) => i.companyId === company.id);
-	const internshipIds = new Set(postedInternships.map((i) => i.id));
-	const applications = db.applications.filter((a) => internshipIds.has(a.internshipId)).map((app) => {
-		const student = db.students.find((s) => s.id === app.studentId);
+	const [company, postedInternships] = await Promise.all([getDocument("companies", sessionUser.id), queryDocuments("internships", "companyId", sessionUser.id)]);
+	const internshipIds = postedInternships.map((i) => i.id);
+	const rawApps = (await Promise.all(internshipIds.map((id) => queryDocuments("applications", "internshipId", id)))).flat();
+	const studentIds = [...new Set(rawApps.map((a) => a.studentId))];
+	const studentsArray = await Promise.all(studentIds.map((id) => getDocument("students", id)));
+	const studentsMap = Object.fromEntries(studentsArray.filter(Boolean).map((s) => [s.id, s]));
+	const applications = rawApps.map((app) => {
+		const student = studentsMap[app.studentId];
 		const internship = postedInternships.find((i) => i.id === app.internshipId);
 		return {
 			...app,
@@ -63,89 +50,49 @@ var actions = {
 			success: false,
 			error: "Reference ID and Status are required"
 		});
-		const [studentsData, companiesData, internshipsData, applicationsData, notificationsData, emailTemplatesData] = await Promise.all([
-			getCollection("students"),
-			getCollection("companies"),
-			getCollection("internships"),
-			getCollection("applications"),
-			getCollection("notifications"),
-			getCollection("emailTemplates")
-		]);
-		const db = {
-			students: studentsData,
-			companies: companiesData,
-			internships: internshipsData,
-			applications: applicationsData,
-			notifications: notificationsData,
-			emailTemplates: emailTemplatesData
-		};
-		const appIndex = db.applications.findIndex((a) => a.id === appId);
-		if (appIndex === -1) return fail(404, {
+		const application = await getDocument("applications", appId);
+		if (!application) return fail(404, {
 			success: false,
 			error: "Application entry not found"
 		});
-		const application = db.applications[appIndex];
-		const internship = db.internships.find((i) => i.id === application.internshipId);
+		const [internship, student] = await Promise.all([getDocument("internships", application.internshipId), getDocument("students", application.studentId)]);
 		if (!internship || internship.companyId !== sessionUser.id) return fail(403, {
 			success: false,
 			error: "Access denied: You do not own this internship posting"
 		});
-		const student = db.students.find((s) => s.id === application.studentId);
 		if (!student) return fail(404, {
 			success: false,
 			error: "Applicant student profile not found"
 		});
-		application.status = newStatus;
-		application.actionDate = (/* @__PURE__ */ new Date()).toISOString();
+		await updateDocument("applications", appId, {
+			status: newStatus,
+			actionDate: (/* @__PURE__ */ new Date()).toISOString()
+		});
+		const notifId = `notif_${Date.now()}_${newStatus.toLowerCase()}`;
+		let subject = "";
+		let body = "";
 		if (newStatus === "Approved") {
-			const template = db.emailTemplates.find((t) => t.id === "temp_app_approved");
-			let subject = "Internship Selection";
-			let body = `Dear ${student.fullName}, your application has been approved.`;
-			if (template) {
-				subject = template.subject.replace("{title}", internship.title);
-				body = template.body.replace("{studentName}", student.fullName).replace("{title}", internship.title).replace("{companyName}", sessionUser.name).replace("{studentMobile}", student.mobileNumber);
-			}
-			db.notifications.unshift({
-				id: `notif_${Date.now()}_approved`,
-				recipientEmail: student.email,
-				recipientRole: "student",
-				subject,
-				body,
-				date: (/* @__PURE__ */ new Date()).toISOString(),
-				read: false
-			});
-			logAction("APPLICATION_APPROVE", `Company approved application (ID: ${appId}) for student ${student.fullName}. Certificate generated.`);
+			subject = `Internship Selection: ${internship.title}`;
+			body = `Dear ${student.fullName},\n\nCongratulations! Your application for "${internship.title}" has been APPROVED.\n\nBest regards,\n${sessionUser.name} Recruiting Office`;
+			await logAction("APPLICATION_APPROVE", `Company approved application (ID: ${appId}) for student ${student.fullName}.`);
 		} else if (newStatus === "Rejected") {
-			const template = db.emailTemplates.find((t) => t.id === "temp_app_rejected");
-			let subject = "Internship Update";
-			let body = `Dear ${student.fullName}, thank you for applying, but we will not be moving forward.`;
-			if (template) {
-				subject = template.subject.replace("{title}", internship.title);
-				body = template.body.replace("{studentName}", student.fullName).replace("{title}", internship.title).replace("{companyName}", sessionUser.name);
-			}
-			db.notifications.unshift({
-				id: `notif_${Date.now()}_rejected`,
-				recipientEmail: student.email,
-				recipientRole: "student",
-				subject,
-				body,
-				date: (/* @__PURE__ */ new Date()).toISOString(),
-				read: false
-			});
-			logAction("APPLICATION_REJECT", `Company rejected application (ID: ${appId}) for student ${student.fullName}.`);
+			subject = `Application Update: ${internship.title}`;
+			body = `Dear ${student.fullName},\n\nThank you for your interest in "${internship.title}". We will not be moving forward with your application at this time.\n\nBest regards,\n${sessionUser.name} Recruiting Office`;
+			await logAction("APPLICATION_REJECT", `Company rejected application (ID: ${appId}) for student ${student.fullName}.`);
 		} else if (newStatus === "Shortlisted") {
-			db.notifications.unshift({
-				id: `notif_${Date.now()}_shortlisted`,
-				recipientEmail: student.email,
-				recipientRole: "student",
-				subject: `Application Shortlisted: ${internship.title}`,
-				body: `Dear ${student.fullName},\n\nWe are pleased to inform you that your application for "${internship.title}" has been SHORTLISTED by our hiring board.\n\nWe will review your resume in the next phase or contact you directly to schedule an interview.\n\nBest regards,\n${sessionUser.name} Recruiting Office`,
-				date: (/* @__PURE__ */ new Date()).toISOString(),
-				read: false
-			});
-			logAction("APPLICATION_SHORTLIST", `Company shortlisted application (ID: ${appId}) for student ${student.fullName}.`);
-		} else logAction("APPLICATION_PENDING", `Company set application (ID: ${appId}) to pending.`);
-		await updateEntireDatabase(db);
+			subject = `Application Shortlisted: ${internship.title}`;
+			body = `Dear ${student.fullName},\n\nWe are pleased to inform you that your application for "${internship.title}" has been SHORTLISTED.\n\nBest regards,\n${sessionUser.name} Recruiting Office`;
+			await logAction("APPLICATION_SHORTLIST", `Company shortlisted application (ID: ${appId}) for student ${student.fullName}.`);
+		} else await logAction("APPLICATION_PENDING", `Company set application (ID: ${appId}) to pending.`);
+		if (subject) await addDocument("notifications", {
+			id: notifId,
+			recipientEmail: student.email,
+			recipientRole: "student",
+			subject,
+			body,
+			date: (/* @__PURE__ */ new Date()).toISOString(),
+			read: false
+		});
 		return { success: true };
 	},
 	issueCertificate: async ({ request, cookies }) => {
@@ -155,29 +102,12 @@ var actions = {
 			success: false,
 			error: "Reference ID is required"
 		});
-		const [studentsData, companiesData, internshipsData, applicationsData, notificationsData, emailTemplatesData] = await Promise.all([
-			getCollection("students"),
-			getCollection("companies"),
-			getCollection("internships"),
-			getCollection("applications"),
-			getCollection("notifications"),
-			getCollection("emailTemplates")
-		]);
-		const db = {
-			students: studentsData,
-			companies: companiesData,
-			internships: internshipsData,
-			applications: applicationsData,
-			notifications: notificationsData,
-			emailTemplates: emailTemplatesData
-		};
-		const appIndex = db.applications.findIndex((a) => a.id === appId);
-		if (appIndex === -1) return fail(404, {
+		const application = await getDocument("applications", appId);
+		if (!application) return fail(404, {
 			success: false,
 			error: "Application entry not found"
 		});
-		const application = db.applications[appIndex];
-		const internship = db.internships.find((i) => i.id === application.internshipId);
+		const internship = await getDocument("internships", application.internshipId);
 		if (!internship || internship.companyId !== sessionUser.id) return fail(403, {
 			success: false,
 			error: "Access denied: You do not own this internship posting"
@@ -188,10 +118,11 @@ var actions = {
 		});
 		if (!application.certificateHash) {
 			const uniqueSeed = `${appId}_${application.studentId}_${Date.now()}`;
-			application.certificateHash = `cert_${crypto.createHash("sha256").update(uniqueSeed).digest("hex").substr(0, 20)}`;
-			application.status = "Completed";
-			await updateEntireDatabase(db);
-			logAction("CERTIFICATE_ISSUE", `Company issued completion certificate for application (ID: ${appId}).`);
+			await updateDocument("applications", appId, {
+				certificateHash: `cert_${crypto.createHash("sha256").update(uniqueSeed).digest("hex").substr(0, 20)}`,
+				status: "Completed"
+			});
+			await logAction("CERTIFICATE_ISSUE", `Company issued completion certificate for application (ID: ${appId}).`);
 		}
 		return { success: true };
 	}

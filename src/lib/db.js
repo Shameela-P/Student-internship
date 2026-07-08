@@ -209,7 +209,19 @@ export async function getCollection(collectionName) {
 		return [...cache[collectionName]]; // Return copy to prevent accidental mutation
 	}
 
-	const snapshot = await get(child(dbRef, collectionName));
+	// 10 second timeout to prevent indefinite hangs on Firebase permission errors
+	const timeout = new Promise((_, reject) =>
+		setTimeout(() => reject(new Error(`Firebase timeout fetching '${collectionName}'`)), 10000)
+	);
+
+	let snapshot;
+	try {
+		snapshot = await Promise.race([get(child(dbRef, collectionName)), timeout]);
+	} catch (err) {
+		console.error(`getCollection('${collectionName}') failed:`, err.message);
+		return []; // Return empty array — do not crash the page
+	}
+
 	if (!snapshot.exists()) return [];
 	const data = snapshot.val();
 	
@@ -230,11 +242,8 @@ export async function getCollection(collectionName) {
  * Fetch a specific item from a collection by its array index OR by its unique 'id' property.
  */
 export async function getDocument(collectionName, id) {
-	const dbQuery = query(child(dbRef, collectionName), orderByChild('id'), equalTo(id));
-	const snapshot = await get(dbQuery);
-	if (!snapshot.exists()) return null;
-	const data = snapshot.val();
-	return Object.values(data)[0] || null;
+	const collection = await getCollection(collectionName);
+	return collection.find(item => item && item.id === id) || null;
 }
 
 export async function getCachedCompanies() {
@@ -283,6 +292,19 @@ export async function deleteDocument(collectionName, id) {
 export async function updateEntireDatabase(data) {
 	await update(dbRef, data);
 	invalidateCache();
+}
+
+/**
+ * Fetch documents where a specific field equals a value
+ */
+export async function queryDocuments(collectionName, field, value) {
+	try {
+		const collection = await getCollection(collectionName);
+		return collection.filter(item => item && item[field] === value);
+	} catch (e) {
+		console.error(`Error querying ${collectionName} where ${field} === ${value}`, e);
+		return [];
+	}
 }
 
 /**

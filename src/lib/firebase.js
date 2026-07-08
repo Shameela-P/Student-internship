@@ -1,5 +1,6 @@
 import { initializeApp, getApps, getApp } from 'firebase/app';
 import { getAuth, GoogleAuthProvider } from 'firebase/auth';
+import { getDatabase } from 'firebase/database';
 import { getStorage } from 'firebase/storage';
 import {
 	PUBLIC_FIREBASE_API_KEY,
@@ -23,6 +24,7 @@ const firebaseConfig = {
 	measurementId: PUBLIC_FIREBASE_MEASUREMENT_ID
 };
 
+// Initialize Firebase only once (guard against HMR re-initialization)
 let app;
 if (!getApps().length) {
 	app = initializeApp(firebaseConfig);
@@ -31,10 +33,12 @@ if (!getApps().length) {
 }
 
 const auth = getAuth(app);
-const googleProvider = new GoogleAuthProvider();
-googleProvider.setCustomParameters({
-	client_id: '784418638868-8fabei595jr1pjkjjvasf6cjehdq852n.apps.googleusercontent.com'
-});
+const database = getDatabase(app);
 const storage = getStorage(app);
+const googleProvider = new GoogleAuthProvider();
 
-export { app, auth, googleProvider, storage };
+// Request email and profile scopes
+googleProvider.addScope('email');
+googleProvider.addScope('profile');
+
+export { app, auth, database, storage, googleProvider };

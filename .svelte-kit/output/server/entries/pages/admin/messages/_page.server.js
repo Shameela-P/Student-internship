@@ -1,4 +1,4 @@
-import { o as updateEntireDatabase, r as getCollection } from "../../../../chunks/db.js";
+import { c as updateDocument, i as getCollection, n as addDocument } from "../../../../chunks/db.js";
 import { a as requireRole } from "../../../../chunks/auth.js";
 import { fail } from "@sveltejs/kit";
 //#region src/routes/admin/messages/+page.server.js
@@ -17,14 +17,10 @@ async function load({ cookies }) {
 	if (!db.messages) db.messages = [];
 	const adminEmail = "admin@nexora.com";
 	const userMessages = db.messages.filter((m) => m.senderEmail.toLowerCase() === adminEmail.toLowerCase() || m.recipientEmail.toLowerCase() === adminEmail.toLowerCase());
-	let dbChanged = false;
-	db.messages.forEach((m) => {
-		if (m.recipientEmail.toLowerCase() === adminEmail.toLowerCase() && !m.read) {
-			m.read = true;
-			dbChanged = true;
-		}
-	});
-	if (dbChanged) await updateEntireDatabase(db);
+	for (const m of db.messages) if (m.recipientEmail.toLowerCase() === adminEmail.toLowerCase() && !m.read) {
+		m.read = true;
+		await updateDocument("messages", m.id, { read: true });
+	}
 	const companies = db.companies.filter((c) => c.status === "Approved" && !c.isSuspended).slice(0, 100).map((c) => ({
 		name: c.companyName,
 		email: c.companyEmail,
@@ -42,16 +38,6 @@ async function load({ cookies }) {
 }
 var actions = { sendMessage: async ({ request, cookies }) => {
 	requireRole(cookies, ["admin"]);
-	const [studentsData, companiesData, messagesData] = await Promise.all([
-		getCollection("students"),
-		getCollection("companies"),
-		getCollection("messages")
-	]);
-	const db = {
-		students: studentsData,
-		companies: companiesData,
-		messages: messagesData
-	};
 	const formData = await request.formData();
 	const recipientEmail = formData.get("recipientEmail")?.toString().trim();
 	const recipientRole = formData.get("recipientRole")?.toString().trim();
@@ -61,8 +47,7 @@ var actions = { sendMessage: async ({ request, cookies }) => {
 		success: false,
 		error: "Recipient details or content is required"
 	});
-	if (!db.messages) db.messages = [];
-	const newMessage = {
+	await addDocument("messages", {
 		id: `msg_${Date.now()}`,
 		senderEmail: "admin@nexora.com",
 		senderRole: "admin",
@@ -73,9 +58,7 @@ var actions = { sendMessage: async ({ request, cookies }) => {
 		content,
 		timestamp: (/* @__PURE__ */ new Date()).toISOString(),
 		read: false
-	};
-	db.messages.push(newMessage);
-	await updateEntireDatabase(db);
+	});
 	return { success: true };
 } };
 //#endregion

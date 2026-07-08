@@ -1,19 +1,11 @@
-import { logAction, DOMAINS, getCollection, updateEntireDatabase } from '$lib/db';
+import { logAction, DOMAINS, getDocument, getCollection, addDocument } from '$lib/db';
 import { requireRole } from '$lib/auth';
 import { fail } from '@sveltejs/kit';
 
 export async function load({ cookies, url }) {
 	const sessionUser = requireRole(cookies, ['student']);
-	const [studentsData, companiesData, internshipsData, applicationsData, notificationsData, emailTemplatesData] = await Promise.all([
-		getCollection('students'),
-		getCollection('companies'),
-		getCollection('internships'),
-		getCollection('applications'),
-		getCollection('notifications'),
-		getCollection('emailTemplates')
-	]);
-	const db = { students: studentsData, companies: companiesData, internships: internshipsData, applications: applicationsData, notifications: notificationsData, emailTemplates: emailTemplatesData };
-	const student = db.students.find(s => s.id === sessionUser.id);
+
+	const student = await getDocument('students', sessionUser.id);
 	if (!student) {
 		cookies.delete('nexora_session', { path: '/' });
 		throw new Error('Student session not found');
@@ -23,17 +15,31 @@ export async function load({ cookies, url }) {
 	const searchQuery = url.searchParams.get('query')?.toLowerCase().trim() || '';
 	const filterDomain = url.searchParams.get('domain') || '';
 	const filterLocation = url.searchParams.get('location')?.toLowerCase().trim() || '';
-	const filterMode = url.searchParams.get('mode') || ''; // 'Online' | 'Offline' | 'Hybrid'
-	const filterType = url.searchParams.get('type') || ''; // 'Free Internship' | 'Paid Internship' | 'Free + Stipend' | 'Paid + Stipend'
+	const filterMode = url.searchParams.get('mode') || '';
+	const filterType = url.searchParams.get('type') || '';
 	const filterDuration = url.searchParams.get('duration') || '';
-	const filterJobOpp = url.searchParams.get('jobOpportunity') || ''; // 'Yes' | 'No'
-	const filterCert = url.searchParams.get('certificateAvailable') || ''; // 'Yes' | 'No'
+	const filterJobOpp = url.searchParams.get('jobOpportunity') || '';
+	const filterCert = url.searchParams.get('certificateAvailable') || '';
+
+	// We need full internships and companies collections for the explore/search page
+	// since we're browsing ALL active internships across all companies.
+	// Cache is active (2 mins), so repeat navigations use the cache.
+	const [internshipsData, companiesData] = await Promise.all([
+		getCollection('internships'),
+		getCollection('companies')
+	]);
+
+	// Get student's existing applications (targeted query — only their IDs)
+	const studentApps = await getCollection('applications').then(apps => 
+		apps.filter(a => a.studentId === student.id).map(a => a.internshipId)
+	);
+	const appliedSet = new Set(studentApps);
 
 	// Map company profiles for quick lookup
-	const companyMap = new Map(db.companies.map(c => [c.id, c]));
+	const companyMap = new Map(companiesData.map(c => [c.id, c]));
 
 	// Filter internships
-	const filteredInternships = db.internships
+	const filteredInternships = internshipsData
 		.filter(internship => {
 			// Only show active postings
 			if (internship.status !== 'Active') return false;
@@ -45,77 +51,40 @@ export async function load({ cookies, url }) {
 			// Search query (titles, description, skills, company name)
 			if (searchQuery) {
 				const queryTokens = searchQuery.split(/\s+/).filter(Boolean);
-				
-				// Ensure every token matches AT LEAST one field
 				const matchesAllTokens = queryTokens.every(token => {
 					const titleMatch = internship.title.toLowerCase().includes(token);
 					const descMatch = internship.description.toLowerCase().includes(token);
 					const skillMatch = internship.skillsRequired.some(s => s.toLowerCase().includes(token));
 					const companyMatch = company.companyName.toLowerCase().includes(token);
-					
 					return titleMatch || descMatch || skillMatch || companyMatch;
 				});
-
-				if (!matchesAllTokens) {
-					return false;
-				}
+				if (!matchesAllTokens) return false;
 			}
 
-			// Domain category filter
-			if (filterDomain && internship.domain !== filterDomain) {
-				return false;
-			}
-
-			// Location filter
-			if (filterLocation && !internship.location.toLowerCase().includes(filterLocation)) {
-				return false;
-			}
-
-			// Mode filter
-			if (filterMode && internship.mode !== filterMode) {
-				return false;
-			}
-
-			// Type filter
-			if (filterType && internship.type !== filterType) {
-				return false;
-			}
-
-			// Duration filter
-			if (filterDuration && internship.duration !== filterDuration) {
-				return false;
-			}
-
-			// Job opportunity after internship
-			if (filterJobOpp && internship.jobOpportunity !== filterJobOpp) {
-				return false;
-			}
-
-			// Certificate availability filter
-			if (filterCert && internship.certificateAvailable !== filterCert) {
-				return false;
-			}
+			if (filterDomain && internship.domain !== filterDomain) return false;
+			if (filterLocation && !internship.location.toLowerCase().includes(filterLocation)) return false;
+			if (filterMode && internship.mode !== filterMode) return false;
+			if (filterType && internship.type !== filterType) return false;
+			if (filterDuration && internship.duration !== filterDuration) return false;
+			if (filterJobOpp && internship.jobOpportunity !== filterJobOpp) return false;
+			if (filterCert && internship.certificateAvailable !== filterCert) return false;
 
 			return true;
 		})
 		.slice(0, 60)
 		.map(internship => {
 			const company = companyMap.get(internship.companyId);
-			const hasApplied = db.applications.some(a => a.studentId === student.id && a.internshipId === internship.id);
-			
 			return {
 				...internship,
 				companyName: company ? company.companyName : 'Unknown Company',
 				companyLogo: company ? company.companyLogo : '',
-				hasApplied
+				hasApplied: appliedSet.has(internship.id)
 			};
 		});
 
-	// Removed the arbitrary 15 results minimum block because it broke strict filtering
-
 	return {
 		student,
-		internships: filteredInternships.slice(0, 50), // ensure we have plenty of results but not infinite
+		internships: filteredInternships.slice(0, 50),
 		domains: DOMAINS,
 		filters: {
 			query: searchQuery,
@@ -140,34 +109,29 @@ export const actions = {
 			return fail(400, { success: false, error: 'Internship reference is missing' });
 		}
 
-		const [studentsData, companiesData, internshipsData, applicationsData, notificationsData, emailTemplatesData] = await Promise.all([
-		getCollection('students'),
-		getCollection('companies'),
-		getCollection('internships'),
-		getCollection('applications'),
-		getCollection('notifications'),
-		getCollection('emailTemplates')
-	]);
-	const db = { students: studentsData, companies: companiesData, internships: internshipsData, applications: applicationsData, notifications: notificationsData, emailTemplates: emailTemplatesData };
-		const student = db.students.find(s => s.id === sessionUser.id);
-		const internship = db.internships.find(i => i.id === internshipId);
-		
+		// Fetch only the 3 specific documents we need
+		const [student, internship] = await Promise.all([
+			getDocument('students', sessionUser.id),
+			getDocument('internships', internshipId)
+		]);
+
 		if (!internship || internship.status !== 'Active') {
 			return fail(404, { success: false, error: 'This internship is no longer active' });
 		}
 
-		const company = db.companies.find(c => c.id === internship.companyId);
+		const company = await getDocument('companies', internship.companyId);
 		if (!company || company.isSuspended) {
 			return fail(400, { success: false, error: 'The company hosting this internship has been suspended' });
 		}
 
-		// Double check duplicate application
-		const alreadyApplied = db.applications.some(a => a.studentId === student.id && a.internshipId === internship.id);
-		if (alreadyApplied) {
+		// Check for duplicate application using targeted query
+		const existingApps = await getCollection('applications').then(apps => 
+			apps.filter(a => a.studentId === student.id && a.internshipId === internship.id)
+		);
+		if (existingApps.length > 0) {
 			return fail(400, { success: false, error: 'You have already applied to this internship' });
 		}
 
-		// Check if student has a resume
 		if (!student.resumePath) {
 			return fail(400, { success: false, error: 'You must upload a resume before applying. Update it in your Profile Settings.' });
 		}
@@ -184,44 +148,30 @@ export const actions = {
 			certificateHash: ''
 		};
 
-		db.applications.push(newApp);
+		// Add application and both notifications concurrently
+		await Promise.all([
+			addDocument('applications', newApp),
+			addDocument('notifications', {
+				id: `notif_${Date.now()}_stud`,
+				recipientEmail: student.email,
+				recipientRole: 'student',
+				subject: `Application Filed: ${internship.title}`,
+				body: `Hi ${student.fullName},\n\nYour application for "${internship.title}" at ${company.companyName} has been successfully submitted.\n\nWe'll notify you when the company reviews your application.\n\nBest of luck!\nNexora Team`,
+				date: new Date().toISOString(),
+				read: false
+			}),
+			addDocument('notifications', {
+				id: `notif_${Date.now()}_comp`,
+				recipientEmail: company.companyEmail,
+				recipientRole: 'company',
+				subject: `New Application Received: ${internship.title}`,
+				body: `Dear HR Team,\n\nA new student application has been submitted for your opening: "${internship.title}".\n\nApplicant: ${student.fullName}\nCollege: ${student.collegeName}\nDepartment: ${student.department}\n\nPlease log into Nexora to review their profile and resume.\n\nBest regards,\nNexora Recruiting Services`,
+				date: new Date().toISOString(),
+				read: false
+			})
+		]);
 
-		// Send Automated Email to Student
-		const studentTemplate = db.emailTemplates.find(t => t.id === 'temp_app_submitted');
-		let studentSubject = 'Application Filed';
-		let studentBody = `Hi ${student.fullName}, your application for "${internship.title}" has been submitted.`;
-
-		if (studentTemplate) {
-			studentSubject = studentTemplate.subject.replace('{title}', internship.title);
-			studentBody = studentTemplate.body
-				.replace('{studentName}', student.fullName)
-				.replace('{title}', internship.title)
-				.replace('{companyName}', company.companyName);
-		}
-
-		db.notifications.unshift({
-			id: `notif_${Date.now()}_stud`,
-			recipientEmail: student.email,
-			recipientRole: 'student',
-			subject: studentSubject,
-			body: studentBody,
-			date: new Date().toISOString(),
-			read: false
-		});
-
-		// Send Automated Email to Company (New Application alert)
-		db.notifications.unshift({
-			id: `notif_${Date.now()}_comp`,
-			recipientEmail: company.companyEmail,
-			recipientRole: 'company',
-			subject: `New Application Received: ${internship.title}`,
-			body: `Dear HR Team,\n\nA new student application has been submitted for your opening: "${internship.title}".\n\nApplicant: ${student.fullName}\nCollege: ${student.collegeName}\nDepartment: ${student.department}\n\nPlease log into Nexora to review their profile and resume files.\n\nBest regards,\nNexora Recruiting Services`,
-			date: new Date().toISOString(),
-			read: false
-		});
-
-		await updateEntireDatabase(db);
-		logAction('APPLICATION_SUBMIT', `Student ${student.fullName} applied for internship ${internship.title} (ID: ${internship.id}).`);
+		await logAction('APPLICATION_SUBMIT', `Student ${student.fullName} applied for internship ${internship.title} (ID: ${internship.id}).`);
 
 		return { success: true };
 	}

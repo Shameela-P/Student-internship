@@ -2,29 +2,38 @@ import { getCollection } from '$lib/db';
 import { getSessionUser } from '$lib/auth';
 
 export async function load({ cookies }) {
-	const [studentsData, companiesData, internshipsData, applicationsData] = await Promise.all([
-		getCollection('students'),
-		getCollection('companies'),
-		getCollection('internships'),
-		getCollection('applications')
-	]);
-	const db = { students: studentsData, companies: companiesData, internships: internshipsData, applications: applicationsData };
 	const user = getSessionUser(cookies);
 
-	// Calculate statistics
-	const activeInternships = db.internships.filter(i => i.status === 'Active').length;
-	const registeredCompanies = db.companies.filter(c => c.status === 'Approved').length;
-	const totalStudents = db.students.length;
-	
-	// Count successful placements (Approved status applications)
-	const successfulPlacements = db.applications.filter(a => a.status === 'Approved').length;
+	// Fetch stats for the landing page — gracefully handle empty or inaccessible Firebase DB
+	let studentsData = [];
+	let companiesData = [];
+	let internshipsData = [];
+	let applicationsData = [];
+
+	try {
+		[studentsData, companiesData, internshipsData, applicationsData] = await Promise.all([
+			getCollection('students'),
+			getCollection('companies'),
+			getCollection('internships'),
+			getCollection('applications')
+		]);
+	} catch (err) {
+		// Database may be empty or rules not configured yet — degrade gracefully
+		console.warn('Landing page: Firebase data unavailable, using empty defaults.', err.message);
+	}
+
+	// Calculate statistics (all default to 0 if DB is empty)
+	const activeInternships = internshipsData.filter(i => i.status === 'Active').length;
+	const registeredCompanies = companiesData.filter(c => c.status === 'Approved').length;
+	const totalStudents = studentsData.length;
+	const successfulPlacements = applicationsData.filter(a => a.status === 'Approved').length;
 
 	// Fetch 4 featured internships (newest active)
-	const featured = db.internships
+	const featured = internshipsData
 		.filter(i => i.status === 'Active')
 		.slice(-4)
 		.map(internship => {
-			const company = db.companies.find(c => c.id === internship.companyId);
+			const company = companiesData.find(c => c.id === internship.companyId);
 			return {
 				...internship,
 				companyName: company ? company.companyName : 'Unknown Company',
@@ -32,12 +41,12 @@ export async function load({ cookies }) {
 			};
 		});
 
-	// Get domain categories summary
+	// Get domain categories summary (fall back to 0 if no data)
 	const categories = [
-		{ name: 'Software & IT', type: 'software', count: db.internships.filter(i => i.domain && i.status === 'Active' && db.companies.find(c => c.id === i.companyId && c.industryType === 'Software & IT')).length || 4 },
-		{ name: 'Engineering', type: 'engineering', count: db.internships.filter(i => i.domain && i.status === 'Active' && db.companies.find(c => c.id === i.companyId && c.industryType === 'Engineering')).length || 1 },
-		{ name: 'Commerce & Finance', type: 'finance', count: db.internships.filter(i => i.domain && i.status === 'Active' && db.companies.find(c => c.id === i.companyId && c.industryType === 'Commerce & Finance')).length || 1 },
-		{ name: 'Business & Management', type: 'business', count: db.internships.filter(i => i.domain && i.status === 'Active' && db.companies.find(c => c.id === i.companyId && c.industryType === 'Business & Management')).length || 0 }
+		{ name: 'Software & IT', type: 'software', count: internshipsData.filter(i => i.domain && i.status === 'Active' && companiesData.find(c => c.id === i.companyId && c.industryType === 'Software & IT')).length || 0 },
+		{ name: 'Engineering', type: 'engineering', count: internshipsData.filter(i => i.domain && i.status === 'Active' && companiesData.find(c => c.id === i.companyId && c.industryType === 'Engineering')).length || 0 },
+		{ name: 'Commerce & Finance', type: 'finance', count: internshipsData.filter(i => i.domain && i.status === 'Active' && companiesData.find(c => c.id === i.companyId && c.industryType === 'Commerce & Finance')).length || 0 },
+		{ name: 'Business & Management', type: 'business', count: internshipsData.filter(i => i.domain && i.status === 'Active' && companiesData.find(c => c.id === i.companyId && c.industryType === 'Business & Management')).length || 0 }
 	];
 
 	return {

@@ -1,23 +1,32 @@
-import { getCollection } from '$lib/db';
+import { getDocument, queryDocuments, getCollection } from '$lib/db';
 import { requireRole } from '$lib/auth';
+import { error } from '@sveltejs/kit';
 
 export async function load({ cookies }) {
-	const sessionUser = requireRole(cookies, ['student']);
-	const [studentsData, companiesData, internshipsData, applicationsData] = await Promise.all([
-		getCollection('students'),
-		getCollection('companies'),
-		getCollection('internships'),
-		getCollection('applications')
-	]);
-	const db = { students: studentsData, companies: companiesData, internships: internshipsData, applications: applicationsData };
-	const student = db.students.find(s => s.id === sessionUser.id);
+	try {
+		const sessionUser = requireRole(cookies, ['student']);
+		
+		// 1. Fetch Student Profile directly
+		const student = await getDocument('students', sessionUser.id);
+		if (!student) throw new Error("Student profile not found");
 
-	// 1. Fetch applications
-	const studentApps = db.applications
-		.filter(a => a.studentId === student.id)
-		.map(app => {
-			const internship = db.internships.find(i => i.id === app.internshipId);
-			const company = internship ? db.companies.find(c => c.id === internship.companyId) : null;
+		// 2. Query only applications submitted by this student
+		const rawApps = await queryDocuments('applications', 'studentId', student.id);
+
+		// 3. Resolve Internship and Company details for these applications
+		const internshipIds = [...new Set(rawApps.map(a => a.internshipId))];
+		const internshipPromises = internshipIds.map(id => getDocument('internships', id));
+		const internshipsArray = await Promise.all(internshipPromises);
+		const internshipsMap = Object.fromEntries(internshipsArray.filter(Boolean).map(i => [i.id, i]));
+
+		const companyIds = [...new Set(Object.values(internshipsMap).map(i => i.companyId))];
+		const companyPromises = companyIds.map(id => getDocument('companies', id));
+		const companiesArray = await Promise.all(companyPromises);
+		const companiesMap = Object.fromEntries(companiesArray.filter(Boolean).map(c => [c.id, c]));
+
+		const studentApps = rawApps.map(app => {
+			const internship = internshipsMap[app.internshipId];
+			const company = internship ? companiesMap[internship.companyId] : null;
 			return {
 				...app,
 				internshipTitle: internship ? internship.title : 'Deleted Internship',
@@ -29,83 +38,87 @@ export async function load({ cookies }) {
 			};
 		});
 
-	// Sort applications: newest first
-	studentApps.reverse();
+		// Sort applications: newest first
+		studentApps.reverse();
 
-	// 2. Compute Dashboard statistics
-	const totalApplied = studentApps.length;
-	const pendingCount = studentApps.filter(a => a.status === 'Pending' || a.status === 'Shortlisted').length;
-	const approvedCount = studentApps.filter(a => a.status === 'Approved').length;
-	const rejectedCount = studentApps.filter(a => a.status === 'Rejected').length;
-	const certificatesCount = studentApps.filter(a => a.status === 'Approved' && a.certificateHash).length;
+		// Compute Dashboard statistics
+		const totalApplied = studentApps.length;
+		const pendingCount = studentApps.filter(a => a.status === 'Pending' || a.status === 'Shortlisted').length;
+		const approvedCount = studentApps.filter(a => a.status === 'Approved').length;
+		const rejectedCount = studentApps.filter(a => a.status === 'Rejected').length;
+		const certificatesCount = studentApps.filter(a => a.status === 'Approved' && a.certificateHash).length;
 
-	// 3. Recommendation System: match student skills to active internships
-	const studentSkills = student.skills.map(s => s.toLowerCase());
-	
-	const recommendations = db.internships
-		.filter(internship => {
-			// Only recommend active internships that the student hasn't applied to yet
-			if (internship.status !== 'Active') return false;
-			const alreadyApplied = db.applications.some(a => a.studentId === student.id && a.internshipId === internship.id);
-			return !alreadyApplied;
-		})
-		.map(internship => {
-			const company = db.companies.find(c => c.id === internship.companyId);
-			
-			// Exclude internships of suspended/unapproved companies
-			if (!company || company.isSuspended || company.status !== 'Approved') return null;
+		// 4. Recommendation System (requires scanning active internships, so we must fetch collection, but cache it)
+		// To avoid memory blowing up, we could optimize this later by fetching only 'Active' internships if we add an index,
+		// but since active internships might be small enough to fit in cache, we'll use getCollection.
+		const allInternships = await getCollection('internships');
+		const studentSkills = student.skills.map(s => s.toLowerCase());
+		
+		const recommendationsPromises = allInternships
+			.filter(internship => {
+				if (internship.status !== 'Active') return false;
+				const alreadyApplied = studentApps.some(a => a.internshipId === internship.id);
+				return !alreadyApplied;
+			})
+			.map(async internship => {
+				const company = await getDocument('companies', internship.companyId);
+				if (!company || company.isSuspended || company.status !== 'Approved') return null;
 
-			// Skills matching score
-			const requiredSkills = internship.skillsRequired.map(s => s.toLowerCase());
-			let matchedCount = 0;
-			
-			requiredSkills.forEach(reqSkill => {
-				if (studentSkills.some(studSkill => studSkill.includes(reqSkill) || reqSkill.includes(studSkill))) {
-					matchedCount++;
+				const requiredSkills = internship.skillsRequired.map(s => s.toLowerCase());
+				let matchedCount = 0;
+				
+				requiredSkills.forEach(reqSkill => {
+					if (studentSkills.some(studSkill => studSkill.includes(reqSkill) || reqSkill.includes(studSkill))) {
+						matchedCount++;
+					}
+				});
+
+				let matchScore = 0;
+				if (requiredSkills.length > 0) {
+					matchScore = Math.round((matchedCount / requiredSkills.length) * 100);
+				} else {
+					matchScore = 50;
 				}
+
+				const deptMatch = student.department && internship.domain.toLowerCase().includes(student.department.toLowerCase());
+				if (deptMatch) {
+					matchScore += 20;
+				}
+				matchScore = Math.min(matchScore, 100);
+
+				return {
+					id: internship.id,
+					title: internship.title,
+					domain: internship.domain,
+					companyName: company.companyName,
+					mode: internship.mode,
+					type: internship.type,
+					stipendAmount: internship.stipendAmount,
+					lastDateToApply: internship.lastDateToApply,
+					matchScore
+				};
 			});
 
-			let matchScore = 0;
-			if (requiredSkills.length > 0) {
-				matchScore = Math.round((matchedCount / requiredSkills.length) * 100);
-			} else {
-				matchScore = 50; // default baseline
-			}
+		const rawRecommendations = await Promise.all(recommendationsPromises);
+		const recommendations = rawRecommendations
+			.filter(Boolean)
+			.sort((a, b) => b.matchScore - a.matchScore)
+			.slice(0, 3);
 
-			// Add bonus if internship category/domain aligns with student's department or skills
-			const deptMatch = student.department && internship.domain.toLowerCase().includes(student.department.toLowerCase());
-			if (deptMatch) {
-				matchScore += 20;
-			}
-			matchScore = Math.min(matchScore, 100); // Max 100
-
-			return {
-				id: internship.id,
-				title: internship.title,
-				domain: internship.domain,
-				companyName: company.companyName,
-				mode: internship.mode,
-				type: internship.type,
-				stipendAmount: internship.stipendAmount,
-				lastDateToApply: internship.lastDateToApply,
-				matchScore
-			};
-		})
-		.filter(Boolean) // Filter out nulls
-		// Sort descending by matchScore, then pick top 3
-		.sort((a, b) => b.matchScore - a.matchScore)
-		.slice(0, 3);
-
-	return {
-		student,
-		applications: studentApps,
-		stats: {
-			totalApplied,
-			pendingCount,
-			approvedCount,
-			rejectedCount,
-			certificatesCount
-		},
-		recommendations
-	};
+		return {
+			student,
+			applications: studentApps,
+			stats: {
+				totalApplied,
+				pendingCount,
+				approvedCount,
+				rejectedCount,
+				certificatesCount
+			},
+			recommendations
+		};
+	} catch (err) {
+		console.error('Vercel Load Error:', err);
+		throw error(500, err.message || 'Internal Server Error fetching student dashboard');
+	}
 }

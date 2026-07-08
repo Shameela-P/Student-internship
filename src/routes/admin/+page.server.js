@@ -1,221 +1,164 @@
 import { logAction, getCollection, updateEntireDatabase } from '$lib/db';
 import { requireRole } from '$lib/auth';
-import { fail } from '@sveltejs/kit';
+import { fail, error } from '@sveltejs/kit';
 
 export async function load({ cookies }) {
-	const sessionUser = requireRole(cookies, ['admin']);
-	const [studentsData, companiesData, internshipsData, applicationsData, notificationsData, emailTemplatesData, systemLogsData] = await Promise.all([
-		getCollection('students'),
-		getCollection('companies'),
-		getCollection('internships'),
-		getCollection('applications'),
-		getCollection('notifications'),
-		getCollection('emailTemplates'),
-		getCollection('systemLogs')
-	]);
-	const db = { students: studentsData, companies: companiesData, internships: internshipsData, applications: applicationsData, notifications: notificationsData, emailTemplates: emailTemplatesData, systemLogs: systemLogsData };
+	try {
+		const sessionUser = requireRole(cookies, ['admin']);
+		
+		// Optimization: Only fetch what is absolutely required for the dashboard overview.
+		// Excluded heavy collections like notifications and emailTemplates.
+		const [studentsData, companiesData, internshipsData, applicationsData, systemLogsData] = await Promise.all([
+			getCollection('students'),
+			getCollection('companies'),
+			getCollection('internships'),
+			getCollection('applications'),
+			getCollection('systemLogs')
+		]);
+		
+		const totalStudents = studentsData.length;
+		const totalCompanies = companiesData.length;
+		const pendingCompanies = companiesData.filter(c => c.status === 'Pending');
+		const activeInternships = internshipsData.filter(i => i.status === 'Active').length;
+		const totalApplications = applicationsData.length;
+		
+		const placementsCount = applicationsData.filter(a => a.status === 'Approved').length;
+		const certificatesGenerated = applicationsData.filter(a => a.certificateHash).length;
 
-	const totalStudents = db.students.length;
-	const totalCompanies = db.companies.length;
-	const pendingCompanies = db.companies.filter(c => c.status === 'Pending');
-	const activeInternships = db.internships.filter(i => i.status === 'Active').length;
-	const totalApplications = db.applications.length;
-	
-	const placementsCount = db.applications.filter(a => a.status === 'Approved').length;
-	const certificatesGenerated = db.applications.filter(a => a.certificateHash).length;
-
-	// Active companies for moderation
-	const activeCompanies = db.companies.filter(c => c.status === 'Approved' && !c.isSuspended).slice(0, 100).map(c => ({
-		id: c.id,
-		companyName: c.companyName,
-		companyEmail: c.companyEmail,
-		industryType: c.industryType
-	}));
-
-	// Audit Logs stream
-	const logs = db.systemLogs.slice(0, 30);
-
-	return {
-		stats: {
-			totalStudents,
-			totalCompanies,
-			pendingCompaniesCount: pendingCompanies.length,
-			activeInternships,
-			totalApplications,
-			successfulPlacements: placementsCount,
-			certificatesGenerated
-		},
-		verificationQueue: pendingCompanies.map(c => ({
+		// Active companies for moderation (limit to 100 for memory)
+		const activeCompanies = companiesData.filter(c => c.status === 'Approved' && !c.isSuspended).slice(0, 100).map(c => ({
 			id: c.id,
 			companyName: c.companyName,
 			companyEmail: c.companyEmail,
-			industryType: c.industryType,
-			website: c.website,
-			createdAt: c.createdAt
-		})),
-		activeCompanies,
-		logs
-	};
+			industryType: c.industryType
+		}));
+
+		// Audit Logs stream (only top 30)
+		const logs = systemLogsData.slice(0, 30);
+
+		return {
+			user: sessionUser,
+			stats: {
+				totalStudents,
+				totalCompanies,
+				pendingCompaniesCount: pendingCompanies.length,
+				activeInternships,
+				totalApplications,
+				successfulPlacements: placementsCount,
+				certificatesGenerated
+			},
+			verificationQueue: pendingCompanies.map(c => ({
+				id: c.id,
+				companyName: c.companyName,
+				companyEmail: c.companyEmail,
+				industryType: c.industryType,
+				website: c.website,
+				createdAt: c.createdAt
+			})),
+			activeCompanies,
+			logs
+		};
+	} catch (err) {
+		console.error('Vercel Load Error:', err);
+		throw error(500, err.message || 'Internal Server Error fetching admin dashboard');
+	}
 }
 
 export const actions = {
 	approveCompany: async ({ request, cookies }) => {
-		requireRole(cookies, ['admin']);
-		const formData = await request.formData();
-		const companyId = formData.get('companyId')?.toString();
+		try {
+			const sessionUser = requireRole(cookies, ['admin']);
+			const data = await request.formData();
+			const companyId = data.get('companyId');
 
-		if (!companyId) {
-			return fail(400, { success: false, error: 'Company reference ID is missing' });
+			const companies = await getCollection('companies');
+			const companyIndex = companies.findIndex(c => c.id === companyId);
+			if (companyIndex === -1) return fail(404, { error: 'Company not found' });
+
+			companies[companyIndex].status = 'Approved';
+			
+			const dbPayload = {
+				'companies': companies
+			};
+			await updateEntireDatabase(dbPayload);
+			await logAction('APPROVE_COMPANY', `Approved company registration: ${companies[companyIndex].companyName}`, sessionUser.name, 'Admin', sessionUser.email, 'Admin Board');
+
+			return { success: true };
+		} catch (err) {
+			console.error(err);
+			return fail(500, { error: err.message });
 		}
-
-		const [studentsData, companiesData, internshipsData, applicationsData, notificationsData, emailTemplatesData, systemLogsData] = await Promise.all([
-		getCollection('students'),
-		getCollection('companies'),
-		getCollection('internships'),
-		getCollection('applications'),
-		getCollection('notifications'),
-		getCollection('emailTemplates'),
-		getCollection('systemLogs')
-	]);
-	const db = { students: studentsData, companies: companiesData, internships: internshipsData, applications: applicationsData, notifications: notificationsData, emailTemplates: emailTemplatesData, systemLogs: systemLogsData };
-		const companyIndex = db.companies.findIndex(c => c.id === companyId);
-		if (companyIndex === -1) {
-			return fail(404, { success: false, error: 'Company profile not found' });
-		}
-
-		db.companies[companyIndex].status = 'Approved';
-
-		// Send email notification template
-		const template = db.emailTemplates.find(t => t.id === 'temp_company_reg');
-		let subject = 'Nexora Company Approval';
-		let body = `Your company account ${db.companies[companyIndex].companyName} has been approved by the platform administrator.`;
-
-		// Custom approved alert body (overwriting registration submission copy)
-		subject = 'Nexora Company Profile Verified & Approved!';
-		body = `Dear Recruiter at ${db.companies[companyIndex].companyName},\n\nWe are pleased to inform you that your company profile verification has completed successfully and your account is APPROVED.\n\nYou can now log in, post multiple internships, evaluate incoming candidate resumes, and issue digital completion certificates.\n\nBest regards,\nNexora Administrator Board`;
-
-		db.notifications.unshift({
-			id: `notif_${Date.now()}_comp_appr`,
-			recipientEmail: db.companies[companyIndex].companyEmail,
-			recipientRole: 'company',
-			subject,
-			body,
-			date: new Date().toISOString(),
-			read: false
-		});
-
-		await updateEntireDatabase(db);
-		logAction('ADMIN_APPROVE_COMPANY', `Administrator approved company "${db.companies[companyIndex].companyName}" (ID: ${companyId}).`);
-
-		return { success: true };
 	},
-
 	rejectCompany: async ({ request, cookies }) => {
-		requireRole(cookies, ['admin']);
-		const formData = await request.formData();
-		const companyId = formData.get('companyId')?.toString();
+		try {
+			const sessionUser = requireRole(cookies, ['admin']);
+			const data = await request.formData();
+			const companyId = data.get('companyId');
 
-		if (!companyId) {
-			return fail(400, { success: false, error: 'Company reference ID is missing' });
+			const companies = await getCollection('companies');
+			const companyIndex = companies.findIndex(c => c.id === companyId);
+			if (companyIndex === -1) return fail(404, { error: 'Company not found' });
+
+			companies[companyIndex].status = 'Rejected';
+			
+			const dbPayload = {
+				'companies': companies
+			};
+			await updateEntireDatabase(dbPayload);
+			await logAction('REJECT_COMPANY', `Rejected company registration: ${companies[companyIndex].companyName}`, sessionUser.name, 'Admin', sessionUser.email, 'Admin Board');
+
+			return { success: true };
+		} catch (err) {
+			console.error(err);
+			return fail(500, { error: err.message });
 		}
+	},
+	suspendCompany: async ({ request, cookies }) => {
+		try {
+			const sessionUser = requireRole(cookies, ['admin']);
+			const data = await request.formData();
+			const companyId = data.get('companyId');
 
-		const [studentsData, companiesData, internshipsData, applicationsData, notificationsData, emailTemplatesData, systemLogsData] = await Promise.all([
-		getCollection('students'),
-		getCollection('companies'),
-		getCollection('internships'),
-		getCollection('applications'),
-		getCollection('notifications'),
-		getCollection('emailTemplates'),
-		getCollection('systemLogs')
-	]);
-	const db = { students: studentsData, companies: companiesData, internships: internshipsData, applications: applicationsData, notifications: notificationsData, emailTemplates: emailTemplatesData, systemLogs: systemLogsData };
-		const companyIndex = db.companies.findIndex(c => c.id === companyId);
-		if (companyIndex === -1) {
-			return fail(404, { success: false, error: 'Company profile not found' });
+			const companies = await getCollection('companies');
+			const companyIndex = companies.findIndex(c => c.id === companyId);
+			if (companyIndex === -1) return fail(404, { error: 'Company not found' });
+
+			companies[companyIndex].isSuspended = true;
+			
+			const dbPayload = {
+				'companies': companies
+			};
+			await updateEntireDatabase(dbPayload);
+			await logAction('SUSPEND_COMPANY', `Suspended company account: ${companies[companyIndex].companyName}`, sessionUser.name, 'Admin', sessionUser.email, 'Admin Board');
+
+			return { success: true };
+		} catch (err) {
+			console.error(err);
+			return fail(500, { error: err.message });
 		}
-
-		const compName = db.companies[companyIndex].companyName;
-		const compEmail = db.companies[companyIndex].companyEmail;
-
-		db.companies[companyIndex].status = 'Rejected';
-
-		// Send rejection email log
-		db.notifications.unshift({
-			id: `notif_${Date.now()}_comp_rej`,
-			recipientEmail: compEmail,
-			recipientRole: 'company',
-			subject: 'Nexora Company Account Rejected',
-			body: `Dear Recruiter,\n\nWe regret to inform you that your application to register "${compName}" on Nexora has been declined after administrative review. We require valid corporate domains and registered structures.\n\nIf you believe this was an error, please contact support.\n\nBest regards,\nNexora Admin Board`,
-			date: new Date().toISOString(),
-			read: false
-		});
-
-		await updateEntireDatabase(db);
-		logAction('ADMIN_REJECT_COMPANY', `Administrator rejected registration for company "${compName}" (ID: ${companyId}).`);
-
-		return { success: true };
 	},
+	unsuspendCompany: async ({ request, cookies }) => {
+		try {
+			const sessionUser = requireRole(cookies, ['admin']);
+			const data = await request.formData();
+			const companyId = data.get('companyId');
 
-	removeFakeCompany: async ({ request, cookies }) => {
-		requireRole(cookies, ['admin']);
-		const formData = await request.formData();
-		const companyId = formData.get('companyId')?.toString();
-		if (!companyId) return fail(400, { success: false, error: 'Missing ID' });
+			const companies = await getCollection('companies');
+			const companyIndex = companies.findIndex(c => c.id === companyId);
+			if (companyIndex === -1) return fail(404, { error: 'Company not found' });
 
-		const [studentsData, companiesData, internshipsData, applicationsData, notificationsData, emailTemplatesData, systemLogsData] = await Promise.all([
-		getCollection('students'),
-		getCollection('companies'),
-		getCollection('internships'),
-		getCollection('applications'),
-		getCollection('notifications'),
-		getCollection('emailTemplates'),
-		getCollection('systemLogs')
-	]);
-	const db = { students: studentsData, companies: companiesData, internships: internshipsData, applications: applicationsData, notifications: notificationsData, emailTemplates: emailTemplatesData, systemLogs: systemLogsData };
-		const companyIndex = db.companies.findIndex(c => c.id === companyId);
-		if (companyIndex === -1) return fail(404, { success: false, error: 'Not found' });
+			companies[companyIndex].isSuspended = false;
+			
+			const dbPayload = {
+				'companies': companies
+			};
+			await updateEntireDatabase(dbPayload);
+			await logAction('UNSUSPEND_COMPANY', `Unsuspended company account: ${companies[companyIndex].companyName}`, sessionUser.name, 'Admin', sessionUser.email, 'Admin Board');
 
-		db.companies[companyIndex].status = 'Rejected';
-		db.companies[companyIndex].isSuspended = true;
-
-		await updateEntireDatabase(db);
-		logAction('ADMIN_REMOVE_FAKE_COMPANY', `Administrator suspended fake company "${db.companies[companyIndex].companyName}".`);
-		return { success: true };
-	},
-
-	sendWarningEmail: async ({ request, cookies }) => {
-		requireRole(cookies, ['admin']);
-		const formData = await request.formData();
-		const companyId = formData.get('companyId')?.toString();
-		const warningMessage = formData.get('warningMessage')?.toString() || 'Please follow platform guidelines. Suspicious activity detected on your profile.';
-		
-		if (!companyId) return fail(400, { success: false, error: 'Missing ID' });
-
-		const [studentsData, companiesData, internshipsData, applicationsData, notificationsData, emailTemplatesData, systemLogsData] = await Promise.all([
-		getCollection('students'),
-		getCollection('companies'),
-		getCollection('internships'),
-		getCollection('applications'),
-		getCollection('notifications'),
-		getCollection('emailTemplates'),
-		getCollection('systemLogs')
-	]);
-	const db = { students: studentsData, companies: companiesData, internships: internshipsData, applications: applicationsData, notifications: notificationsData, emailTemplates: emailTemplatesData, systemLogs: systemLogsData };
-		const company = db.companies.find(c => c.id === companyId);
-		if (!company) return fail(404, { success: false, error: 'Not found' });
-
-		db.notifications.unshift({
-			id: `notif_${Date.now()}_warning`,
-			recipientEmail: company.companyEmail,
-			recipientRole: 'company',
-			subject: 'Admin Warning: Platform Policy Violation',
-			body: warningMessage,
-			date: new Date().toISOString(),
-			read: false
-		});
-
-		await updateEntireDatabase(db);
-		logAction('ADMIN_SEND_WARNING', `Administrator sent warning to company "${company.companyName}".`);
-		return { success: true };
+			return { success: true };
+		} catch (err) {
+			console.error(err);
+			return fail(500, { error: err.message });
+		}
 	}
 };

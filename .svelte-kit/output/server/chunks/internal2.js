@@ -606,7 +606,7 @@ var options = {
 		app: ({ head, body, assets, nonce, env }) => "<!doctype html>\r\n<html lang=\"en\">\r\n	<head>\r\n		<meta charset=\"utf-8\" />\r\n		<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\r\n		<meta name=\"text-scale\" content=\"scale\" />\r\n		<script>\r\n			// Check local storage or system preference to set initial theme and avoid FOUC\r\n			if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {\r\n				document.documentElement.classList.add('dark');\r\n			} else {\r\n				document.documentElement.classList.remove('dark');\r\n			}\r\n		<\/script>\r\n		" + head + "\r\n	</head>\r\n	<body data-sveltekit-preload-data=\"hover\">\r\n		<div style=\"display: contents\">" + body + "</div>\r\n	</body>\r\n</html>\r\n",
 		error: error_template_default
 	},
-	version_hash: "1pnbim3"
+	version_hash: "1r2s40j"
 };
 async function get_hooks() {
 	let handle;

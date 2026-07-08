@@ -1,25 +1,21 @@
 import { requireRole } from '$lib/auth';
-import { getCollection } from '$lib/db';
+import { getDocument, queryDocuments } from '$lib/db';
 import { redirect } from '@sveltejs/kit';
 
 export async function load({ cookies }) {
 	const sessionUser = requireRole(cookies, ['admin']);
-	const [adminsData, notificationsData] = await Promise.all([
-		getCollection('admins'),
-		getCollection('notifications')
-	]);
-	const db = { admins: adminsData, notifications: notificationsData };
-	const admin = db.admins.find(a => a.id === sessionUser.id);
+
+	// Fetch admin document directly — no full collection scan
+	const admin = await getDocument('admins', sessionUser.id);
 
 	if (!admin) {
 		cookies.delete('nexora_session', { path: '/' });
 		throw redirect(303, '/login');
 	}
 
-	// Count unread messages for admin (recipientEmail is admin.email)
-	const unreadMessages = db.notifications ? db.notifications.filter(
-		m => m.recipientEmail === admin.email && !m.read
-	).length : 0;
+	// Count unread notifications for admin
+	const notifications = await queryDocuments('notifications', 'recipientEmail', admin.email);
+	const unreadMessages = notifications.filter(n => !n.read).length;
 
 	return {
 		user: sessionUser,

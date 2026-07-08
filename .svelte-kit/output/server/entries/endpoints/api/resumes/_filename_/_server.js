@@ -1,4 +1,4 @@
-import { r as getCollection } from "../../../../../chunks/db.js";
+import { i as getCollection } from "../../../../../chunks/db.js";
 import fs from "fs";
 import path from "path";
 //#region src/routes/api/resumes/[filename]/+server.js

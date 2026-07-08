@@ -1,10 +1,10 @@
-import * as server from '../entries/pages/student/messages/_page.server.js';
+import * as server from '../entries/pages/register/_page.server.js';
 
 export const index = 24;
 let component_cache;
-export const component = async () => component_cache ??= (await import('../entries/pages/student/messages/_page.svelte.js')).default;
+export const component = async () => component_cache ??= (await import('../entries/pages/register/_page.svelte.js')).default;
 export { server };
-export const server_id = "src/routes/student/messages/+page.server.js";
-export const imports = ["_app/immutable/nodes/24.G8RyHyib.js","_app/immutable/chunks/CB82KsP5.js","_app/immutable/chunks/XHrSed5o.js","_app/immutable/chunks/xihTtKlq.js","_app/immutable/chunks/D-dpdz6b.js","_app/immutable/chunks/10QCtBHk.js","_app/immutable/chunks/e8kNgveu.js","_app/immutable/chunks/B-Mproqx.js"];
+export const server_id = "src/routes/register/+page.server.js";
+export const imports = ["_app/immutable/nodes/24.CuMq1laG.js","_app/immutable/chunks/CB82KsP5.js","_app/immutable/chunks/xihTtKlq.js","_app/immutable/chunks/BrwilmBb.js","_app/immutable/chunks/Dftgqput.js","_app/immutable/chunks/BNi4oxCT.js"];
 export const stylesheets = [];
 export const fonts = [];

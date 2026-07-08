@@ -1,26 +1,9 @@
-import { i as logAction, o as updateEntireDatabase, r as getCollection, t as DOMAINS } from "../../../../chunks/db.js";
+import { a as getDocument, i as getCollection, n as addDocument, o as logAction, t as DOMAINS } from "../../../../chunks/db.js";
 import { a as requireRole } from "../../../../chunks/auth.js";
 import { fail } from "@sveltejs/kit";
 //#region src/routes/student/internships/+page.server.js
 async function load({ cookies, url }) {
-	const sessionUser = requireRole(cookies, ["student"]);
-	const [studentsData, companiesData, internshipsData, applicationsData, notificationsData, emailTemplatesData] = await Promise.all([
-		getCollection("students"),
-		getCollection("companies"),
-		getCollection("internships"),
-		getCollection("applications"),
-		getCollection("notifications"),
-		getCollection("emailTemplates")
-	]);
-	const db = {
-		students: studentsData,
-		companies: companiesData,
-		internships: internshipsData,
-		applications: applicationsData,
-		notifications: notificationsData,
-		emailTemplates: emailTemplatesData
-	};
-	const student = db.students.find((s) => s.id === sessionUser.id);
+	const student = await getDocument("students", requireRole(cookies, ["student"]).id);
 	if (!student) {
 		cookies.delete("nexora_session", { path: "/" });
 		throw new Error("Student session not found");
@@ -33,10 +16,13 @@ async function load({ cookies, url }) {
 	const filterDuration = url.searchParams.get("duration") || "";
 	const filterJobOpp = url.searchParams.get("jobOpportunity") || "";
 	const filterCert = url.searchParams.get("certificateAvailable") || "";
-	const companyMap = new Map(db.companies.map((c) => [c.id, c]));
+	const [internshipsData, companiesData] = await Promise.all([getCollection("internships"), getCollection("companies")]);
+	const studentApps = await getCollection("applications").then((apps) => apps.filter((a) => a.studentId === student.id).map((a) => a.internshipId));
+	const appliedSet = new Set(studentApps);
+	const companyMap = new Map(companiesData.map((c) => [c.id, c]));
 	return {
 		student,
-		internships: db.internships.filter((internship) => {
+		internships: internshipsData.filter((internship) => {
 			if (internship.status !== "Active") return false;
 			const company = companyMap.get(internship.companyId);
 			if (!company || company.isSuspended || company.status !== "Approved") return false;
@@ -59,12 +45,11 @@ async function load({ cookies, url }) {
 			return true;
 		}).slice(0, 60).map((internship) => {
 			const company = companyMap.get(internship.companyId);
-			const hasApplied = db.applications.some((a) => a.studentId === student.id && a.internshipId === internship.id);
 			return {
 				...internship,
 				companyName: company ? company.companyName : "Unknown Company",
 				companyLogo: company ? company.companyLogo : "",
-				hasApplied
+				hasApplied: appliedSet.has(internship.id)
 			};
 		}).slice(0, 50),
 		domains: DOMAINS,
@@ -87,34 +72,17 @@ var actions = { apply: async ({ request, cookies }) => {
 		success: false,
 		error: "Internship reference is missing"
 	});
-	const [studentsData, companiesData, internshipsData, applicationsData, notificationsData, emailTemplatesData] = await Promise.all([
-		getCollection("students"),
-		getCollection("companies"),
-		getCollection("internships"),
-		getCollection("applications"),
-		getCollection("notifications"),
-		getCollection("emailTemplates")
-	]);
-	const db = {
-		students: studentsData,
-		companies: companiesData,
-		internships: internshipsData,
-		applications: applicationsData,
-		notifications: notificationsData,
-		emailTemplates: emailTemplatesData
-	};
-	const student = db.students.find((s) => s.id === sessionUser.id);
-	const internship = db.internships.find((i) => i.id === internshipId);
+	const [student, internship] = await Promise.all([getDocument("students", sessionUser.id), getDocument("internships", internshipId)]);
 	if (!internship || internship.status !== "Active") return fail(404, {
 		success: false,
 		error: "This internship is no longer active"
 	});
-	const company = db.companies.find((c) => c.id === internship.companyId);
+	const company = await getDocument("companies", internship.companyId);
 	if (!company || company.isSuspended) return fail(400, {
 		success: false,
 		error: "The company hosting this internship has been suspended"
 	});
-	if (db.applications.some((a) => a.studentId === student.id && a.internshipId === internship.id)) return fail(400, {
+	if ((await getCollection("applications").then((apps) => apps.filter((a) => a.studentId === student.id && a.internshipId === internship.id))).length > 0) return fail(400, {
 		success: false,
 		error: "You have already applied to this internship"
 	});
@@ -132,34 +100,28 @@ var actions = { apply: async ({ request, cookies }) => {
 		resumePath: student.resumePath,
 		certificateHash: ""
 	};
-	db.applications.push(newApp);
-	const studentTemplate = db.emailTemplates.find((t) => t.id === "temp_app_submitted");
-	let studentSubject = "Application Filed";
-	let studentBody = `Hi ${student.fullName}, your application for "${internship.title}" has been submitted.`;
-	if (studentTemplate) {
-		studentSubject = studentTemplate.subject.replace("{title}", internship.title);
-		studentBody = studentTemplate.body.replace("{studentName}", student.fullName).replace("{title}", internship.title).replace("{companyName}", company.companyName);
-	}
-	db.notifications.unshift({
-		id: `notif_${Date.now()}_stud`,
-		recipientEmail: student.email,
-		recipientRole: "student",
-		subject: studentSubject,
-		body: studentBody,
-		date: (/* @__PURE__ */ new Date()).toISOString(),
-		read: false
-	});
-	db.notifications.unshift({
-		id: `notif_${Date.now()}_comp`,
-		recipientEmail: company.companyEmail,
-		recipientRole: "company",
-		subject: `New Application Received: ${internship.title}`,
-		body: `Dear HR Team,\n\nA new student application has been submitted for your opening: "${internship.title}".\n\nApplicant: ${student.fullName}\nCollege: ${student.collegeName}\nDepartment: ${student.department}\n\nPlease log into Nexora to review their profile and resume files.\n\nBest regards,\nNexora Recruiting Services`,
-		date: (/* @__PURE__ */ new Date()).toISOString(),
-		read: false
-	});
-	await updateEntireDatabase(db);
-	logAction("APPLICATION_SUBMIT", `Student ${student.fullName} applied for internship ${internship.title} (ID: ${internship.id}).`);
+	await Promise.all([
+		addDocument("applications", newApp),
+		addDocument("notifications", {
+			id: `notif_${Date.now()}_stud`,
+			recipientEmail: student.email,
+			recipientRole: "student",
+			subject: `Application Filed: ${internship.title}`,
+			body: `Hi ${student.fullName},\n\nYour application for "${internship.title}" at ${company.companyName} has been successfully submitted.\n\nWe'll notify you when the company reviews your application.\n\nBest of luck!\nNexora Team`,
+			date: (/* @__PURE__ */ new Date()).toISOString(),
+			read: false
+		}),
+		addDocument("notifications", {
+			id: `notif_${Date.now()}_comp`,
+			recipientEmail: company.companyEmail,
+			recipientRole: "company",
+			subject: `New Application Received: ${internship.title}`,
+			body: `Dear HR Team,\n\nA new student application has been submitted for your opening: "${internship.title}".\n\nApplicant: ${student.fullName}\nCollege: ${student.collegeName}\nDepartment: ${student.department}\n\nPlease log into Nexora to review their profile and resume.\n\nBest regards,\nNexora Recruiting Services`,
+			date: (/* @__PURE__ */ new Date()).toISOString(),
+			read: false
+		})
+	]);
+	await logAction("APPLICATION_SUBMIT", `Student ${student.fullName} applied for internship ${internship.title} (ID: ${internship.id}).`);
 	return { success: true };
 } };
 //#endregion

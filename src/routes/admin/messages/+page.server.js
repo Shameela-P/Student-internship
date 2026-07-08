@@ -1,4 +1,4 @@
-import { getCollection, updateEntireDatabase } from '$lib/db';
+import { getCollection, addDocument, updateDocument } from '$lib/db';
 import { requireRole } from '$lib/auth';
 import { fail } from '@sveltejs/kit';
 
@@ -24,15 +24,11 @@ export async function load({ cookies }) {
 	);
 
 	// Automatically mark incoming messages as read
-	let dbChanged = false;
-	db.messages.forEach(m => {
+	for (const m of db.messages) {
 		if (m.recipientEmail.toLowerCase() === adminEmail.toLowerCase() && !m.read) {
 			m.read = true;
-			dbChanged = true;
+			await updateDocument('messages', m.id, { read: true });
 		}
-	});
-	if (dbChanged) {
-		await updateEntireDatabase(db);
 	}
 
 	// Contacts list: All approved companies + all non-blocked students
@@ -66,13 +62,6 @@ export async function load({ cookies }) {
 export const actions = {
 	sendMessage: async ({ request, cookies }) => {
 		const sessionUser = requireRole(cookies, ['admin']);
-		const [studentsData, companiesData, messagesData] = await Promise.all([
-		getCollection('students'),
-		getCollection('companies'),
-		getCollection('messages')
-	]);
-	const db = { students: studentsData, companies: companiesData, messages: messagesData };
-
 		const formData = await request.formData();
 		const recipientEmail = formData.get('recipientEmail')?.toString().trim();
 		const recipientRole = formData.get('recipientRole')?.toString().trim();
@@ -81,10 +70,6 @@ export const actions = {
 
 		if (!recipientEmail || !recipientRole || !content) {
 			return fail(400, { success: false, error: 'Recipient details or content is required' });
-		}
-
-		if (!db.messages) {
-			db.messages = [];
 		}
 
 		const newMessage = {
@@ -100,8 +85,7 @@ export const actions = {
 			read: false
 		};
 
-		db.messages.push(newMessage);
-		await updateEntireDatabase(db);
+		await addDocument('messages', newMessage);
 
 		return { success: true };
 	}

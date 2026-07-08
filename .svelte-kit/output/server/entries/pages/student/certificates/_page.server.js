@@ -1,4 +1,4 @@
-import { r as getCollection } from "../../../../chunks/db.js";
+import { i as getCollection } from "../../../../chunks/db.js";
 import { a as requireRole } from "../../../../chunks/auth.js";
 //#region src/routes/student/certificates/+page.server.js
 async function load({ cookies, url }) {

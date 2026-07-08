@@ -1,4 +1,4 @@
-import { i as logAction } from "../../../chunks/db.js";
+import { o as logAction } from "../../../chunks/db.js";
 import { s as verifyToken } from "../../../chunks/auth.js";
 import { redirect } from "@sveltejs/kit";
 //#region src/routes/logout/+server.js

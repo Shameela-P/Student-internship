@@ -1,4 +1,4 @@
-import { i as logAction, o as updateEntireDatabase, r as getCollection } from "../../../../chunks/db.js";
+import { i as getCollection, l as updateEntireDatabase, o as logAction } from "../../../../chunks/db.js";
 import { a as requireRole, i as hashPassword, o as verifyPassword } from "../../../../chunks/auth.js";
 import { fail } from "@sveltejs/kit";
 //#region src/routes/student/settings/+page.server.js

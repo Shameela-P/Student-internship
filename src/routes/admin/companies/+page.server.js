@@ -1,15 +1,12 @@
-import { logAction, getCollection, updateEntireDatabase } from '$lib/db';
+import { logAction, getCollection, updateDocument } from '$lib/db';
 import { requireRole } from '$lib/auth';
 
 export async function load({ cookies }) {
 	requireRole(cookies, ['admin']);
-	const [companiesData] = await Promise.all([
-		getCollection('companies')
-	]);
-	const db = { companies: companiesData };
+	const companiesData = await getCollection('companies');
 
 	// Reverse to show newest first
-	const companies = [...db.companies].reverse();
+	const companies = [...companiesData].reverse();
 
 	return {
 		companies
@@ -23,26 +20,12 @@ export const actions = {
 		const companyId = data.get('companyId');
 		const newStatus = data.get('status');
 
-		const [companiesData] = await Promise.all([
-		getCollection('companies')
-	]);
-	const db = { companies: companiesData };
-		const companyIndex = db.companies.findIndex(c => c.id === companyId);
-		
-		if (companyIndex > -1) {
-			const oldStatus = db.companies[companyIndex].status;
-			db.companies[companyIndex].status = newStatus;
-			
-			// If suspending, also set isSuspended flag
-			if (newStatus === 'Suspended') {
-				db.companies[companyIndex].isSuspended = true;
-			} else if (newStatus === 'Approved') {
-				db.companies[companyIndex].isSuspended = false;
-			}
+		const updates = { status: newStatus };
+		if (newStatus === 'Suspended') updates.isSuspended = true;
+		else if (newStatus === 'Approved') updates.isSuspended = false;
 
-			await updateEntireDatabase(db);
-			logAction('UPDATE_COMPANY_STATUS', `Admin changed company ${companyId} status from ${oldStatus} to ${newStatus}`);
-		}
+		await updateDocument('companies', companyId, updates);
+		await logAction('UPDATE_COMPANY_STATUS', `Admin changed company ${companyId} status to ${newStatus}`);
 		
 		return { success: true };
 	}

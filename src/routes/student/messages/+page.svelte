@@ -95,13 +95,14 @@
 		if (threads.length > 0 && !activeEmail) {
 			selectThread(threads[0].email);
 		}
+	});
 
-		// Polling for real-time chat updates
-		const pollInterval = setInterval(() => {
-			invalidateAll();
-		}, 3000);
-
-		return () => clearInterval(pollInterval);
+	// Auto-scroll to bottom when activeMessages change
+	let chatContainer;
+	$effect(() => {
+		if (activeMessages.length && chatContainer) {
+			chatContainer.scrollTop = chatContainer.scrollHeight;
+		}
 	});
 
 
@@ -242,7 +243,7 @@
 			</div>
 
 			<!-- Message list container -->
-			<div class="flex-grow p-4 space-y-4 overflow-y-auto max-h-[58vh]">
+			<div bind:this={chatContainer} class="flex-grow p-4 space-y-4 overflow-y-auto max-h-[58vh]">
 				{#if activeMessages.length === 0}
 					<div class="h-full flex flex-col items-center justify-center text-slate-550 text-xs">
 						<svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mb-2 opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor">

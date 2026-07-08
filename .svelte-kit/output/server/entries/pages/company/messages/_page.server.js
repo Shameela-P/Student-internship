@@ -1,4 +1,4 @@
-import { o as updateEntireDatabase, r as getCollection } from "../../../../chunks/db.js";
+import { c as updateDocument, i as getCollection, n as addDocument } from "../../../../chunks/db.js";
 import { a as requireRole } from "../../../../chunks/auth.js";
 import { fail } from "@sveltejs/kit";
 //#region src/routes/company/messages/+page.server.js
@@ -9,28 +9,22 @@ async function load({ cookies }) {
 		getCollection("companies"),
 		getCollection("internships"),
 		getCollection("applications"),
-		getCollection("messages"),
-		getCollection("notifications")
+		getCollection("messages")
 	]);
 	const db = {
 		students: studentsData,
 		companies: companiesData,
 		internships: internshipsData,
 		applications: applicationsData,
-		messages: messagesData,
-		notifications: notificationsData
+		messages: messagesData
 	};
 	const company = db.companies.find((c) => c.id === sessionUser.id);
 	if (!db.messages) db.messages = [];
 	const userMessages = db.messages.filter((m) => m.senderEmail.toLowerCase() === company.companyEmail.toLowerCase() || m.recipientEmail.toLowerCase() === company.companyEmail.toLowerCase());
-	let dbChanged = false;
-	db.messages.forEach((m) => {
-		if (m.recipientEmail.toLowerCase() === company.companyEmail.toLowerCase() && !m.read) {
-			m.read = true;
-			dbChanged = true;
-		}
-	});
-	if (dbChanged) await updateEntireDatabase(db);
+	for (const m of db.messages) if (m.recipientEmail.toLowerCase() === company.companyEmail.toLowerCase() && !m.read) {
+		m.read = true;
+		await updateDocument("messages", m.id, { read: true });
+	}
 	const companyInternshipIds = db.internships.filter((i) => i.companyId === company.id).map((i) => i.id);
 	const appliedStudentIds = Array.from(new Set(db.applications.filter((a) => companyInternshipIds.includes(a.internshipId)).map((a) => a.studentId)));
 	return {
@@ -49,23 +43,7 @@ async function load({ cookies }) {
 }
 var actions = { sendMessage: async ({ request, cookies }) => {
 	const sessionUser = requireRole(cookies, ["company"]);
-	const [studentsData, companiesData, internshipsData, applicationsData, messagesData] = await Promise.all([
-		getCollection("students"),
-		getCollection("companies"),
-		getCollection("internships"),
-		getCollection("applications"),
-		getCollection("messages"),
-		getCollection("notifications")
-	]);
-	const db = {
-		students: studentsData,
-		companies: companiesData,
-		internships: internshipsData,
-		applications: applicationsData,
-		messages: messagesData,
-		notifications: notificationsData
-	};
-	const company = db.companies.find((c) => c.id === sessionUser.id);
+	const company = (await getCollection("companies")).find((c) => c.id === sessionUser.id);
 	const formData = await request.formData();
 	const recipientEmail = formData.get("recipientEmail")?.toString().trim();
 	const recipientRole = formData.get("recipientRole")?.toString().trim();
@@ -75,7 +53,6 @@ var actions = { sendMessage: async ({ request, cookies }) => {
 		success: false,
 		error: "Recipient details or content is required"
 	});
-	if (!db.messages) db.messages = [];
 	const newMessage = {
 		id: `msg_${Date.now()}`,
 		senderEmail: company.companyEmail,
@@ -88,9 +65,8 @@ var actions = { sendMessage: async ({ request, cookies }) => {
 		timestamp: (/* @__PURE__ */ new Date()).toISOString(),
 		read: false
 	};
-	db.messages.push(newMessage);
-	if (!db.notifications) db.notifications = [];
-	db.notifications.unshift({
+	await addDocument("messages", newMessage);
+	await addDocument("notifications", {
 		id: "notif_" + Date.now(),
 		recipientEmail,
 		recipientRole,
@@ -99,7 +75,6 @@ var actions = { sendMessage: async ({ request, cookies }) => {
 		date: (/* @__PURE__ */ new Date()).toISOString(),
 		read: false
 	});
-	await updateEntireDatabase(db);
 	return { success: true };
 } };
 //#endregion

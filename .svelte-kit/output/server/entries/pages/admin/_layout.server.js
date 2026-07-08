@@ -1,15 +1,10 @@
-import { r as getCollection } from "../../../chunks/db.js";
+import { a as getDocument, s as queryDocuments } from "../../../chunks/db.js";
 import { a as requireRole } from "../../../chunks/auth.js";
 import { redirect } from "@sveltejs/kit";
 //#region src/routes/admin/+layout.server.js
 async function load({ cookies }) {
 	const sessionUser = requireRole(cookies, ["admin"]);
-	const [adminsData, notificationsData] = await Promise.all([getCollection("admins"), getCollection("notifications")]);
-	const db = {
-		admins: adminsData,
-		notifications: notificationsData
-	};
-	const admin = db.admins.find((a) => a.id === sessionUser.id);
+	const admin = await getDocument("admins", sessionUser.id);
 	if (!admin) {
 		cookies.delete("nexora_session", { path: "/" });
 		throw redirect(303, "/login");
@@ -17,7 +12,7 @@ async function load({ cookies }) {
 	return {
 		user: sessionUser,
 		admin,
-		unreadMessages: db.notifications ? db.notifications.filter((m) => m.recipientEmail === admin.email && !m.read).length : 0
+		unreadMessages: (await queryDocuments("notifications", "recipientEmail", admin.email)).filter((n) => !n.read).length
 	};
 }
 //#endregion

@@ -1,24 +1,20 @@
-import { r as getCollection } from "../../../chunks/db.js";
+import { a as getDocument, s as queryDocuments } from "../../../chunks/db.js";
 import { a as requireRole } from "../../../chunks/auth.js";
 import { redirect } from "@sveltejs/kit";
 //#region src/routes/student/+layout.server.js
 async function load({ cookies }) {
 	const sessionUser = requireRole(cookies, ["student"]);
-	const [studentsData, notificationsData, messagesData] = await Promise.all([
-		getCollection("students"),
-		getCollection("notifications"),
-		getCollection("messages")
-	]);
-	const student = studentsData.find((s) => s.id === sessionUser.id);
+	const student = await getDocument("students", sessionUser.id);
 	if (!student) {
 		cookies.delete("nexora_session", { path: "/" });
 		throw redirect(303, "/login");
 	}
+	const [unreadNotifs, unreadMsgs] = await Promise.all([queryDocuments("notifications", "recipientEmail", student.email), queryDocuments("messages", "recipientEmail", student.email)]);
 	return {
 		user: sessionUser,
 		student,
-		unreadNotifications: (notificationsData || []).filter((n) => n?.recipientEmail?.toLowerCase() === student.email?.toLowerCase() && !n.read).length,
-		unreadMessages: (messagesData || []).filter((m) => m?.recipientEmail?.toLowerCase() === student.email?.toLowerCase() && !m.read).length
+		unreadNotifications: unreadNotifs.filter((n) => !n.read).length,
+		unreadMessages: unreadMsgs.filter((m) => !m.read).length
 	};
 }
 //#endregion
