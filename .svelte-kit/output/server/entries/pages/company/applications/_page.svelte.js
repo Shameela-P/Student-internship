@@ -68,9 +68,9 @@ function _page($$renderer, $$props) {
 						$$renderer.push(`<span class="px-2 py-0.5 rounded bg-slate-200/50 text-[10px] font-semibold text-slate-600">${escape_html(skill)}</span>`);
 					}
 					$$renderer.push(`<!--]--></div></div></div> <div class="space-y-4"><h4 class="font-bold text-slate-600 uppercase tracking-widest text-[10px]">Resume File &amp; Hiring Action</h4> `);
-					if (app.student.resumePath) {
+					if (app.student.resumeUrl) {
 						$$renderer.push("<!--[0-->");
-						$$renderer.push(`<a${attr("href", app.student.resumePath.startsWith("http") ? app.student.resumePath : `/api/resumes/${app.student.resumePath}`)} target="_blank" class="inline-flex items-center justify-center gap-1.5 px-4 py-2 bg-indigo-50 text-indigo-600 font-bold text-xs rounded-lg hover:bg-indigo-100 transition-colors mt-4 w-full"><div class="h-9 w-9 bg-indigo-500/10 text-indigo-500 rounded-lg flex items-center justify-center font-black text-xs">PDF</div> <div class="flex-grow min-w-0"><span class="text-[11px] font-bold text-slate-700 block truncate group-hover:text-indigo-500">View Applicant Resume</span> <span class="text-[9px] text-slate-600 block truncate">Opens secure browser view</span></div></a>`);
+						$$renderer.push(`<a${attr("href", app.student.resumeUrl)} target="_blank" class="inline-flex items-center justify-center gap-1.5 px-4 py-2 bg-indigo-50 text-indigo-600 font-bold text-xs rounded-lg hover:bg-indigo-100 transition-colors mt-4 w-full"><div class="h-9 w-9 bg-indigo-500/10 text-indigo-500 rounded-lg flex items-center justify-center font-black text-xs">LINK</div> <div class="flex-grow min-w-0"><span class="text-[11px] font-bold text-slate-700 block truncate group-hover:text-indigo-500">View Applicant Resume</span> <span class="text-[9px] text-slate-600 block truncate">Opens secure browser view</span></div></a>`);
 					} else {
 						$$renderer.push("<!--[-1-->");
 						$$renderer.push(`<div class="p-3 rounded-lg bg-rose-500/10 text-rose-500 text-xs">No resume uploaded.</div>`);

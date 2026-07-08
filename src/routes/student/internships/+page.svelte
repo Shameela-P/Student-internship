@@ -377,7 +377,7 @@
 					</div>
 					<div class="flex-grow min-w-0">
 						<span class="text-sm font-bold text-primary block truncate">Attached Resume</span>
-						<span class="text-xs text-muted truncate block mt-0.5">{student.resumePath ? 'Resume attached and ready' : 'No resume uploaded yet'}</span>
+						<span class="text-xs text-muted truncate block mt-0.5">{student.resumeUrl ? 'Resume attached and ready' : 'No resume link set yet'}</span>
 					</div>
 					<a href="/student/profile" class="text-xs font-bold text-indigo-600 hover:text-indigo-700 hover:underline shrink-0 bg-surface px-3 py-1.5 rounded-lg border border-slate-200">Change</a>
 				</div>
@@ -420,7 +420,7 @@
 					</button>
 					<button
 						type="submit"
-						disabled={applyLoading || !student.resumePath}
+						disabled={applyLoading || !student.resumeUrl}
 						class="flex-1 py-3.5 rounded-xl font-bold text-white bg-gradient-to-r from-indigo-600 to-indigo-500 hover:from-indigo-500 hover:to-indigo-400 shadow-lg shadow-indigo-500/25 hover:shadow-indigo-500/40 disabled:opacity-50 disabled:grayscale transition-all cursor-pointer flex items-center justify-center gap-2"
 					>
 						{#if applyLoading}

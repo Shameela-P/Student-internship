@@ -201,8 +201,8 @@
 
 				<div class="space-y-4">
 					<div>
-						<label for="resume" class="block text-xs font-bold text-muted uppercase tracking-wider mb-2">Upload Resume (PDF/DOC) *</label>
-						<input type="file" id="resume" name="resume" accept=".pdf,.doc,.docx" required class="w-full text-sm text-slate-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-indigo-500/10 file:text-indigo-600 hover:file:bg-indigo-500/20" />
+						<label for="resumeUrl" class="block text-xs font-bold text-muted uppercase tracking-wider mb-2">Resume URL *</label>
+						<input type="url" id="resumeUrl" name="resumeUrl" placeholder="https://drive.google.com/file/..." required class="w-full px-4 py-3 rounded-xl border border-divider bg-white/50 text-sm text-primary focus:border-indigo-500 focus:outline-none" />
 					</div>
 
 					<div>
@@ -224,7 +224,7 @@
 				<button
 					type="submit"
 					disabled={loading || !isPasswordValid}
-					class="w-full py-4 rounded-xl font-bold text-primary bg-indigo-600 hover:bg-indigo-500 hover:shadow-lg hover:shadow-indigo-500/10 active:scale-98 transition duration-200 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+					class="w-full py-4 rounded-xl font-bold text-white bg-indigo-600 hover:bg-indigo-500 hover:shadow-lg hover:shadow-indigo-500/10 active:scale-98 transition duration-200 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
 				>
 					{#if loading}
 						<span class="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>

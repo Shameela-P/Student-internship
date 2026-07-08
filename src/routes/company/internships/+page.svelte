@@ -143,7 +143,7 @@
 	<button
 		onclick={openCreateModal}
 		disabled={!approved}
-		class="px-5 py-3 rounded-xl text-sm font-bold text-primary bg-blue-600 hover:bg-blue-500 hover:shadow-lg hover:shadow-blue-500/10 disabled:opacity-50 disabled:cursor-not-allowed transition cursor-pointer flex items-center gap-1.5"
+		class="px-5 py-3 rounded-xl text-sm font-bold text-white bg-blue-600 hover:bg-blue-500 hover:shadow-lg hover:shadow-blue-500/10 disabled:opacity-50 disabled:cursor-not-allowed transition cursor-pointer flex items-center gap-1.5"
 	>
 		<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="shrink-0"><line x1="12" x2="12" y1="5" y2="19"/><line x1="5" x2="19" y1="12" y2="12"/></svg>
 		Publish Opportunity
@@ -248,7 +248,7 @@
 								<input type="hidden" name="id" value={intern.id} />
 								<button
 									type="submit"
-									class="px-3 py-1.5 rounded-lg border border-divider hover:bg-slate-800 text-[10px] font-bold text-amber-500 transition cursor-pointer"
+									class="px-3 py-1.5 rounded-lg border border-divider hover:bg-slate-100 text-[10px] font-bold text-amber-505 transition cursor-pointer"
 								>
 									Archive
 								</button>
@@ -289,7 +289,7 @@
 	<!-- svelte-ignore a11y_no_static_element_interactions -->
 	<div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm" onclick={closeModal} role="button" tabindex="0" onkeydown={(e) => { if(e.key === 'Escape' || e.key === 'Enter' || e.key === ' ') closeModal(); }}>
 		<div
-			class="w-full max-w-xl rounded-2xl bg-slate-900 p-6 md:p-8 border border-divider shadow-2xl relative max-h-[90vh] overflow-y-auto"
+			class="w-full max-w-xl rounded-2xl bg-white p-6 md:p-8 border border-divider shadow-2xl relative max-h-[90vh] overflow-y-auto"
 			onclick={(e) => e.stopPropagation()}
 			role="presentation"
 			onkeydown={(e) => e.stopPropagation()}
@@ -378,7 +378,7 @@
 									}
 									skillsRequired = list.join(', ');
 								}}
-								class="px-2.5 py-1 rounded-lg text-[10px] font-bold transition border {skillsRequired.split(',').map(s => s.trim()).includes(skill) ? 'bg-blue-600 border-blue-600 text-primary ' : 'border-divider text-slate-600 hover:border-blue-500/30'}"
+								class="px-2.5 py-1 rounded-lg text-[10px] font-bold transition border {skillsRequired.split(',').map(s => s.trim()).includes(skill) ? 'bg-blue-600 border-blue-600 text-white' : 'border-divider text-slate-655 hover:border-blue-500/30'}"
 							>
 								{skill}
 							</button>
@@ -449,7 +449,7 @@
 					<span class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-3">Internship Mode *</span>
 					<div class="grid grid-cols-3 gap-3">
 						{#each ['Online', 'Offline', 'Hybrid'] as m}
-							<label class="flex items-center gap-2 px-3 py-2.5 rounded-xl border border-divider bg-slate-950/20 cursor-pointer select-none text-xs font-bold transition-all hover:bg-slate-800 {mode === m ? 'border-blue-500 ring-2 ring-blue-500/10' : ''}">
+							<label class="flex items-center gap-2 px-3 py-2.5 rounded-xl border border-divider bg-slate-50 cursor-pointer select-none text-xs font-bold transition-all hover:bg-slate-100 text-slate-700 {mode === m ? 'border-blue-600 bg-blue-50/10 text-blue-600 ring-2 ring-blue-500/10' : ''}">
 								<input type="radio" name="mode" value={m} bind:group={mode} class="accent-blue-500" />
 								{m}
 							</label>
@@ -468,7 +468,7 @@
 					<span class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-3">Internship Type *</span>
 					<div class="grid grid-cols-2 md:grid-cols-4 gap-3">
 						{#each ['Free Internship', 'Paid Internship', 'Free + Stipend', 'Paid + Stipend'] as t}
-							<label class="flex items-center gap-2 px-3 py-2.5 rounded-xl border border-divider bg-slate-950/20 cursor-pointer select-none text-xs font-bold transition-all hover:bg-slate-800 {type === t ? 'border-blue-500 ring-2 ring-blue-500/10' : ''}">
+							<label class="flex items-center gap-2 px-3 py-2.5 rounded-xl border border-divider bg-slate-50 cursor-pointer select-none text-xs font-bold transition-all hover:bg-slate-100 text-slate-700 {type === t ? 'border-blue-600 bg-blue-50/10 text-blue-600 ring-2 ring-blue-500/10' : ''}">
 								<input type="radio" name="type" value={t} bind:group={type} class="accent-blue-500" />
 								{t}
 							</label>
@@ -538,14 +538,14 @@
 					<button
 						type="button"
 						onclick={closeModal}
-						class="flex-1 py-3.5 rounded-xl border border-divider hover:bg-slate-800 text-slate-600 hover:text-primary font-bold text-sm transition cursor-pointer"
+						class="flex-1 py-3.5 rounded-xl border border-divider hover:bg-slate-100 text-slate-600 hover:text-slate-900 font-bold text-sm transition cursor-pointer"
 					>
 						Cancel
 					</button>
 					<button
 						type="submit"
 						disabled={loading}
-						class="flex-1 py-3.5 rounded-xl font-bold text-primary bg-blue-600 hover:bg-blue-500 hover:shadow-lg hover:shadow-blue-500/10 disabled:opacity-50 transition cursor-pointer flex items-center justify-center gap-1.5"
+						class="flex-1 py-3.5 rounded-xl font-bold text-white bg-blue-600 hover:bg-blue-500 hover:shadow-lg hover:shadow-blue-500/10 disabled:opacity-50 transition cursor-pointer flex items-center justify-center gap-1.5"
 					>
 						{#if loading}
 							<span class="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>

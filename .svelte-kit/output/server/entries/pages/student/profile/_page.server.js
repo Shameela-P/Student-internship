@@ -1,8 +1,6 @@
 import { i as getCollection, l as updateEntireDatabase, o as logAction } from "../../../../chunks/db.js";
 import { a as requireRole } from "../../../../chunks/auth.js";
-import { t as uploadFileBuffer } from "../../../../chunks/storageHelper.js";
 import { fail } from "@sveltejs/kit";
-import path from "path";
 //#region src/routes/student/profile/+page.server.js
 async function load({ cookies }) {
 	const sessionUser = requireRole(cookies, ["student"]);
@@ -57,41 +55,40 @@ var actions = {
 	},
 	updateResume: async ({ request, cookies }) => {
 		const sessionUser = requireRole(cookies, ["student"]);
-		const resumeFile = (await request.formData()).get("resume");
-		if (!resumeFile || !(resumeFile instanceof File) || resumeFile.size === 0) return fail(400, {
+		const resumeUrl = (await request.formData()).get("resumeUrl")?.toString().trim();
+		if (!resumeUrl) return fail(400, {
 			success: false,
-			error: "Please select a valid PDF/DOC resume file"
+			error: "Please provide a valid Resume URL"
 		});
+		try {
+			if (new URL(resumeUrl).protocol !== "https:") return fail(400, {
+				success: false,
+				error: "Resume URL must use secure HTTPS protocol"
+			});
+		} catch (e) {
+			return fail(400, {
+				success: false,
+				error: "Please provide a valid publicly accessible HTTPS Resume URL"
+			});
+		}
 		const db = { students: await getCollection("students") };
 		const studentIndex = db.students.findIndex((s) => s.id === sessionUser.id);
 		if (studentIndex === -1) return fail(404, {
 			success: false,
 			error: "Student profile not found"
 		});
-		const ext = path.extname(resumeFile.name) || ".pdf";
-		const filename = `resumes/resume_${Date.now()}_${Math.random().toString(36).substr(2, 6)}${ext}`;
-		try {
-			const buffer = Buffer.from(await resumeFile.arrayBuffer());
-			const base64Data = buffer.toString("base64");
-			db.students[studentIndex].resumeData = base64Data;
-			db.students[studentIndex].resumeName = resumeFile.name;
-			db.students[studentIndex].resumeMimeType = resumeFile.type || "application/pdf";
-			db.students[studentIndex].resumePath = db.students[studentIndex].id;
-			const storagePath = await uploadFileBuffer(buffer, filename, resumeFile.type || "application/pdf");
-			db.students[studentIndex].resumeStoragePath = storagePath;
-			await updateEntireDatabase(db);
-			logAction("STUDENT_UPDATE_RESUME", `Student ${db.students[studentIndex].fullName} uploaded a new resume.`);
-			return {
-				success: true,
-				message: "Resume file updated successfully"
-			};
-		} catch (err) {
-			console.error("Resume swap error:", err);
-			return fail(500, {
-				success: false,
-				error: `Failed to save resume: ${err.message || err}`
-			});
-		}
+		db.students[studentIndex].resumeUrl = resumeUrl;
+		delete db.students[studentIndex].resumePath;
+		delete db.students[studentIndex].resumeData;
+		delete db.students[studentIndex].resumeName;
+		delete db.students[studentIndex].resumeMimeType;
+		delete db.students[studentIndex].resumeStoragePath;
+		await updateEntireDatabase(db);
+		logAction("STUDENT_UPDATE_RESUME", `Student ${db.students[studentIndex].fullName} updated resume URL to ${resumeUrl}.`);
+		return {
+			success: true,
+			message: "Resume URL updated successfully"
+		};
 	}
 };
 //#endregion

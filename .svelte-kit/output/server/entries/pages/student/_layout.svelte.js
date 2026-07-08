@@ -1,14 +1,18 @@
+import { n as onDestroy } from "../../../chunks/index-server.js";
 import { E as escape_html, T as clsx, a as derived, t as attr_class, w as attr } from "../../../chunks/server.js";
+import "../../../chunks/firebase.js";
 import { t as page } from "../../../chunks/state.js";
 import { t as logo_default } from "../../../chunks/logo.js";
+import "firebase/database";
 //#region src/routes/student/+layout.svelte
 function _layout($$renderer, $$props) {
 	$$renderer.component(($$renderer) => {
 		let { data, children } = $$props;
 		const student = derived(() => data.student);
+		onDestroy(() => {});
 		function getLinkClass(path) {
-			if (page.url.pathname === path) return "flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all duration-350 cursor-pointer bg-indigo-600 text-white shadow-md shadow-indigo-500/10";
-			return "flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all duration-350 cursor-pointer text-slate-600 hover:bg-slate-50 hover:text-slate-900";
+			if (page.url.pathname === path) return "flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all duration-355 cursor-pointer bg-indigo-600 text-white shadow-md shadow-indigo-500/10";
+			return "flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all duration-355 cursor-pointer text-slate-600 hover:bg-slate-50 hover:text-slate-900";
 		}
 		$$renderer.push(`<div class="min-h-screen flex flex-col md:flex-row bg-slate-50 transition-colors duration-300"><aside class="hidden md:flex flex-col w-64 border-r border-slate-200 bg-white fixed top-0 bottom-0 left-0 z-20"><div class="p-6 border-b border-slate-200 flex items-center gap-3"><img loading="lazy"${attr("src", logo_default)} alt="Nexora Logo" class="h-9 w-9 drop-shadow-sm"/> <span class="font-display font-extrabold text-xl text-slate-900">Nexora</span></div> <nav class="flex-grow p-4 space-y-1 mt-4 overflow-y-auto"><a href="/student"${attr_class(clsx(getLinkClass("/student")))}><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="7" height="9" x="3" y="3" rx="1"></rect><rect width="7" height="5" x="14" y="3" rx="1"></rect><rect width="7" height="9" x="14" y="12" rx="1"></rect><rect width="7" height="5" x="3" y="16" rx="1"></rect></svg> Overview</a> <a href="/student/internships"${attr_class(clsx(getLinkClass("/student/internships")))}><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"></rect><line x1="16" x2="16" y1="2" y2="6"></line><line x1="8" x2="8" y1="2" y2="6"></line><line x1="3" x2="21" y1="10" y2="10"></line></svg> Find Internships</a> <a href="/student/companies"${attr_class(clsx(getLinkClass("/student/companies")))}><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg> Companies</a> <a href="/student/certificates"${attr_class(clsx(getLinkClass("/student/certificates")))}><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg> Certificates</a> <a href="/student/messages"${attr_class(clsx(getLinkClass("/student/messages")))}><div class="relative flex items-center gap-3 w-full"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg> <span>Messages</span> `);
 		$$renderer.push("<!--[-1-->");

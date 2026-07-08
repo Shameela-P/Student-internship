@@ -132,8 +132,8 @@ export const actions = {
 			return fail(400, { success: false, error: 'You have already applied to this internship' });
 		}
 
-		if (!student.resumePath) {
-			return fail(400, { success: false, error: 'You must upload a resume before applying. Update it in your Profile Settings.' });
+		if (!student.resumeUrl) {
+			return fail(400, { success: false, error: 'You must set a resume link before applying. Update it in your Profile Settings.' });
 		}
 
 		// Create Application
@@ -144,7 +144,7 @@ export const actions = {
 			status: 'Pending',
 			appliedDate: new Date().toISOString(),
 			actionDate: '',
-			resumePath: student.resumePath,
+			resumeUrl: student.resumeUrl,
 			certificateHash: ''
 		};
 

@@ -1,17 +1,50 @@
 <script>
 	import { page } from '$app/state';
 	import logo from '$lib/assets/logo.svg';
+	import { onMount, onDestroy } from 'svelte';
+	import { getDatabase, ref, onValue } from 'firebase/database';
+	import { app } from '$lib/firebase';
 
 	let { data, children } = $props();
 	const company = $derived(data.company);
 	
 	let unread = $state(0);
 	let unreadMsgs = $state(0);
+	let unsubscribeMsgs = null;
 
 	$effect(() => {
 		if (data.lazy) {
 			data.lazy.unreadNotifications.then(val => unread = val);
-			data.lazy.unreadMessages.then(val => unreadMsgs = val);
+		}
+	});
+
+	onMount(() => {
+		if (company && company.companyEmail) {
+			const db = getDatabase(app);
+			const msgsRef = ref(db, 'messages');
+			unsubscribeMsgs = onValue(msgsRef, (snapshot) => {
+				const val = snapshot.val();
+				if (val) {
+					let allMsgs = [];
+					if (Array.isArray(val)) {
+						allMsgs = val.filter(Boolean);
+					} else if (typeof val === 'object') {
+						allMsgs = Object.values(val).filter(Boolean);
+					}
+					
+					unreadMsgs = allMsgs.filter(m => 
+						m.recipientEmail.toLowerCase() === company.companyEmail.toLowerCase() && !m.read
+					).length;
+				} else {
+					unreadMsgs = 0;
+				}
+			});
+		}
+	});
+
+	onDestroy(() => {
+		if (unsubscribeMsgs) {
+			unsubscribeMsgs();
 		}
 	});
 
@@ -22,7 +55,7 @@
 	}
 
 	function getLinkClass(path) {
-		const baseClass = "flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all duration-350 cursor-pointer ";
+		const baseClass = "flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all duration-355 cursor-pointer ";
 		const activeClass = "bg-indigo-600 text-white shadow-md shadow-indigo-500/10";
 		const inactiveClass = "text-slate-650 hover:bg-slate-50 hover:text-slate-900";
 		
@@ -94,7 +127,7 @@
 				</div>
 				<div class="flex-grow min-w-0">
 					<h4 class="text-sm font-bold text-slate-850 truncate">{company.companyName}</h4>
-					<span class="text-xs text-slate-500 truncate block font-semibold">{company.industryType}</span>
+					<span class="text-xs text-slate-550 truncate block font-semibold">{company.industryType}</span>
 				</div>
 			</div>
 
@@ -116,7 +149,7 @@
 		</div>
 		<div class="flex items-center gap-3">
 			<!-- Notifications icon -->
-			<a href="/company/notifications" class="relative p-2 text-slate-600">
+			<a href="/company/notifications" class="relative p-2 text-slate-650">
 				<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
 				{#if unread > 0}
 					<span class="absolute top-1 right-1 h-2.5 w-2.5 bg-rose-500 rounded-full animate-pulse"></span>

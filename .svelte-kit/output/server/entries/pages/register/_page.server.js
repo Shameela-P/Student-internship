@@ -1,8 +1,9 @@
+import "../../../chunks/firebase.js";
 import { i as getCollection, l as updateEntireDatabase, o as logAction } from "../../../chunks/db.js";
 import { i as hashPassword, s as verifyToken } from "../../../chunks/auth.js";
-import { t as uploadFileBuffer } from "../../../chunks/storageHelper.js";
 import { fail, redirect } from "@sveltejs/kit";
-import path from "path";
+import "path";
+import "firebase/storage";
 //#region src/routes/register/+page.server.js
 async function load({ url, cookies }) {
 	const sessionCookie = cookies.get("nexora_session");
@@ -27,11 +28,22 @@ var actions = {
 		const skillsRaw = formData.get("skills")?.toString().trim();
 		const address = formData.get("address")?.toString().trim();
 		const profilePhoto = formData.get("profilePhoto")?.toString().trim() || "";
-		const resumeFile = formData.get("resume");
-		if (!fullName || !email || !mobileNumber || !password || !collegeName || !degreeCourse || !department || !yearOfStudy || !currentStatus || !skillsRaw || !address) return fail(400, {
+		const resumeUrl = formData.get("resumeUrl")?.toString().trim();
+		if (!fullName || !email || !mobileNumber || !password || !collegeName || !degreeCourse || !department || !yearOfStudy || !currentStatus || !skillsRaw || !address || !resumeUrl) return fail(400, {
 			success: false,
 			error: "Please fill out all required student profile fields"
 		});
+		try {
+			if (new URL(resumeUrl).protocol !== "https:") return fail(400, {
+				success: false,
+				error: "Resume URL must use a secure HTTPS protocol"
+			});
+		} catch (e) {
+			return fail(400, {
+				success: false,
+				error: "Please provide a valid publicly accessible HTTPS Resume URL"
+			});
+		}
 		const [studentsData, companiesData, adminsData, notificationsData, emailTemplatesData] = await Promise.all([
 			getCollection("students"),
 			getCollection("companies"),
@@ -50,23 +62,6 @@ var actions = {
 			success: false,
 			error: "This email is already registered on Nexora"
 		});
-		let resumePath = "";
-		if (resumeFile && resumeFile instanceof File && resumeFile.size > 0) {
-			const ext = path.extname(resumeFile.name) || ".pdf";
-			const filename = `resumes/resume_${Date.now()}_${Math.random().toString(36).substr(2, 6)}${ext}`;
-			try {
-				resumePath = await uploadFileBuffer(await resumeFile.arrayBuffer(), filename, resumeFile.type || "application/pdf");
-			} catch (err) {
-				console.error("File save error:", err);
-				return fail(500, {
-					success: false,
-					error: `Failed to upload resume: ${err.message || err}`
-				});
-			}
-		} else return fail(400, {
-			success: false,
-			error: "A PDF/DOC resume file upload is required"
-		});
 		const skills = skillsRaw.split(",").map((s) => s.trim()).filter(Boolean);
 		const newStudent = {
 			id: `stud_${Date.now()}`,
@@ -82,7 +77,7 @@ var actions = {
 			skills,
 			address,
 			profilePhoto,
-			resumePath,
+			resumeUrl,
 			isBlocked: false,
 			createdAt: (/* @__PURE__ */ new Date()).toISOString()
 		};

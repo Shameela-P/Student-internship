@@ -19,9 +19,9 @@ if (!getApps().length) app = initializeApp(firebaseConfig);
 else app = getApp();
 getAuth(app);
 getDatabase(app);
-var storage = getStorage(app);
+getStorage(app);
 var googleProvider = new GoogleAuthProvider();
 googleProvider.addScope("email");
 googleProvider.addScope("profile");
 //#endregion
-export { storage as n, app as t };
+export { app as t };

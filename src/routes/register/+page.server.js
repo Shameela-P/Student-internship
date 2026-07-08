@@ -37,21 +37,31 @@ export const actions = {
 		const skillsRaw = formData.get('skills')?.toString().trim();
 		const address = formData.get('address')?.toString().trim();
 		const profilePhoto = formData.get('profilePhoto')?.toString().trim() || '';
-		const resumeFile = formData.get('resume');
+		const resumeUrl = formData.get('resumeUrl')?.toString().trim();
 
 		// Basic validations
-		if (!fullName || !email || !mobileNumber || !password || !collegeName || !degreeCourse || !department || !yearOfStudy || !currentStatus || !skillsRaw || !address) {
+		if (!fullName || !email || !mobileNumber || !password || !collegeName || !degreeCourse || !department || !yearOfStudy || !currentStatus || !skillsRaw || !address || !resumeUrl) {
 			return fail(400, { success: false, error: 'Please fill out all required student profile fields' });
 		}
 
+		// URL validation
+		try {
+			const parsedUrl = new URL(resumeUrl);
+			if (parsedUrl.protocol !== 'https:') {
+				return fail(400, { success: false, error: 'Resume URL must use a secure HTTPS protocol' });
+			}
+		} catch (e) {
+			return fail(400, { success: false, error: 'Please provide a valid publicly accessible HTTPS Resume URL' });
+		}
+
 		const [studentsData, companiesData, adminsData, notificationsData, emailTemplatesData] = await Promise.all([
-		getCollection('students'),
-		getCollection('companies'),
-		getCollection('admins'),
-		getCollection('notifications'),
-		getCollection('emailTemplates')
-	]);
-	const db = { students: studentsData, companies: companiesData, admins: adminsData, notifications: notificationsData, emailTemplates: emailTemplatesData };
+			getCollection('students'),
+			getCollection('companies'),
+			getCollection('admins'),
+			getCollection('notifications'),
+			getCollection('emailTemplates')
+		]);
+		const db = { students: studentsData, companies: companiesData, admins: adminsData, notifications: notificationsData, emailTemplates: emailTemplatesData };
 		
 		// Check duplicate email
 		const emailUsed = db.students.some(s => s.email.toLowerCase() === email) || 
@@ -60,23 +70,6 @@ export const actions = {
 		
 		if (emailUsed) {
 			return fail(400, { success: false, error: 'This email is already registered on Nexora' });
-		}
-
-		// Handle file upload
-		let resumePath = '';
-		if (resumeFile && resumeFile instanceof File && resumeFile.size > 0) {
-			const ext = path.extname(resumeFile.name) || '.pdf';
-			const filename = `resumes/resume_${Date.now()}_${Math.random().toString(36).substr(2, 6)}${ext}`;
-			
-			try {
-				const buffer = await resumeFile.arrayBuffer();
-				resumePath = await uploadFileBuffer(buffer, filename, resumeFile.type || 'application/pdf');
-			} catch (err) {
-				console.error('File save error:', err);
-				return fail(500, { success: false, error: `Failed to upload resume: ${err.message || err}` });
-			}
-		} else {
-			return fail(400, { success: false, error: 'A PDF/DOC resume file upload is required' });
 		}
 
 		// Format skills array
@@ -96,7 +89,7 @@ export const actions = {
 			skills,
 			address,
 			profilePhoto,
-			resumePath,
+			resumeUrl,
 			isBlocked: false,
 			createdAt: new Date().toISOString()
 		};

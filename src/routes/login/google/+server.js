@@ -68,7 +68,7 @@ export async function POST({ request, cookies }) {
 					skills: [],
 					address: 'Update Profile',
 					profilePhoto: photoURL || '',
-					resumePath: '',
+					resumeUrl: '',
 					isBlocked: false,
 					createdAt: new Date().toISOString()
 				};

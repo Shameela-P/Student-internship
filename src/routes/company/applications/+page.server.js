@@ -40,7 +40,7 @@ export async function load({ cookies }) {
 				skills: student.skills,
 				address: student.address,
 				profilePhoto: student.profilePhoto,
-				resumePath: student.resumePath
+				resumeUrl: student.resumeUrl || student.resumePath
 			} : null,
 			internshipTitle: internship ? internship.title : 'Deleted Internship',
 			domain: internship ? internship.domain : 'N/A'

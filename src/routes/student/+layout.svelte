@@ -1,17 +1,50 @@
 <script>
 	import { page } from '$app/state';
 	import logo from '$lib/assets/logo.svg';
+	import { onMount, onDestroy } from 'svelte';
+	import { getDatabase, ref, onValue } from 'firebase/database';
+	import { app } from '$lib/firebase';
 
 	let { data, children } = $props();
 	const student = $derived(data.student);
 	
 	let unread = $state(0);
 	let unreadMsgs = $state(0);
+	let unsubscribeMsgs = null;
 
 	$effect(() => {
 		if (data.lazy) {
 			data.lazy.unreadNotifications.then(val => unread = val);
-			data.lazy.unreadMessages.then(val => unreadMsgs = val);
+		}
+	});
+
+	onMount(() => {
+		if (student && student.email) {
+			const db = getDatabase(app);
+			const msgsRef = ref(db, 'messages');
+			unsubscribeMsgs = onValue(msgsRef, (snapshot) => {
+				const val = snapshot.val();
+				if (val) {
+					let allMsgs = [];
+					if (Array.isArray(val)) {
+						allMsgs = val.filter(Boolean);
+					} else if (typeof val === 'object') {
+						allMsgs = Object.values(val).filter(Boolean);
+					}
+					
+					unreadMsgs = allMsgs.filter(m => 
+						m.recipientEmail.toLowerCase() === student.email.toLowerCase() && !m.read
+					).length;
+				} else {
+					unreadMsgs = 0;
+				}
+			});
+		}
+	});
+
+	onDestroy(() => {
+		if (unsubscribeMsgs) {
+			unsubscribeMsgs();
 		}
 	});
 
@@ -22,7 +55,7 @@
 	}
 
 	function getLinkClass(path) {
-		const baseClass = "flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all duration-350 cursor-pointer ";
+		const baseClass = "flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all duration-355 cursor-pointer ";
 		const activeClass = "bg-indigo-600 text-white shadow-md shadow-indigo-500/10";
 		const inactiveClass = "text-slate-600 hover:bg-slate-50 hover:text-slate-900";
 		

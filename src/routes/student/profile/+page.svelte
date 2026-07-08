@@ -71,17 +71,22 @@
 			</h3>
 			
 			<div class="p-4 rounded-xl border border-divider bg-slate-100 text-xs mb-4">
-				<div class="flex items-center gap-2 mb-2 text-slate-300 font-bold">
+				<div class="flex items-center gap-2 mb-2 text-slate-500 font-bold">
 					<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-slate-500"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg>
 					Active Resume
 				</div>
-				<span class="text-[10px] text-slate-600 truncate block">{student.resumePath || 'No resume file uploaded yet'}</span>
+				{#if student.resumeUrl}
+					<a href={student.resumeUrl} target="_blank" rel="noopener noreferrer" class="text-[10px] text-blue-500 font-bold hover:underline truncate block">
+						Open Resume Link ↗
+					</a>
+				{:else}
+					<span class="text-[10px] text-slate-500 truncate block">No resume link set yet</span>
+				{/if}
 			</div>
 
 			<form
 				action="?/updateResume"
 				method="POST"
-				enctype="multipart/form-data"
 				use:enhance={() => {
 					resumeLoading = true;
 					return ({ update }) => {
@@ -92,19 +97,20 @@
 				class="space-y-4"
 			>
 				<div>
-					<input type="file" id="resume" name="resume" accept=".pdf,.doc,.docx" required class="w-full text-xs text-slate-600 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-[10px] file:font-bold file:bg-blue-500/10 file:text-blue-400 hover:file:bg-blue-500/20" />
+					<label for="resumeUrl" class="block text-[10px] font-bold text-slate-600 uppercase mb-2">Resume URL *</label>
+					<input type="url" id="resumeUrl" name="resumeUrl" value={student.resumeUrl || ''} required placeholder="https://drive.google.com/..." class="w-full px-3 py-2 rounded-lg border border-divider bg-slate-50 text-xs text-primary focus:outline-none focus:border-blue-500" />
 				</div>
 
 				<button
 					type="submit"
 					disabled={resumeLoading}
-					class="w-full py-2.5 rounded-xl text-xs font-bold text-primary bg-blue-600 hover:bg-blue-500 disabled:opacity-50 transition cursor-pointer flex items-center justify-center gap-1.5 animate-pulse-slow"
+					class="w-full py-2.5 rounded-xl text-xs font-bold text-white bg-blue-600 hover:bg-blue-500 disabled:opacity-50 transition cursor-pointer flex items-center justify-center gap-1.5"
 				>
 					{#if resumeLoading}
 						<span class="h-3.5 w-3.5 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
-						Uploading...
+						Updating...
 					{:else}
-						Upload New Resume
+						Update Resume Link
 					{/if}
 				</button>
 			</form>

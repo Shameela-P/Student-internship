@@ -121,13 +121,6 @@
       "_client.js"
     ]
   },
-  "_storageHelper.js": {
-    "file": "chunks/storageHelper.js",
-    "name": "storageHelper",
-    "imports": [
-      "_firebase.js"
-    ]
-  },
   "_utils.js": {
     "file": "chunks/utils.js",
     "name": "utils",
@@ -191,7 +184,7 @@
       "_server.js"
     ],
     "css": [
-      "_app/immutable/assets/_layout.Dq8xnTFQ.css"
+      "_app/immutable/assets/_layout.CpNxM5Tq.css"
     ]
   },
   "src/routes/+page.server.js": {
@@ -242,7 +235,9 @@
     "src": "src/routes/admin/+layout.svelte",
     "isEntry": true,
     "imports": [
+      "_index-server.js",
       "_server.js",
+      "_firebase.js",
       "_state.js",
       "_logo.js"
     ]
@@ -418,7 +413,9 @@
     "src": "src/routes/company/+layout.svelte",
     "isEntry": true,
     "imports": [
+      "_index-server.js",
       "_server.js",
+      "_firebase.js",
       "_state.js",
       "_logo.js"
     ]
@@ -652,9 +649,9 @@
     "src": "src/routes/register/+page.server.js",
     "isEntry": true,
     "imports": [
+      "_firebase.js",
       "_db.js",
-      "_auth.js",
-      "_storageHelper.js"
+      "_auth.js"
     ]
   },
   "src/routes/register/+page.svelte": {
@@ -683,7 +680,9 @@
     "src": "src/routes/student/+layout.svelte",
     "isEntry": true,
     "imports": [
+      "_index-server.js",
       "_server.js",
+      "_firebase.js",
       "_state.js",
       "_logo.js"
     ]
@@ -844,8 +843,7 @@
     "isEntry": true,
     "imports": [
       "_db.js",
-      "_auth.js",
-      "_storageHelper.js"
+      "_auth.js"
     ]
   },
   "src/routes/student/profile/+page.svelte": {

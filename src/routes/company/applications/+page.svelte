@@ -181,14 +181,14 @@
 								<h4 class="font-bold text-slate-600 uppercase tracking-widest text-[10px]">Resume File & Hiring Action</h4>
 								
 								<!-- Resume file link -->
-								{#if app.student.resumePath}
+								{#if app.student.resumeUrl}
 									<a 
-										href={app.student.resumePath.startsWith('http') ? app.student.resumePath : `/api/resumes/${app.student.resumePath}`}
+										href={app.student.resumeUrl}
 										target="_blank" 
 										class="inline-flex items-center justify-center gap-1.5 px-4 py-2 bg-indigo-50 text-indigo-600 font-bold text-xs rounded-lg hover:bg-indigo-100 transition-colors mt-4 w-full"
 									>
 										<div class="h-9 w-9 bg-indigo-500/10 text-indigo-500 rounded-lg flex items-center justify-center font-black text-xs">
-											PDF
+											LINK
 										</div>
 										<div class="flex-grow min-w-0">
 											<span class="text-[11px] font-bold text-slate-700 block truncate group-hover:text-indigo-500">

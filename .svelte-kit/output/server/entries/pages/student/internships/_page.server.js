@@ -86,9 +86,9 @@ var actions = { apply: async ({ request, cookies }) => {
 		success: false,
 		error: "You have already applied to this internship"
 	});
-	if (!student.resumePath) return fail(400, {
+	if (!student.resumeUrl) return fail(400, {
 		success: false,
-		error: "You must upload a resume before applying. Update it in your Profile Settings."
+		error: "You must set a resume link before applying. Update it in your Profile Settings."
 	});
 	const newApp = {
 		id: `app_${Date.now()}`,
@@ -97,7 +97,7 @@ var actions = { apply: async ({ request, cookies }) => {
 		status: "Pending",
 		appliedDate: (/* @__PURE__ */ new Date()).toISOString(),
 		actionDate: "",
-		resumePath: student.resumePath,
+		resumeUrl: student.resumeUrl,
 		certificateHash: ""
 	};
 	await Promise.all([
