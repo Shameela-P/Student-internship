@@ -18,10 +18,10 @@
 
 <div class="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-4">
 	<div>
-		<h1 class="font-display font-black text-3xl text-primary dark:text-primary-dark tracking-tight">
+		<h1 class="font-display font-black text-3xl text-primary tracking-tight">
 			Company Management
 		</h1>
-		<p class="text-sm text-muted dark:text-muted-dark mt-1">
+		<p class="text-sm text-muted mt-1">
 			View and manage {companies.length} registered companies.
 		</p>
 	</div>
@@ -32,63 +32,63 @@
 			type="text"
 			bind:value={searchQuery}
 			placeholder="Search companies..."
-			class="w-full pl-9 pr-4 py-2.5 rounded-xl border border-divider dark:border-divider-dark bg-surface dark:bg-surface-dark/50 text-sm text-primary dark:text-primary-dark focus:outline-none focus:border-indigo-500"
+			class="w-full pl-9 pr-4 py-2.5 rounded-xl border border-divider bg-surface text-sm text-primary focus:outline-none focus:border-indigo-500"
 		/>
-		<svg class="absolute left-3 top-3 h-4 w-4 text-slate-600 dark:text-slate-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+		<svg class="absolute left-3 top-3 h-4 w-4 text-slate-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 			<circle cx="11" cy="11" r="8" stroke-width="2"/>
 			<line x1="21" x2="16.65" y1="21" y2="16.65" stroke-width="2" stroke-linecap="round"/>
 		</svg>
 	</div>
 </div>
 
-<div class="bg-surface dark:bg-surface-dark/40 rounded-2xl border border-divider dark:border-divider-dark overflow-hidden shadow-sm">
+<div class="bg-surface rounded-2xl border border-divider overflow-hidden shadow-sm">
 	<div class="overflow-x-auto">
 		<table class="w-full text-left border-collapse">
 			<thead>
-				<tr class="bg-slate-50 dark:bg-slate-900/60 border-b border-divider dark:border-divider-dark">
-					<th class="px-6 py-4 text-xs font-bold text-muted dark:text-muted-dark uppercase tracking-wider">Company</th>
-					<th class="px-6 py-4 text-xs font-bold text-muted dark:text-muted-dark uppercase tracking-wider">Contact</th>
-					<th class="px-6 py-4 text-xs font-bold text-muted dark:text-muted-dark uppercase tracking-wider">Industry</th>
-					<th class="px-6 py-4 text-xs font-bold text-muted dark:text-muted-dark uppercase tracking-wider">Status</th>
-					<th class="px-6 py-4 text-xs font-bold text-muted dark:text-muted-dark uppercase tracking-wider text-right">Actions</th>
+				<tr class="bg-slate-50 border-b border-divider">
+					<th class="px-6 py-4 text-xs font-bold text-muted uppercase tracking-wider">Company</th>
+					<th class="px-6 py-4 text-xs font-bold text-muted uppercase tracking-wider">Contact</th>
+					<th class="px-6 py-4 text-xs font-bold text-muted uppercase tracking-wider">Industry</th>
+					<th class="px-6 py-4 text-xs font-bold text-muted uppercase tracking-wider">Status</th>
+					<th class="px-6 py-4 text-xs font-bold text-muted uppercase tracking-wider text-right">Actions</th>
 				</tr>
 			</thead>
-			<tbody class="divide-y divide-slate-200 dark:divide-slate-800">
+			<tbody class="divide-y divide-slate-200">
 				{#each filteredCompanies as comp}
-					<tr class="hover:bg-slate-50 dark:hover:bg-slate-800/20 transition duration-150">
+					<tr class="hover:bg-slate-50 transition duration-150">
 						<td class="px-6 py-4">
 							<div class="flex items-center gap-3">
-								<div class="h-10 w-10 shrink-0 rounded-xl bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 flex items-center justify-center font-display font-black text-sm border border-indigo-100 dark:border-indigo-500/20">
+								<div class="h-10 w-10 shrink-0 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center font-display font-black text-sm border border-indigo-100">
 									{comp.companyName.charAt(0)}
 								</div>
 								<div>
-									<div class="font-bold text-sm text-primary dark:text-primary-dark">{comp.companyName}</div>
+									<div class="font-bold text-sm text-primary">{comp.companyName}</div>
 									<div class="text-xs text-slate-500 mt-0.5">{new Date(comp.createdAt).toLocaleDateString()}</div>
 								</div>
 							</div>
 						</td>
 						<td class="px-6 py-4">
-							<div class="text-sm font-medium text-slate-700 dark:text-slate-300">{comp.companyEmail}</div>
+							<div class="text-sm font-medium text-slate-700">{comp.companyEmail}</div>
 							<div class="text-xs text-slate-500 mt-0.5">{comp.companyContactNumber}</div>
 						</td>
 						<td class="px-6 py-4">
-							<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
+							<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-700 border border-slate-200">
 								{comp.industryType}
 							</span>
 						</td>
 						<td class="px-6 py-4">
 							{#if comp.status === 'Approved'}
-								<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-500/20">
+								<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider bg-emerald-50 text-emerald-600 border border-emerald-200">
 									<div class="w-1.5 h-1.5 rounded-full bg-emerald-500"></div>
 									Approved
 								</span>
 							{:else if comp.status === 'Pending'}
-								<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider bg-amber-50 dark:bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-200 dark:border-amber-500/20">
+								<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider bg-amber-50 text-amber-600 border border-amber-200">
 									<div class="w-1.5 h-1.5 rounded-full bg-amber-500"></div>
 									Pending
 								</span>
 							{:else}
-								<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider bg-rose-50 dark:bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-200 dark:border-rose-500/20">
+								<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider bg-rose-50 text-rose-600 border border-rose-200">
 									<div class="w-1.5 h-1.5 rounded-full bg-rose-500"></div>
 									Suspended
 								</span>
@@ -107,7 +107,7 @@
 									<input type="hidden" name="status" value="Approved" />
 									<button 
 										disabled={comp.status === 'Approved' || loadingId !== null}
-										class="p-2 rounded-lg text-slate-600 dark:text-slate-400 hover:text-emerald-500 hover:bg-emerald-50 dark:hover:bg-emerald-500/10 transition cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed"
+										class="p-2 rounded-lg text-slate-600 hover:text-emerald-500 hover:bg-emerald-50 transition cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed"
 										title="Approve Company"
 									>
 										{#if loadingId === comp.id + '-approve'}
@@ -129,7 +129,7 @@
 									<input type="hidden" name="status" value="Suspended" />
 									<button 
 										disabled={comp.status === 'Suspended' || loadingId !== null}
-										class="p-2 rounded-lg text-slate-600 dark:text-slate-400 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-500/10 transition cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed"
+										class="p-2 rounded-lg text-slate-600 hover:text-rose-500 hover:bg-rose-50 transition cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed"
 										title="Suspend Company"
 									>
 										{#if loadingId === comp.id + '-suspend'}
@@ -146,7 +146,7 @@
 				
 				{#if filteredCompanies.length === 0}
 					<tr>
-						<td colspan="5" class="px-6 py-12 text-center text-muted dark:text-muted-dark text-sm">
+						<td colspan="5" class="px-6 py-12 text-center text-muted text-sm">
 							No companies found matching "{searchQuery}"
 						</td>
 					</tr>

@@ -9,19 +9,19 @@
 		<span class="px-4 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-xs font-bold uppercase tracking-wider mb-6 inline-block">
 			Platform Features
 		</span>
-		<h1 class="font-display font-black text-4xl md:text-6xl text-slate-900 dark:text-white tracking-tight">
+		<h1 class="font-display font-black text-4xl md:text-6xl text-slate-900 tracking-tight">
 			Everything You Need to <span class="bg-gradient-to-r from-blue-400 to-indigo-400 text-gradient">Succeed</span>
 		</h1>
-		<p class="mt-6 text-base text-slate-600 dark:text-slate-400 leading-relaxed">
+		<p class="mt-6 text-base text-slate-600 leading-relaxed">
 			Nexora provides dedicated dashboards and communication pipelines tailored for students, companies, and platform administrators.
 		</p>
 	</div>
 
 	<!-- Features Detail Grid -->
 	<div class="grid grid-cols-1 md:grid-cols-2 gap-8 w-full relative z-10 mb-12">
-		<div class="p-8 rounded-3xl bg-white dark:bg-slate-900/40 border border-slate-200/50 dark:border-slate-800/40">
-			<h3 class="text-2xl font-extrabold text-slate-950 dark:text-white mb-4">For Students</h3>
-			<ul class="space-y-3 text-sm text-slate-600 dark:text-slate-400">
+		<div class="p-8 rounded-3xl bg-white border border-slate-200/50">
+			<h3 class="text-2xl font-extrabold text-slate-950 mb-4">For Students</h3>
+			<ul class="space-y-3 text-sm text-slate-600">
 				<li class="flex items-center gap-2">
 					<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
 					150+ Domain categories for personalized matches
@@ -37,9 +37,9 @@
 			</ul>
 		</div>
 
-		<div class="p-8 rounded-3xl bg-white dark:bg-slate-900/40 border border-slate-200/50 dark:border-slate-800/40">
-			<h3 class="text-2xl font-extrabold text-slate-950 dark:text-white mb-4">For Companies</h3>
-			<ul class="space-y-3 text-sm text-slate-600 dark:text-slate-400">
+		<div class="p-8 rounded-3xl bg-white border border-slate-200/50">
+			<h3 class="text-2xl font-extrabold text-slate-950 mb-4">For Companies</h3>
+			<ul class="space-y-3 text-sm text-slate-600">
 				<li class="flex items-center gap-2">
 					<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
 					Flexible internship listing creator and applicant manager

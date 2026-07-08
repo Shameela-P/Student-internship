@@ -26,7 +26,7 @@ export const options = {
 		app: ({ head, body, assets, nonce, env }) => "<!doctype html>\r\n<html lang=\"en\">\r\n\t<head>\r\n\t\t<meta charset=\"utf-8\" />\r\n\t\t<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\r\n\t\t<meta name=\"text-scale\" content=\"scale\" />\r\n\t\t<script>\r\n\t\t\t// Check local storage or system preference to set initial theme and avoid FOUC\r\n\t\t\tif (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {\r\n\t\t\t\tdocument.documentElement.classList.add('dark');\r\n\t\t\t} else {\r\n\t\t\t\tdocument.documentElement.classList.remove('dark');\r\n\t\t\t}\r\n\t\t</script>\r\n\t\t" + head + "\r\n\t</head>\r\n\t<body data-sveltekit-preload-data=\"hover\">\r\n\t\t<div style=\"display: contents\">" + body + "</div>\r\n\t</body>\r\n</html>\r\n",
 		error
 	},
-	version_hash: "a1yvwd"
+	version_hash: "1ave16j"
 };
 
 export async function get_hooks() {

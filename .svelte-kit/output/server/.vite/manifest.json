@@ -73,8 +73,7 @@
     "file": "chunks/forms.js",
     "name": "forms",
     "imports": [
-      "_client.js",
-      "_navigation.js"
+      "_client.js"
     ]
   },
   "_index-server.js": {
@@ -100,13 +99,6 @@
   "_logo.js": {
     "file": "chunks/logo.js",
     "name": "logo"
-  },
-  "_navigation.js": {
-    "file": "chunks/navigation.js",
-    "name": "navigation",
-    "imports": [
-      "_client.js"
-    ]
   },
   "_server.js": {
     "file": "chunks/server.js",
@@ -196,11 +188,10 @@
     "src": "src/routes/+layout.svelte",
     "isEntry": true,
     "imports": [
-      "_index-server.js",
       "_server.js"
     ],
     "css": [
-      "_app/immutable/assets/_layout.tBNJJwvw.css"
+      "_app/immutable/assets/_layout.Dq8xnTFQ.css"
     ]
   },
   "src/routes/+page.server.js": {
@@ -510,7 +501,6 @@
       "_index-server.js",
       "_server.js",
       "_firebase.js",
-      "_navigation.js",
       "_forms.js"
     ]
   },
@@ -530,8 +520,9 @@
     "src": "src/routes/company/notifications/+page.svelte",
     "isEntry": true,
     "imports": [
+      "_index-server.js",
       "_server.js",
-      "_navigation.js"
+      "_firebase.js"
     ]
   },
   "src/routes/contact/+page.svelte": {
@@ -822,7 +813,6 @@
       "_index-server.js",
       "_server.js",
       "_firebase.js",
-      "_navigation.js",
       "_forms.js"
     ]
   },
@@ -844,8 +834,7 @@
     "imports": [
       "_index-server.js",
       "_server.js",
-      "_firebase.js",
-      "_navigation.js"
+      "_firebase.js"
     ]
   },
   "src/routes/student/profile/+page.server.js": {
@@ -885,7 +874,6 @@
     "src": "src/routes/student/settings/+page.svelte",
     "isEntry": true,
     "imports": [
-      "_index-server.js",
       "_server.js",
       "_forms.js"
     ]

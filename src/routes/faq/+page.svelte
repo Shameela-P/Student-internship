@@ -30,15 +30,15 @@
 <div class="flex-1 w-full max-w-4xl mx-auto px-6 py-16 relative">
 	<FloatingLines />
 	
-	<div class="rounded-3xl bg-white dark:bg-slate-900/40 border border-slate-200/50 dark:border-slate-800/40 p-8 md:p-12 shadow-xl relative z-10">
-		<h1 class="font-display font-black text-3xl md:text-4xl text-slate-900 dark:text-white mb-6 text-center">Frequently Asked Questions</h1>
+	<div class="rounded-3xl bg-white border border-slate-200/50 p-8 md:p-12 shadow-xl relative z-10">
+		<h1 class="font-display font-black text-3xl md:text-4xl text-slate-900 mb-6 text-center">Frequently Asked Questions</h1>
 		
 		<div class="space-y-4 mt-8">
 			{#each faqs as faq, i}
-				<div class="border-b border-slate-200 dark:border-slate-800 pb-4">
+				<div class="border-b border-slate-200 pb-4">
 					<button
 						onclick={() => toggleFaq(i)}
-						class="w-full flex items-center justify-between text-left font-bold text-slate-900 dark:text-white py-3 cursor-pointer hover:text-indigo-500 transition duration-200"
+						class="w-full flex items-center justify-between text-left font-bold text-slate-900 py-3 cursor-pointer hover:text-indigo-500 transition duration-200"
 					>
 						<span>{faq.q}</span>
 						<svg
@@ -55,7 +55,7 @@
 						</svg>
 					</button>
 					{#if activeFaq === i}
-						<div class="mt-2 text-sm text-slate-600 dark:text-slate-400 leading-relaxed animate-in fade-in slide-in-from-top-1">
+						<div class="mt-2 text-sm text-slate-600 leading-relaxed animate-in fade-in slide-in-from-top-1">
 							{faq.a}
 						</div>
 					{/if}

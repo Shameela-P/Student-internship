@@ -131,10 +131,10 @@
 
 <div class="mb-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
 	<div>
-		<h1 class="font-display font-black text-3xl text-primary dark:text-primary-dark tracking-tight">
+		<h1 class="font-display font-black text-3xl text-primary tracking-tight">
 			Manage Internship Postings
 		</h1>
-		<p class="text-sm text-slate-600 dark:text-slate-400 mt-1">
+		<p class="text-sm text-slate-600 mt-1">
 			Create new placement listings, update requirements, and review existing postings.
 		</p>
 	</div>
@@ -143,7 +143,7 @@
 	<button
 		onclick={openCreateModal}
 		disabled={!approved}
-		class="px-5 py-3 rounded-xl text-sm font-bold text-primary dark:text-primary-dark bg-blue-600 hover:bg-blue-500 hover:shadow-lg hover:shadow-blue-500/10 disabled:opacity-50 disabled:cursor-not-allowed transition cursor-pointer flex items-center gap-1.5"
+		class="px-5 py-3 rounded-xl text-sm font-bold text-primary bg-blue-600 hover:bg-blue-500 hover:shadow-lg hover:shadow-blue-500/10 disabled:opacity-50 disabled:cursor-not-allowed transition cursor-pointer flex items-center gap-1.5"
 	>
 		<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="shrink-0"><line x1="12" x2="12" y1="5" y2="19"/><line x1="5" x2="19" y1="12" y2="12"/></svg>
 		Publish Opportunity
@@ -159,11 +159,11 @@
 {/if}
 
 {#if internships.length === 0}
-	<div class="p-12 rounded-3xl bg-slate-100 dark:bg-slate-900/30 border border-divider dark:border-divider-dark/80 text-center flex flex-col items-center">
-		<div class="h-12 w-12 rounded-full bg-slate-950 text-slate-500 flex items-center justify-center mb-4 border border-divider dark:border-divider-dark">
+	<div class="p-12 rounded-3xl bg-slate-100 border border-divider text-center flex flex-col items-center">
+		<div class="h-12 w-12 rounded-full bg-slate-950 text-slate-500 flex items-center justify-center mb-4 border border-divider">
 			<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/></svg>
 		</div>
-		<p class="text-sm font-semibold text-slate-600 dark:text-slate-400">No postings active yet</p>
+		<p class="text-sm font-semibold text-slate-600">No postings active yet</p>
 		<p class="text-xs text-slate-500 mt-1">Click the top-right button to publish your first internship opportunity.</p>
 	</div>
 {:else}
@@ -171,7 +171,7 @@
 	<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 		{#each internships as intern}
 			{@const isExpired = intern.status === 'Closed'}
-			<div class="p-6 md:p-8 rounded-2xl bg-surface dark:bg-surface-dark/40 hover:bg-slate-900/60 border hover:border-blue-500/30 shadow-md hover:shadow-blue-500/5 hover:-translate-y-0.5 transition duration-300 flex flex-col justify-between {isExpired ? 'opacity-70 border-divider dark:border-divider-dark/50' : 'border-divider dark:border-divider-dark/50'}">
+			<div class="p-6 md:p-8 rounded-2xl bg-surface hover:bg-slate-900/60 border hover:border-blue-500/30 shadow-md hover:shadow-blue-500/5 hover:-translate-y-0.5 transition duration-300 flex flex-col justify-between {isExpired ? 'opacity-70 border-divider ' : 'border-divider '}">
 				<div>
 					<div class="flex items-start justify-between">
 						<div>
@@ -188,20 +188,20 @@
 										Closed
 									</span>
 								{:else}
-									<span class="px-2 py-0.5 rounded-full text-[9px] font-extrabold uppercase tracking-wider bg-slate-800 text-slate-600 dark:text-slate-400">
+									<span class="px-2 py-0.5 rounded-full text-[9px] font-extrabold uppercase tracking-wider bg-slate-800 text-slate-600">
 										Archived
 									</span>
 								{/if}
 							</div>
-							<h3 class="font-display font-bold text-lg text-primary dark:text-primary-dark mt-3.5 truncate max-w-xs">{intern.title}</h3>
-							<span class="text-xs text-slate-600 dark:text-slate-400 block mt-0.5">{intern.domain} • {intern.subCategory}</span>
+							<h3 class="font-display font-bold text-lg text-primary mt-3.5 truncate max-w-xs">{intern.title}</h3>
+							<span class="text-xs text-slate-600 block mt-0.5">{intern.domain} • {intern.subCategory}</span>
 						</div>
 					</div>
 
-					<p class="mt-4 text-xs text-slate-600 dark:text-slate-400 line-clamp-3 leading-relaxed font-normal">{intern.description}</p>
+					<p class="mt-4 text-xs text-slate-600 line-clamp-3 leading-relaxed font-normal">{intern.description}</p>
 					
 					<!-- Metadata with SVG icons instead of emojis -->
-					<div class="flex flex-wrap gap-x-4 gap-y-2 mt-5 text-[10px] font-bold text-slate-600 dark:text-slate-400 border-t border-divider dark:border-divider-dark/50 pt-4">
+					<div class="flex flex-wrap gap-x-4 gap-y-2 mt-5 text-[10px] font-bold text-slate-600 border-t border-divider pt-4">
 						<span class="flex items-center gap-1.5">
 							<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-slate-500"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
 							{intern.location} ({intern.mode})
@@ -224,14 +224,14 @@
 				</div>
 
 				<!-- Management Operations -->
-				<div class="mt-6 pt-4 border-t border-divider dark:border-divider-dark/50 flex items-center justify-between">
+				<div class="mt-6 pt-4 border-t border-divider flex items-center justify-between">
 					<span class="text-[10px] text-slate-500 font-bold">Deadline: {intern.lastDateToApply}</span>
 
 					<div class="flex items-center gap-2">
 						<!-- Edit -->
 						<button
 							onclick={() => openEditModal(intern)}
-							class="px-3 py-1.5 rounded-lg border border-divider dark:border-divider-dark hover:bg-slate-800 text-[10px] font-bold text-slate-300 hover:text-primary dark:text-primary-dark transition cursor-pointer"
+							class="px-3 py-1.5 rounded-lg border border-divider hover:bg-slate-800 text-[10px] font-bold text-slate-300 hover:text-primary transition cursor-pointer"
 						>
 							Edit
 						</button>
@@ -248,7 +248,7 @@
 								<input type="hidden" name="id" value={intern.id} />
 								<button
 									type="submit"
-									class="px-3 py-1.5 rounded-lg border border-divider dark:border-divider-dark hover:bg-slate-800 text-[10px] font-bold text-amber-500 transition cursor-pointer"
+									class="px-3 py-1.5 rounded-lg border border-divider hover:bg-slate-800 text-[10px] font-bold text-amber-500 transition cursor-pointer"
 								>
 									Archive
 								</button>
@@ -289,16 +289,16 @@
 	<!-- svelte-ignore a11y_no_static_element_interactions -->
 	<div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm" onclick={closeModal} role="button" tabindex="0" onkeydown={(e) => { if(e.key === 'Escape' || e.key === 'Enter' || e.key === ' ') closeModal(); }}>
 		<div
-			class="w-full max-w-xl rounded-2xl bg-slate-900 p-6 md:p-8 border border-divider dark:border-divider-dark shadow-2xl relative max-h-[90vh] overflow-y-auto"
+			class="w-full max-w-xl rounded-2xl bg-slate-900 p-6 md:p-8 border border-divider shadow-2xl relative max-h-[90vh] overflow-y-auto"
 			onclick={(e) => e.stopPropagation()}
 			role="presentation"
 			onkeydown={(e) => e.stopPropagation()}
 		>
-			<button onclick={closeModal} aria-label="Close modal" class="absolute top-4 right-4 p-1.5 rounded-lg text-slate-600 dark:text-slate-400 hover:text-primary dark:text-primary-dark cursor-pointer transition">
+			<button onclick={closeModal} aria-label="Close modal" class="absolute top-4 right-4 p-1.5 rounded-lg text-slate-600 hover:text-primary cursor-pointer transition">
 				<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" x2="6" y1="6" y2="18"/><line x1="6" x2="18" y1="6" y2="18"/></svg>
 			</button>
 
-			<h2 class="font-display font-bold text-xl text-primary dark:text-primary-dark mb-6">
+			<h2 class="font-display font-bold text-xl text-primary mb-6">
 				{modalMode === 'create' ? 'Post New Internship' : 'Edit Internship Details'}
 			</h2>
 
@@ -334,20 +334,20 @@
 
 				<!-- Banner Upload -->
 				<div>
-					<label for="banner" class="block text-xs font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wider mb-2">Internship Banner/Image</label>
-					<input type="file" id="banner" name="banner" accept="image/*" class="w-full text-xs text-slate-600 dark:text-slate-400 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-[10px] file:font-bold file:bg-blue-500/10 file:text-blue-400 hover:file:bg-blue-500/20" />
+					<label for="banner" class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">Internship Banner/Image</label>
+					<input type="file" id="banner" name="banner" accept="image/*" class="w-full text-xs text-slate-600 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-[10px] file:font-bold file:bg-blue-500/10 file:text-blue-400 hover:file:bg-blue-500/20" />
 				</div>
 
 				<!-- Title & Domain -->
 				<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
 					<div>
-						<label for="title" class="block text-xs font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wider mb-2">Internship Title *</label>
-						<input type="text" id="title" name="title" required bind:value={title} placeholder="e.g. Node.js Backend Developer" class="w-full px-3 py-2.5 rounded-lg border border-divider dark:border-divider-dark bg-slate-100 dark:bg-slate-950/40 text-sm text-primary dark:text-primary-dark focus:outline-none focus:border-blue-500" />
+						<label for="title" class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">Internship Title *</label>
+						<input type="text" id="title" name="title" required bind:value={title} placeholder="e.g. Node.js Backend Developer" class="w-full px-3 py-2.5 rounded-lg border border-divider bg-slate-100 text-sm text-primary focus:outline-none focus:border-blue-500" />
 					</div>
 
 					<div>
-						<label for="domain" class="block text-xs font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wider mb-2">Category Domain *</label>
-						<select id="domain" name="domain" required bind:value={domain} class="w-full px-3 py-2.5 rounded-lg border border-divider dark:border-divider-dark bg-slate-100 dark:bg-slate-950/40 text-sm text-primary dark:text-primary-dark focus:outline-none focus:border-blue-500">
+						<label for="domain" class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">Category Domain *</label>
+						<select id="domain" name="domain" required bind:value={domain} class="w-full px-3 py-2.5 rounded-lg border border-divider bg-slate-100 text-sm text-primary focus:outline-none focus:border-blue-500">
 							{#each domains as d}
 								<option value={d.name}>{d.name}</option>
 							{/each}
@@ -357,14 +357,14 @@
 
 				<!-- Subcategory -->
 				<div>
-					<label for="subCategory" class="block text-xs font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wider mb-2">Sub Category *</label>
-					<input type="text" id="subCategory" name="subCategory" required bind:value={subCategory} placeholder="e.g. API Engineering / Interface Design" class="w-full px-3 py-2.5 rounded-lg border border-divider dark:border-divider-dark bg-slate-100 dark:bg-slate-950/40 text-sm text-primary dark:text-primary-dark focus:outline-none focus:border-blue-500" />
+					<label for="subCategory" class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">Sub Category *</label>
+					<input type="text" id="subCategory" name="subCategory" required bind:value={subCategory} placeholder="e.g. API Engineering / Interface Design" class="w-full px-3 py-2.5 rounded-lg border border-divider bg-slate-100 text-sm text-primary focus:outline-none focus:border-blue-500" />
 				</div>
 
 				<!-- Skills -->
 				<div>
-					<label for="skillsRequired" class="block text-xs font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wider mb-2">Skills Required (Comma Separated) *</label>
-					<input type="text" id="skillsRequired" name="skillsRequired" required bind:value={skillsRequired} placeholder="e.g. Python, React, Svelte" class="w-full px-3 py-2.5 rounded-lg border border-divider dark:border-divider-dark bg-slate-100 dark:bg-slate-950/40 text-sm text-primary dark:text-primary-dark focus:outline-none focus:border-blue-500" />
+					<label for="skillsRequired" class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">Skills Required (Comma Separated) *</label>
+					<input type="text" id="skillsRequired" name="skillsRequired" required bind:value={skillsRequired} placeholder="e.g. Python, React, Svelte" class="w-full px-3 py-2.5 rounded-lg border border-divider bg-slate-100 text-sm text-primary focus:outline-none focus:border-blue-500" />
 					<div class="flex flex-wrap gap-1.5 mt-2">
 						{#each ['Python', 'Java', 'JavaScript', 'React', 'Svelte', 'Testing', 'SQL'] as skill}
 							<button
@@ -378,7 +378,7 @@
 									}
 									skillsRequired = list.join(', ');
 								}}
-								class="px-2.5 py-1 rounded-lg text-[10px] font-bold transition border {skillsRequired.split(',').map(s => s.trim()).includes(skill) ? 'bg-blue-600 border-blue-600 text-primary dark:text-primary-dark' : 'border-divider dark:border-divider-dark text-slate-600 dark:text-slate-400 hover:border-blue-500/30'}"
+								class="px-2.5 py-1 rounded-lg text-[10px] font-bold transition border {skillsRequired.split(',').map(s => s.trim()).includes(skill) ? 'bg-blue-600 border-blue-600 text-primary ' : 'border-divider text-slate-600 hover:border-blue-500/30'}"
 							>
 								{skill}
 							</button>
@@ -388,30 +388,30 @@
 
 				<!-- Descriptions -->
 				<div>
-					<label for="description" class="block text-xs font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wider mb-2">Internship Description *</label>
-					<textarea id="description" name="description" required rows="3" bind:value={description} placeholder="Describe daily tasks and expectations..." class="w-full px-3 py-2.5 rounded-lg border border-divider dark:border-divider-dark bg-slate-100 dark:bg-slate-950/40 text-sm text-primary dark:text-primary-dark focus:outline-none focus:border-blue-500"></textarea>
+					<label for="description" class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">Internship Description *</label>
+					<textarea id="description" name="description" required rows="3" bind:value={description} placeholder="Describe daily tasks and expectations..." class="w-full px-3 py-2.5 rounded-lg border border-divider bg-slate-100 text-sm text-primary focus:outline-none focus:border-blue-500"></textarea>
 				</div>
 
 				<div>
-					<label for="learningOutcomes" class="block text-xs font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wider mb-2">Learning Outcomes (Optional)</label>
-					<textarea id="learningOutcomes" name="learningOutcomes" rows="2" bind:value={learningOutcomes} placeholder="What knowledge will the student gain?" class="w-full px-3 py-2.5 rounded-lg border border-divider dark:border-divider-dark bg-slate-100 dark:bg-slate-950/40 text-sm text-primary dark:text-primary-dark focus:outline-none focus:border-blue-500"></textarea>
+					<label for="learningOutcomes" class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">Learning Outcomes (Optional)</label>
+					<textarea id="learningOutcomes" name="learningOutcomes" rows="2" bind:value={learningOutcomes} placeholder="What knowledge will the student gain?" class="w-full px-3 py-2.5 rounded-lg border border-divider bg-slate-100 text-sm text-primary focus:outline-none focus:border-blue-500"></textarea>
 				</div>
 
 				<div>
-					<label for="responsibilities" class="block text-xs font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wider mb-2">Responsibilities *</label>
-					<textarea id="responsibilities" name="responsibilities" required rows="2" bind:value={responsibilities} placeholder="Daily responsibilities of the intern..." class="w-full px-3 py-2.5 rounded-lg border border-divider dark:border-divider-dark bg-slate-100 dark:bg-slate-950/40 text-sm text-primary dark:text-primary-dark focus:outline-none focus:border-blue-500"></textarea>
+					<label for="responsibilities" class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">Responsibilities *</label>
+					<textarea id="responsibilities" name="responsibilities" required rows="2" bind:value={responsibilities} placeholder="Daily responsibilities of the intern..." class="w-full px-3 py-2.5 rounded-lg border border-divider bg-slate-100 text-sm text-primary focus:outline-none focus:border-blue-500"></textarea>
 				</div>
 
 				<div>
-					<label for="eligibilityCriteria" class="block text-xs font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wider mb-2">Eligibility Criteria *</label>
-					<textarea id="eligibilityCriteria" name="eligibilityCriteria" required rows="2" bind:value={eligibilityCriteria} placeholder="Who is eligible to apply?" class="w-full px-3 py-2.5 rounded-lg border border-divider dark:border-divider-dark bg-slate-100 dark:bg-slate-950/40 text-sm text-primary dark:text-primary-dark focus:outline-none focus:border-blue-500"></textarea>
+					<label for="eligibilityCriteria" class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">Eligibility Criteria *</label>
+					<textarea id="eligibilityCriteria" name="eligibilityCriteria" required rows="2" bind:value={eligibilityCriteria} placeholder="Who is eligible to apply?" class="w-full px-3 py-2.5 rounded-lg border border-divider bg-slate-100 text-sm text-primary focus:outline-none focus:border-blue-500"></textarea>
 				</div>
 
 				<!-- Duration, Openings, Dates -->
 				<div class="grid grid-cols-2 md:grid-cols-4 gap-4">
 					<div>
-						<label for="durationSelect" class="block text-xs font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wider mb-2">Duration *</label>
-						<select id="durationSelect" required bind:value={duration} class="w-full px-3 py-2.5 rounded-lg border border-divider dark:border-divider-dark bg-slate-100 dark:bg-slate-950/40 text-xs text-primary dark:text-primary-dark focus:outline-none">
+						<label for="durationSelect" class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">Duration *</label>
+						<select id="durationSelect" required bind:value={duration} class="w-full px-3 py-2.5 rounded-lg border border-divider bg-slate-100 text-xs text-primary focus:outline-none">
 							<option value="1 Month">1 Month</option>
 							<option value="2 Months">2 Months</option>
 							<option value="3 Months">3 Months</option>
@@ -423,33 +423,33 @@
 
 					{#if duration === 'Custom'}
 						<div>
-							<label for="customDuration" class="block text-xs font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wider mb-2">Custom Duration *</label>
-							<input type="text" id="customDuration" name="customDuration" required bind:value={customDuration} placeholder="e.g. 5 Months" class="w-full px-3 py-2.5 rounded-lg border border-divider dark:border-divider-dark bg-slate-100 dark:bg-slate-950/40 text-xs text-primary dark:text-primary-dark focus:outline-none focus:border-blue-500" />
+							<label for="customDuration" class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">Custom Duration *</label>
+							<input type="text" id="customDuration" name="customDuration" required bind:value={customDuration} placeholder="e.g. 5 Months" class="w-full px-3 py-2.5 rounded-lg border border-divider bg-slate-100 text-xs text-primary focus:outline-none focus:border-blue-500" />
 						</div>
 					{/if}
 
 					<div>
-						<label for="openings" class="block text-xs font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wider mb-2">Openings *</label>
-						<input type="number" id="openings" name="openings" required min="1" bind:value={openings} class="w-full px-3 py-2.5 rounded-lg border border-divider dark:border-divider-dark bg-slate-100 dark:bg-slate-950/40 text-xs text-primary dark:text-primary-dark focus:outline-none focus:border-blue-500" />
+						<label for="openings" class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">Openings *</label>
+						<input type="number" id="openings" name="openings" required min="1" bind:value={openings} class="w-full px-3 py-2.5 rounded-lg border border-divider bg-slate-100 text-xs text-primary focus:outline-none focus:border-blue-500" />
 					</div>
 
 					<div>
-						<label for="startDate" class="block text-xs font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wider mb-2">Start Date *</label>
-						<input type="date" id="startDate" name="startDate" required bind:value={startDate} class="w-full px-2 py-2 rounded-lg border border-divider dark:border-divider-dark bg-slate-100 dark:bg-slate-950/40 text-xs text-primary dark:text-primary-dark focus:outline-none focus:border-blue-500" />
+						<label for="startDate" class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">Start Date *</label>
+						<input type="date" id="startDate" name="startDate" required bind:value={startDate} class="w-full px-2 py-2 rounded-lg border border-divider bg-slate-100 text-xs text-primary focus:outline-none focus:border-blue-500" />
 					</div>
 
 					<div>
-						<label for="lastDateToApply" class="block text-xs font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wider mb-2">Apply By *</label>
-						<input type="date" id="lastDateToApply" name="lastDateToApply" required bind:value={lastDateToApply} class="w-full px-2 py-2 rounded-lg border border-divider dark:border-divider-dark bg-slate-100 dark:bg-slate-950/40 text-xs text-primary dark:text-primary-dark focus:outline-none focus:border-blue-500" />
+						<label for="lastDateToApply" class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">Apply By *</label>
+						<input type="date" id="lastDateToApply" name="lastDateToApply" required bind:value={lastDateToApply} class="w-full px-2 py-2 rounded-lg border border-divider bg-slate-100 text-xs text-primary focus:outline-none focus:border-blue-500" />
 					</div>
 				</div>
 
 				<!-- Mode Radio Selection -->
 				<div>
-					<span class="block text-xs font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wider mb-3">Internship Mode *</span>
+					<span class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-3">Internship Mode *</span>
 					<div class="grid grid-cols-3 gap-3">
 						{#each ['Online', 'Offline', 'Hybrid'] as m}
-							<label class="flex items-center gap-2 px-3 py-2.5 rounded-xl border border-divider dark:border-divider-dark bg-slate-950/20 cursor-pointer select-none text-xs font-bold transition-all hover:bg-slate-800 {mode === m ? 'border-blue-500 ring-2 ring-blue-500/10' : ''}">
+							<label class="flex items-center gap-2 px-3 py-2.5 rounded-xl border border-divider bg-slate-950/20 cursor-pointer select-none text-xs font-bold transition-all hover:bg-slate-800 {mode === m ? 'border-blue-500 ring-2 ring-blue-500/10' : ''}">
 								<input type="radio" name="mode" value={m} bind:group={mode} class="accent-blue-500" />
 								{m}
 							</label>
@@ -459,16 +459,16 @@
 
 				<!-- Location -->
 				<div>
-					<label for="location" class="block text-xs font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wider mb-2">Location *</label>
-					<input type="text" id="location" name="location" required bind:value={location} placeholder="e.g. Seattle, WA" class="w-full px-3 py-2.5 rounded-lg border border-divider dark:border-divider-dark bg-slate-100 dark:bg-slate-950/40 text-xs text-primary dark:text-primary-dark focus:outline-none focus:border-blue-500" />
+					<label for="location" class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">Location *</label>
+					<input type="text" id="location" name="location" required bind:value={location} placeholder="e.g. Seattle, WA" class="w-full px-3 py-2.5 rounded-lg border border-divider bg-slate-100 text-xs text-primary focus:outline-none focus:border-blue-500" />
 				</div>
 
 				<!-- Type Radio Selection -->
 				<div>
-					<span class="block text-xs font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wider mb-3">Internship Type *</span>
+					<span class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-3">Internship Type *</span>
 					<div class="grid grid-cols-2 md:grid-cols-4 gap-3">
 						{#each ['Free Internship', 'Paid Internship', 'Free + Stipend', 'Paid + Stipend'] as t}
-							<label class="flex items-center gap-2 px-3 py-2.5 rounded-xl border border-divider dark:border-divider-dark bg-slate-950/20 cursor-pointer select-none text-xs font-bold transition-all hover:bg-slate-800 {type === t ? 'border-blue-500 ring-2 ring-blue-500/10' : ''}">
+							<label class="flex items-center gap-2 px-3 py-2.5 rounded-xl border border-divider bg-slate-950/20 cursor-pointer select-none text-xs font-bold transition-all hover:bg-slate-800 {type === t ? 'border-blue-500 ring-2 ring-blue-500/10' : ''}">
 								<input type="radio" name="type" value={t} bind:group={type} class="accent-blue-500" />
 								{t}
 							</label>
@@ -482,7 +482,7 @@
 					{#if type.includes('Stipend')}
 						<div>
 							<label for="stipendAmount" class="block text-xs font-bold text-emerald-400 uppercase tracking-wider mb-2">Monthly Stipend (₹) *</label>
-							<input type="number" id="stipendAmount" name="stipendAmount" required min="1" bind:value={stipendAmount} placeholder="e.g. 10000" class="w-full px-3 py-2.5 rounded-lg border border-emerald-500/35 bg-emerald-500/5 text-sm text-primary dark:text-primary-dark focus:outline-none focus:border-emerald-500" />
+							<input type="number" id="stipendAmount" name="stipendAmount" required min="1" bind:value={stipendAmount} placeholder="e.g. 10000" class="w-full px-3 py-2.5 rounded-lg border border-emerald-500/35 bg-emerald-500/5 text-sm text-primary focus:outline-none focus:border-emerald-500" />
 						</div>
 					{/if}
 
@@ -490,7 +490,7 @@
 					{#if type.includes('Paid')}
 						<div>
 							<label for="fee" class="block text-xs font-bold text-rose-450 uppercase tracking-wider mb-2">Program Fee (₹, Max ₹6500) *</label>
-							<input type="number" id="fee" name="fee" required min="0" max="6500" bind:value={fee} placeholder="e.g. 2500" class="w-full px-3 py-2.5 rounded-lg border border-rose-500/35 bg-rose-500/5 text-sm text-primary dark:text-primary-dark focus:outline-none focus:border-rose-500" />
+							<input type="number" id="fee" name="fee" required min="0" max="6500" bind:value={fee} placeholder="e.g. 2500" class="w-full px-3 py-2.5 rounded-lg border border-rose-500/35 bg-rose-500/5 text-sm text-primary focus:outline-none focus:border-rose-500" />
 						</div>
 					{/if}
 				</div>
@@ -499,16 +499,16 @@
 				<div class="grid grid-cols-2 gap-4">
 					{#if type === 'Free Internship' || type === 'Free + Stipend'}
 						<div>
-							<label for="certificateAvailable" class="block text-xs font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wider mb-2">Certificate Provided? *</label>
-							<select id="certificateAvailable" name="certificateAvailable" required bind:value={certificateAvailable} class="w-full px-3 py-2.5 rounded-lg border border-divider dark:border-divider-dark bg-slate-100 dark:bg-slate-950/40 text-xs text-primary dark:text-primary-dark focus:outline-none focus:border-blue-500">
+							<label for="certificateAvailable" class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">Certificate Provided? *</label>
+							<select id="certificateAvailable" name="certificateAvailable" required bind:value={certificateAvailable} class="w-full px-3 py-2.5 rounded-lg border border-divider bg-slate-100 text-xs text-primary focus:outline-none focus:border-blue-500">
 								<option value="Yes">Yes</option>
 								<option value="No">No</option>
 							</select>
 						</div>
 
 						<div>
-							<label for="jobOpportunity" class="block text-xs font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wider mb-2">Job Offer After Internship? *</label>
-							<select id="jobOpportunity" name="jobOpportunity" required bind:value={jobOpportunity} class="w-full px-3 py-2.5 rounded-lg border border-divider dark:border-divider-dark bg-slate-100 dark:bg-slate-950/40 text-xs text-primary dark:text-primary-dark focus:outline-none focus:border-blue-500">
+							<label for="jobOpportunity" class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">Job Offer After Internship? *</label>
+							<select id="jobOpportunity" name="jobOpportunity" required bind:value={jobOpportunity} class="w-full px-3 py-2.5 rounded-lg border border-divider bg-slate-100 text-xs text-primary focus:outline-none focus:border-blue-500">
 								<option value="Yes">Yes (Pre-Placement Offer)</option>
 								<option value="No">No Guarantee</option>
 							</select>
@@ -516,16 +516,16 @@
 					{:else}
 						<!-- Keep Certificate and Job Offer fields available under Additional Info for paid ones too -->
 						<div>
-							<label for="certificateAvailable" class="block text-xs font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wider mb-2">Certificate Provided? *</label>
-							<select id="editCertificateAvailable" name="certificateAvailable" required bind:value={certificateAvailable} class="w-full px-3 py-2.5 rounded-lg border border-divider dark:border-divider-dark bg-slate-100 dark:bg-slate-950/40 text-xs text-primary dark:text-primary-dark focus:outline-none focus:border-blue-500">
+							<label for="certificateAvailable" class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">Certificate Provided? *</label>
+							<select id="editCertificateAvailable" name="certificateAvailable" required bind:value={certificateAvailable} class="w-full px-3 py-2.5 rounded-lg border border-divider bg-slate-100 text-xs text-primary focus:outline-none focus:border-blue-500">
 								<option value="Yes">Yes</option>
 								<option value="No">No</option>
 							</select>
 						</div>
 
 						<div>
-							<label for="jobOpportunity" class="block text-xs font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wider mb-2">Job Offer After Internship? *</label>
-							<select id="editJobOpportunity" name="jobOpportunity" required bind:value={jobOpportunity} class="w-full px-3 py-2.5 rounded-lg border border-divider dark:border-divider-dark bg-slate-100 dark:bg-slate-950/40 text-xs text-primary dark:text-primary-dark focus:outline-none focus:border-blue-500">
+							<label for="jobOpportunity" class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">Job Offer After Internship? *</label>
+							<select id="editJobOpportunity" name="jobOpportunity" required bind:value={jobOpportunity} class="w-full px-3 py-2.5 rounded-lg border border-divider bg-slate-100 text-xs text-primary focus:outline-none focus:border-blue-500">
 								<option value="Yes">Yes (Pre-Placement Offer)</option>
 								<option value="No">No Guarantee</option>
 							</select>
@@ -538,14 +538,14 @@
 					<button
 						type="button"
 						onclick={closeModal}
-						class="flex-1 py-3.5 rounded-xl border border-divider dark:border-divider-dark hover:bg-slate-800 text-slate-600 dark:text-slate-400 hover:text-primary dark:text-primary-dark font-bold text-sm transition cursor-pointer"
+						class="flex-1 py-3.5 rounded-xl border border-divider hover:bg-slate-800 text-slate-600 hover:text-primary font-bold text-sm transition cursor-pointer"
 					>
 						Cancel
 					</button>
 					<button
 						type="submit"
 						disabled={loading}
-						class="flex-1 py-3.5 rounded-xl font-bold text-primary dark:text-primary-dark bg-blue-600 hover:bg-blue-500 hover:shadow-lg hover:shadow-blue-500/10 disabled:opacity-50 transition cursor-pointer flex items-center justify-center gap-1.5"
+						class="flex-1 py-3.5 rounded-xl font-bold text-primary bg-blue-600 hover:bg-blue-500 hover:shadow-lg hover:shadow-blue-500/10 disabled:opacity-50 transition cursor-pointer flex items-center justify-center gap-1.5"
 					>
 						{#if loading}
 							<span class="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>

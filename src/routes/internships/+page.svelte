@@ -8,21 +8,21 @@
 	<FloatingLines />
 
 	<div class="mb-12 text-center md:text-left relative z-10">
-		<h1 class="font-display font-black text-4xl text-slate-900 dark:text-white tracking-tight">Active Internships</h1>
-		<p class="text-slate-600 dark:text-slate-400 mt-2 max-w-xl">Find and apply to verified positions across various engineering, marketing, and business domains.</p>
+		<h1 class="font-display font-black text-4xl text-slate-900 tracking-tight">Active Internships</h1>
+		<p class="text-slate-600 mt-2 max-w-xl">Find and apply to verified positions across various engineering, marketing, and business domains.</p>
 	</div>
 
 	<!-- Internships Grid -->
 	<div class="grid grid-cols-1 md:grid-cols-2 gap-8 relative z-10">
 		{#each internships as internship}
-			<div class="p-8 rounded-3xl bg-white dark:bg-slate-900/40 border border-slate-200/50 dark:border-slate-800/40 hover:border-blue-500/20 transition duration-300 flex flex-col justify-between relative group overflow-hidden">
+			<div class="p-8 rounded-3xl bg-white border border-slate-200/50 hover:border-blue-500/20 transition duration-300 flex flex-col justify-between relative group overflow-hidden">
 				<div>
 					<div class="flex items-start justify-between">
 						<div>
 							<span class="px-3 py-1 rounded-full text-[10px] font-bold bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 uppercase tracking-wider">
 								{internship.type}
 							</span>
-							<h3 class="font-display font-bold text-xl text-slate-900 dark:text-white mt-3.5 group-hover:text-blue-500 transition duration-200">
+							<h3 class="font-display font-bold text-xl text-slate-900 mt-3.5 group-hover:text-blue-500 transition duration-200">
 								{internship.title}
 							</h3>
 							<p class="text-xs font-semibold text-slate-500 mt-0.5">
@@ -34,12 +34,12 @@
 						</div>
 					</div>
 
-					<p class="mt-4 text-xs text-slate-600 dark:text-slate-400 line-clamp-3 leading-relaxed font-normal">
+					<p class="mt-4 text-xs text-slate-600 line-clamp-3 leading-relaxed font-normal">
 						{internship.description}
 					</p>
 
 					<!-- Metas -->
-					<div class="flex flex-wrap gap-x-6 gap-y-2 mt-6 text-[11px] font-bold text-slate-500 border-t border-slate-100 dark:border-slate-800/50 pt-4">
+					<div class="flex flex-wrap gap-x-6 gap-y-2 mt-6 text-[11px] font-bold text-slate-500 border-t border-slate-100 pt-4">
 						<div class="flex items-center gap-1.5">
 							<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
 							{internship.location} ({internship.mode})
@@ -56,7 +56,7 @@
 					</div>
 				</div>
 
-				<div class="mt-8 pt-4 border-t border-slate-100 dark:border-slate-800/50 flex items-center justify-between">
+				<div class="mt-8 pt-4 border-t border-slate-100 flex items-center justify-between">
 					<span class="text-[10px] text-slate-400 font-bold">
 						Apply by: <strong class="text-slate-500">{internship.lastDateToApply}</strong>
 					</span>

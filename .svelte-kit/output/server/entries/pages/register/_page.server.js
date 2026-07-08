@@ -60,7 +60,7 @@ var actions = {
 				console.error("File save error:", err);
 				return fail(500, {
 					success: false,
-					error: "Failed to upload resume to storage. Please try again."
+					error: `Failed to upload resume: ${err.message || err}`
 				});
 			}
 		} else return fail(400, {

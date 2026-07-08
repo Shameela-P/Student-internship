@@ -9,7 +9,7 @@
 </script>
 
 <div class="mb-10">
-	<h1 class="font-display font-black text-3xl md:text-4xl text-slate-900 dark:text-white tracking-tight">
+	<h1 class="font-display font-black text-3xl md:text-4xl text-slate-900 tracking-tight">
 		Administrative Control Console
 	</h1>
 	<p class="text-sm text-slate-500 mt-1">
@@ -20,18 +20,18 @@
 {#await data.lazy.dashboardData}
 	<!-- Counter Card Skeletons -->
 	<div class="grid grid-cols-2 lg:grid-cols-6 gap-5 mb-10 animate-pulse">
-		<div class="h-28 bg-slate-200/60 dark:bg-slate-800/60 rounded-2xl"></div>
-		<div class="h-28 bg-slate-200/60 dark:bg-slate-800/60 rounded-2xl"></div>
-		<div class="h-28 bg-slate-200/60 dark:bg-slate-800/60 rounded-2xl"></div>
-		<div class="h-28 bg-slate-200/60 dark:bg-slate-800/60 rounded-2xl"></div>
-		<div class="h-28 bg-slate-200/60 dark:bg-slate-800/60 rounded-2xl"></div>
-		<div class="h-28 bg-slate-200/60 dark:bg-slate-800/60 rounded-2xl"></div>
+		<div class="h-28 bg-slate-200/60 rounded-2xl"></div>
+		<div class="h-28 bg-slate-200/60 rounded-2xl"></div>
+		<div class="h-28 bg-slate-200/60 rounded-2xl"></div>
+		<div class="h-28 bg-slate-200/60 rounded-2xl"></div>
+		<div class="h-28 bg-slate-200/60 rounded-2xl"></div>
+		<div class="h-28 bg-slate-200/60 rounded-2xl"></div>
 	</div>
 
 	<!-- Queue / Log Skeletons -->
 	<div class="grid grid-cols-1 lg:grid-cols-3 gap-8 animate-pulse">
-		<div class="lg:col-span-2 h-96 bg-slate-200/60 dark:bg-slate-800/60 rounded-3xl"></div>
-		<div class="h-96 bg-slate-200/60 dark:bg-slate-800/60 rounded-3xl"></div>
+		<div class="lg:col-span-2 h-96 bg-slate-200/60 rounded-3xl"></div>
+		<div class="h-96 bg-slate-200/60 rounded-3xl"></div>
 	</div>
 {:then dashboard}
 	{@const stats = dashboard.stats}
@@ -41,13 +41,13 @@
 
 	<!-- Stats counter cards -->
 	<div class="grid grid-cols-2 lg:grid-cols-6 gap-5 mb-10">
-		<div class="p-5 rounded-2xl bg-white dark:bg-slate-900/40 border border-slate-200/50 dark:border-slate-800/40">
+		<div class="p-5 rounded-2xl bg-white border border-slate-200/50">
 			<span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Students</span>
 			<h2 class="font-display font-black text-2xl text-indigo-500 mt-2">{stats.totalStudents}</h2>
 			<p class="text-[10px] text-slate-500 mt-1">Registered candidate profiles</p>
 		</div>
 
-		<div class="p-5 rounded-2xl bg-white dark:bg-slate-900/40 border border-slate-200/50 dark:border-slate-800/40">
+		<div class="p-5 rounded-2xl bg-white border border-slate-200/50">
 			<span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Companies</span>
 			<h2 class="font-display font-black text-2xl text-emerald-500 mt-2">{stats.totalCompanies}</h2>
 			<p class="text-[10px] text-slate-500 mt-1">
@@ -55,25 +55,25 @@
 			</p>
 		</div>
 
-		<div class="p-5 rounded-2xl bg-white dark:bg-slate-900/40 border border-slate-200/50 dark:border-slate-800/40">
+		<div class="p-5 rounded-2xl bg-white border border-slate-200/50">
 			<span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Internships</span>
 			<h2 class="font-display font-black text-2xl text-purple-500 mt-2">{stats.activeInternships}</h2>
 			<p class="text-[10px] text-slate-500 mt-1">Active program postings</p>
 		</div>
 
-		<div class="p-5 rounded-2xl bg-white dark:bg-slate-900/40 border border-slate-200/50 dark:border-slate-800/40">
+		<div class="p-5 rounded-2xl bg-white border border-slate-200/50">
 			<span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Applications</span>
 			<h2 class="font-display font-black text-2xl text-amber-500 mt-2">{stats.totalApplications}</h2>
 			<p class="text-[10px] text-slate-500 mt-1">Total application documents</p>
 		</div>
 
-		<div class="p-5 rounded-2xl bg-white dark:bg-slate-900/40 border border-slate-200/50 dark:border-slate-800/40">
+		<div class="p-5 rounded-2xl bg-white border border-slate-200/50">
 			<span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Placements</span>
 			<h2 class="font-display font-black text-2xl text-pink-500 mt-2">{stats.successfulPlacements}</h2>
 			<p class="text-[10px] text-slate-500 mt-1">Approved selections</p>
 		</div>
 
-		<div class="p-5 rounded-2xl bg-white dark:bg-slate-900/40 border border-slate-200/50 dark:border-slate-800/40 col-span-2 lg:col-span-1">
+		<div class="p-5 rounded-2xl bg-white border border-slate-200/50 col-span-2 lg:col-span-1">
 			<span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Certificates</span>
 			<h2 class="font-display font-black text-2xl text-cyan-500 mt-2">{stats.certificatesGenerated}</h2>
 			<p class="text-[10px] text-slate-500 mt-1">Issued verifications</p>
@@ -82,12 +82,12 @@
 
 	<!-- Active Companies Moderation -->
 	<div class="mb-10">
-		<h3 class="font-display font-bold text-xl text-slate-900 dark:text-white mb-4">
+		<h3 class="font-display font-bold text-xl text-slate-900 mb-4">
 			Active Corporate Accounts Moderation
 		</h3>
-		<div class="overflow-x-auto rounded-3xl bg-white dark:bg-slate-900/40 border border-slate-200/50 dark:border-slate-800/40">
+		<div class="overflow-x-auto rounded-3xl bg-white border border-slate-200/50">
 			<table class="w-full text-left text-xs">
-				<thead class="bg-slate-100/50 dark:bg-slate-900/50 text-slate-500 font-bold">
+				<thead class="bg-slate-100/50 text-slate-500 font-bold">
 					<tr>
 						<th class="p-4 rounded-tl-2xl">Company Name</th>
 						<th class="p-4">Email Contact</th>
@@ -95,9 +95,9 @@
 						<th class="p-4 rounded-tr-2xl text-right">Moderation Actions</th>
 					</tr>
 				</thead>
-				<tbody class="divide-y divide-slate-200/5 dark:divide-slate-800/20 text-slate-700 dark:text-slate-300">
+				<tbody class="divide-y divide-slate-200/5 text-slate-700">
 					{#each activeCompanies as comp}
-						<tr class="hover:bg-slate-50/50 dark:hover:bg-slate-900/20 transition duration-150">
+						<tr class="hover:bg-slate-50/50 transition duration-150">
 							<td class="p-4 font-bold">{comp.companyName}</td>
 							<td class="p-4">{comp.companyEmail}</td>
 							<td class="p-4">{comp.industryType}</td>
@@ -145,8 +145,8 @@
 	<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
 		<!-- Verification Queue -->
 		<div class="lg:col-span-2 space-y-6">
-			<div class="p-6 rounded-3xl bg-white dark:bg-slate-900/40 border border-slate-200/50 dark:border-slate-800/40">
-				<h3 class="font-display font-bold text-base text-slate-900 dark:text-white mb-2 flex items-center justify-between">
+			<div class="p-6 rounded-3xl bg-white border border-slate-200/50">
+				<h3 class="font-display font-bold text-base text-slate-900 mb-2 flex items-center justify-between">
 					<span>Company Verification Queue</span>
 					{#if queue.length > 0}
 						<span class="h-2 w-2 rounded-full bg-amber-500 animate-ping"></span>
@@ -157,15 +157,15 @@
 				</p>
 
 				{#if queue.length === 0}
-					<div class="py-16 text-center text-xs text-slate-500 border border-dashed border-slate-200 dark:border-slate-800 rounded-2xl">
+					<div class="py-16 text-center text-xs text-slate-500 border border-dashed border-slate-200 rounded-2xl">
 						Verification queue is empty. All registered companies verified.
 					</div>
 				{:else}
 					<div class="space-y-4">
 						{#each queue as comp}
-							<div class="p-5 rounded-2xl bg-slate-50/50 dark:bg-slate-950/20 border border-slate-200/5 dark:border-slate-800/30 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+							<div class="p-5 rounded-2xl bg-slate-50/50 border border-slate-200/5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
 								<div class="min-w-0 flex-grow">
-									<h4 class="font-bold text-sm text-slate-800 dark:text-slate-200">{comp.companyName}</h4>
+									<h4 class="font-bold text-sm text-slate-800">{comp.companyName}</h4>
 									<span class="text-xs text-slate-500 block truncate mt-0.5">{comp.companyEmail} • {comp.industryType}</span>
 									<a href={comp.website} target="_blank" rel="noopener noreferrer" class="text-[10px] text-indigo-500 font-semibold hover:underline block mt-1">
 										Visit website ↗
@@ -224,8 +224,8 @@
 		</div>
 
 		<!-- System logs -->
-		<div class="p-6 rounded-3xl bg-white dark:bg-slate-900/40 border border-slate-200/50 dark:border-slate-800/40 flex flex-col">
-			<h3 class="font-display font-bold text-base text-slate-900 dark:text-white mb-2">
+		<div class="p-6 rounded-3xl bg-white border border-slate-200/50 flex flex-col">
+			<h3 class="font-display font-bold text-base text-slate-900 mb-2">
 				Platform Audit Stream
 			</h3>
 			<p class="text-xs text-slate-500 mb-6">
@@ -235,7 +235,7 @@
 			<div class="flex-grow overflow-y-auto max-h-[400px] pr-2 space-y-4">
 				{#each logs as log}
 					{@const actionColor = log.action.includes('FRAUD') || log.action.includes('BLOCK') ? 'text-rose-500 bg-rose-500/10' : log.action.includes('CREATE') || log.action.includes('REGISTER') ? 'text-emerald-500 bg-emerald-500/10' : 'text-indigo-500 bg-indigo-500/10'}
-					<div class="p-4 bg-slate-50/50 dark:bg-slate-950/20 border border-slate-200/5 dark:border-slate-800/20 rounded-2xl text-xs flex flex-col gap-2 hover:border-slate-350 transition">
+					<div class="p-4 bg-slate-50/50 border border-slate-200/5 rounded-2xl text-xs flex flex-col gap-2 hover:border-slate-350 transition">
 						<div class="flex items-center justify-between gap-4 font-bold">
 							<span class="px-2.5 py-1 rounded-md text-[9px] tracking-widest uppercase {actionColor}">
 								{log.action}
@@ -245,23 +245,23 @@
 							</span>
 						</div>
 						
-						<p class="text-xs text-slate-700 dark:text-slate-300 font-medium font-sans">
+						<p class="text-xs text-slate-700 font-medium font-sans">
 							{log.details}
 						</p>
 
 						{#if log.user && log.user !== 'System'}
-							<div class="grid grid-cols-2 gap-y-1.5 gap-x-4 mt-2 pt-2 border-t border-slate-100 dark:border-slate-800/40 text-[10px]">
+							<div class="grid grid-cols-2 gap-y-1.5 gap-x-4 mt-2 pt-2 border-t border-slate-100 text-[10px]">
 								<div class="flex justify-between">
 									<span class="text-slate-500 font-semibold uppercase">Actor:</span>
-									<span class="text-slate-750 dark:text-slate-250 font-bold">{log.user} ({log.role})</span>
+									<span class="text-slate-750 font-bold">{log.user} ({log.role})</span>
 								</div>
 								<div class="flex justify-between">
 									<span class="text-slate-500 font-semibold uppercase">Email:</span>
-									<span class="text-slate-750 dark:text-slate-250 font-mono truncate max-w-[120px]">{log.email}</span>
+									<span class="text-slate-750 font-mono truncate max-w-[120px]">{log.email}</span>
 								</div>
 								<div class="flex justify-between">
 									<span class="text-slate-500 font-semibold uppercase">Target:</span>
-									<span class="text-slate-750 dark:text-slate-250">{log.target}</span>
+									<span class="text-slate-750">{log.target}</span>
 								</div>
 							</div>
 						{/if}
@@ -275,12 +275,12 @@
 <!-- Warning Modal -->
 {#if modWarnCompany}
 	<div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm" onclick={() => modWarnCompany = null} role="button" tabindex="0" onkeydown={(e) => { if(e.key === 'Escape' || e.key === 'Enter' || e.key === ' ') modWarnCompany = null; }}>
-		<div class="w-full max-w-md rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-850 p-6 shadow-2xl relative" onclick={(e) => e.stopPropagation()} role="presentation" onkeydown={(e) => e.stopPropagation()}>
+		<div class="w-full max-w-md rounded-2xl bg-white border border-slate-200 p-6 shadow-2xl relative" onclick={(e) => e.stopPropagation()} role="presentation" onkeydown={(e) => e.stopPropagation()}>
 			<button onclick={() => modWarnCompany = null} aria-label="Close modal" class="absolute top-4 right-4 p-1.5 rounded-lg text-slate-500 hover:text-slate-600 cursor-pointer transition">
 				<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" x2="6" y1="6" y2="18"/><line x1="6" x2="18" y1="6" y2="18"/></svg>
 			</button>
 
-			<h3 class="font-display font-bold text-lg text-slate-900 dark:text-white mb-2">Issue Warning</h3>
+			<h3 class="font-display font-bold text-lg text-slate-900 mb-2">Issue Warning</h3>
 			<p class="text-xs text-slate-500 mb-4">Send a formal compliance warning to {modWarnCompany.companyName}.</p>
 
 			<form
@@ -300,7 +300,7 @@
 				
 				<div>
 					<label for="warningMessage" class="block text-xs font-bold text-slate-500 uppercase mb-2">Warning Reason / Message</label>
-					<textarea id="warningMessage" name="warningMessage" required rows="3" class="w-full px-3 py-2.5 rounded-lg border border-slate-200 dark:border-slate-800 bg-transparent text-sm text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500" placeholder="E.g., Suspicious activity detected..."></textarea>
+					<textarea id="warningMessage" name="warningMessage" required rows="3" class="w-full px-3 py-2.5 rounded-lg border border-slate-200 bg-transparent text-sm text-slate-900 focus:outline-none focus:border-indigo-500" placeholder="E.g., Suspicious activity detected..."></textarea>
 				</div>
 
 				<button

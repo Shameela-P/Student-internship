@@ -89,7 +89,7 @@ var actions = {
 			console.error("Resume swap error:", err);
 			return fail(500, {
 				success: false,
-				error: "Failed to save resume to storage. Please try again."
+				error: `Failed to save resume: ${err.message || err}`
 			});
 		}
 	}

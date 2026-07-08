@@ -5,7 +5,7 @@
 
 <div class="mb-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
 	<div>
-		<h1 class="font-display font-black text-3xl md:text-4xl text-slate-900 dark:text-white tracking-tight">
+		<h1 class="font-display font-black text-3xl md:text-4xl text-slate-900 tracking-tight">
 			Corporate Overview
 		</h1>
 		<p class="text-sm text-slate-500 mt-1">
@@ -26,15 +26,15 @@
 {#await data.lazy.dashboardData}
 	<!-- Skeletons for entire Dashboard -->
 	<div class="grid grid-cols-2 lg:grid-cols-4 gap-5 mb-10 animate-pulse">
-		<div class="h-28 bg-slate-200/60 dark:bg-slate-800/60 rounded-2xl"></div>
-		<div class="h-28 bg-slate-200/60 dark:bg-slate-800/60 rounded-2xl"></div>
-		<div class="h-28 bg-slate-200/60 dark:bg-slate-800/60 rounded-2xl"></div>
-		<div class="h-28 bg-slate-200/60 dark:bg-slate-800/60 rounded-2xl"></div>
+		<div class="h-28 bg-slate-200/60 rounded-2xl"></div>
+		<div class="h-28 bg-slate-200/60 rounded-2xl"></div>
+		<div class="h-28 bg-slate-200/60 rounded-2xl"></div>
+		<div class="h-28 bg-slate-200/60 rounded-2xl"></div>
 	</div>
 
 	<div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-10 animate-pulse">
-		<div class="lg:col-span-2 h-72 bg-slate-200/60 dark:bg-slate-800/60 rounded-3xl"></div>
-		<div class="h-72 bg-slate-200/60 dark:bg-slate-800/60 rounded-3xl"></div>
+		<div class="lg:col-span-2 h-72 bg-slate-200/60 rounded-3xl"></div>
+		<div class="h-72 bg-slate-200/60 rounded-3xl"></div>
 	</div>
 {:then dashboard}
 	{@const stats = dashboard.stats}
@@ -44,25 +44,25 @@
 
 	<!-- Stats Grid -->
 	<div class="grid grid-cols-2 lg:grid-cols-4 gap-5 mb-10">
-		<div class="p-6 rounded-2xl bg-white dark:bg-slate-900/40 border border-slate-200/50 dark:border-slate-800/40">
+		<div class="p-6 rounded-2xl bg-white border border-slate-200/50">
 			<span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Active Postings</span>
-			<h2 class="font-display font-black text-3xl text-indigo-600 dark:text-indigo-400 mt-3">{stats.activePostings}</h2>
+			<h2 class="font-display font-black text-3xl text-indigo-600 mt-3">{stats.activePostings}</h2>
 			<p class="text-xs text-slate-500 mt-1">Open for submissions</p>
 		</div>
 		
-		<div class="p-6 rounded-2xl bg-white dark:bg-slate-900/40 border border-slate-200/50 dark:border-slate-800/40">
+		<div class="p-6 rounded-2xl bg-white border border-slate-200/50">
 			<span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Total Received</span>
 			<h2 class="font-display font-black text-3xl text-purple-500 mt-3">{stats.totalApplications}</h2>
 			<p class="text-xs text-slate-500 mt-1">Hiring funnel entries</p>
 		</div>
 
-		<div class="p-6 rounded-2xl bg-white dark:bg-slate-900/40 border border-slate-200/50 dark:border-slate-800/40">
+		<div class="p-6 rounded-2xl bg-white border border-slate-200/50">
 			<span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Pending Audit</span>
 			<h2 class="font-display font-black text-3xl text-amber-500 mt-3">{stats.pendingApplications}</h2>
 			<p class="text-xs text-slate-500 mt-1">Awaiting reviewer feedback</p>
 		</div>
 
-		<div class="p-6 rounded-2xl bg-white dark:bg-slate-900/40 border border-slate-200/50 dark:border-slate-800/40">
+		<div class="p-6 rounded-2xl bg-white border border-slate-200/50">
 			<span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Shortlisted</span>
 			<h2 class="font-display font-black text-3xl text-emerald-500 mt-3">{stats.shortlistedCandidates}</h2>
 			<p class="text-xs text-slate-500 mt-1">Passed initial screenings</p>
@@ -71,9 +71,9 @@
 
 	<div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-10">
 		<!-- SVG Chart Section -->
-		<div class="lg:col-span-2 p-6 rounded-3xl bg-white dark:bg-slate-900/40 border border-slate-200/50 dark:border-slate-800/40 flex flex-col justify-between">
+		<div class="lg:col-span-2 p-6 rounded-3xl bg-white border border-slate-200/50 flex flex-col justify-between">
 			<div>
-				<h3 class="font-display font-bold text-base text-slate-900 dark:text-white mb-2">
+				<h3 class="font-display font-bold text-base text-slate-900 mb-2">
 					Application Distribution
 				</h3>
 				<p class="text-xs text-slate-500">
@@ -92,10 +92,10 @@
 						{@const percentage = Math.round((bar.value / maxVal) * 100)}
 						<div class="space-y-1.5">
 							<div class="flex items-center justify-between text-xs font-semibold">
-								<span class="text-slate-700 dark:text-slate-300 truncate max-w-sm">{bar.title}</span>
+								<span class="text-slate-700 truncate max-w-sm">{bar.title}</span>
 								<span class="text-slate-500">{bar.value} applicants</span>
 							</div>
-							<div class="h-3.5 w-full bg-slate-100 dark:bg-slate-900 rounded-full overflow-hidden border border-slate-200/5 dark:border-slate-800/20">
+							<div class="h-3.5 w-full bg-slate-100 rounded-full overflow-hidden border border-slate-200/5">
 								<div
 									class="h-full bg-gradient-to-r from-indigo-500 to-indigo-600 rounded-full transition-all duration-500"
 									style="width: {percentage}%"
@@ -108,9 +108,9 @@
 		</div>
 
 		<!-- Pipeline Summary -->
-		<div class="p-6 rounded-3xl bg-white dark:bg-slate-900/40 border border-slate-200/50 dark:border-slate-800/40 flex flex-col justify-between">
+		<div class="p-6 rounded-3xl bg-white border border-slate-200/50 flex flex-col justify-between">
 			<div>
-				<h3 class="font-display font-bold text-base text-slate-900 dark:text-white mb-2">
+				<h3 class="font-display font-bold text-base text-slate-900 mb-2">
 					Candidate Pipeline
 				</h3>
 				<p class="text-xs text-slate-500">Current status breakdowns</p>
@@ -119,23 +119,23 @@
 			<div class="space-y-4 my-6">
 				<div class="flex items-center justify-between text-xs font-semibold">
 					<span class="flex items-center gap-2 text-slate-500"><span class="h-2.5 w-2.5 rounded-full bg-amber-500"></span> Pending</span>
-					<span class="text-slate-800 dark:text-white">{stats.pendingApplications}</span>
+					<span class="text-slate-800">{stats.pendingApplications}</span>
 				</div>
 				<div class="flex items-center justify-between text-xs font-semibold">
 					<span class="flex items-center gap-2 text-slate-500"><span class="h-2.5 w-2.5 rounded-full bg-indigo-500"></span> Shortlisted</span>
-					<span class="text-slate-800 dark:text-white">{stats.shortlistedCandidates}</span>
+					<span class="text-slate-800">{stats.shortlistedCandidates}</span>
 				</div>
 				<div class="flex items-center justify-between text-xs font-semibold">
 					<span class="flex items-center gap-2 text-slate-500"><span class="h-2.5 w-2.5 rounded-full bg-emerald-500"></span> Approved (Hired)</span>
-					<span class="text-slate-800 dark:text-white">{stats.approvedHires}</span>
+					<span class="text-slate-800">{stats.approvedHires}</span>
 				</div>
 				<div class="flex items-center justify-between text-xs font-semibold">
 					<span class="flex items-center gap-2 text-slate-500"><span class="h-2.5 w-2.5 rounded-full bg-rose-500"></span> Rejected</span>
-					<span class="text-slate-800 dark:text-white">{stats.rejectedApplications}</span>
+					<span class="text-slate-800">{stats.rejectedApplications}</span>
 				</div>
 			</div>
 
-			<div class="border-t border-slate-100 dark:border-slate-800/40 pt-4 flex items-center justify-between text-xs">
+			<div class="border-t border-slate-100 pt-4 flex items-center justify-between text-xs">
 				<span class="text-slate-500 font-semibold">Conversion Rate:</span>
 				<strong class="text-emerald-500 font-bold">
 					{stats.totalApplications > 0 ? Math.round((stats.approvedHires / stats.totalApplications) * 100) : 0}%
@@ -147,16 +147,16 @@
 	<!-- Recent Applications Section -->
 	<div>
 		<div class="flex items-center justify-between mb-6">
-			<h2 class="font-display font-bold text-xl text-slate-900 dark:text-white">
+			<h2 class="font-display font-bold text-xl text-slate-900">
 				Incoming Candidate Feed
 			</h2>
-			<a href="/company/applications" class="text-xs font-bold text-indigo-500 dark:text-indigo-400 hover:underline">
+			<a href="/company/applications" class="text-xs font-bold text-indigo-500 hover:underline">
 				View All Queue
 			</a>
 		</div>
 
 		{#if recentApps.length === 0}
-			<div class="p-12 rounded-3xl bg-white dark:bg-slate-900/40 border border-slate-200/50 dark:border-slate-800/40 text-center flex flex-col items-center">
+			<div class="p-12 rounded-3xl bg-white border border-slate-200/50 text-center flex flex-col items-center">
 				<div class="h-12 w-12 rounded-full bg-indigo-500/10 text-indigo-500 flex items-center justify-center mb-4">
 					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
 				</div>
@@ -166,10 +166,10 @@
 		{:else}
 			<div class="space-y-4">
 				{#each recentApps as app}
-					<div class="p-6 rounded-2xl bg-white dark:bg-slate-900/40 border border-slate-200/50 dark:border-slate-800/40 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+					<div class="p-6 rounded-2xl bg-white border border-slate-200/50 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
 						<div class="flex-grow min-w-0">
 							<span class="text-xs font-bold uppercase tracking-wider text-slate-500">{app.domain}</span>
-							<h3 class="font-display font-bold text-lg text-slate-900 dark:text-white mt-1.5 truncate">
+							<h3 class="font-display font-bold text-lg text-slate-900 mt-1.5 truncate">
 								{app.studentName}
 							</h3>
 							<p class="text-xs text-slate-500 mt-0.5">{app.studentCollege} • {app.studentDepartment}</p>

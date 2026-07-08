@@ -138,7 +138,7 @@
 </style>
 
 <!-- Hero Section -->
-<section class="relative py-20 px-6 rounded-3xl overflow-hidden bg-gradient-to-br from-slate-900 via-slate-950 to-slate-900 border border-divider dark:border-divider-dark/80 mb-12 text-center shadow-2xl">
+<section class="relative py-20 px-6 rounded-3xl overflow-hidden bg-gradient-to-br from-slate-900 via-slate-950 to-slate-900 border border-divider mb-12 text-center shadow-2xl">
 	<!-- Background Glows -->
 	<div class="absolute top-[-30%] left-[-20%] w-[60%] h-[60%] rounded-full bg-blue-500/10 blur-[120px] pointer-events-none animate-pulse-slow"></div>
 	<div class="absolute bottom-[-20%] right-[-10%] w-[50%] h-[50%] rounded-full bg-cyan-500/5 blur-[120px] pointer-events-none animate-pulse-slow" style="animation-delay: 2s;"></div>
@@ -153,8 +153,8 @@
 				</svg>
 			</div>
 			<div class="text-left text-xs">
-				<p class="font-bold text-primary dark:text-primary-dark">Full Stack Intern</p>
-				<p class="text-slate-600 dark:text-slate-400">TCS • Active</p>
+				<p class="font-bold text-primary">Full Stack Intern</p>
+				<p class="text-slate-600">TCS • Active</p>
 			</div>
 		</div>
 
@@ -172,8 +172,8 @@
 				</svg>
 			</div>
 			<div class="text-left text-xs">
-				<p class="font-bold text-primary dark:text-primary-dark">Verified Certificate</p>
-				<p class="text-slate-600 dark:text-slate-400">ID: NX-8902-A</p>
+				<p class="font-bold text-primary">Verified Certificate</p>
+				<p class="text-slate-600">ID: NX-8902-A</p>
 			</div>
 		</div>
 
@@ -185,7 +185,7 @@
 				</svg>
 			</div>
 			<div class="text-left text-xs">
-				<p class="font-bold text-primary dark:text-primary-dark">Career Growth</p>
+				<p class="font-bold text-primary">Career Growth</p>
 				<p class="text-emerald-400">+148% Placements</p>
 			</div>
 		</div>
@@ -198,18 +198,18 @@
 			100% Verified Corporate Partners
 		</div>
 
-		<h1 class="font-display font-black text-4xl md:text-6xl text-primary dark:text-primary-dark leading-tight tracking-tight">
+		<h1 class="font-display font-black text-4xl md:text-6xl text-primary leading-tight tracking-tight">
 			Explore <span class="bg-gradient-to-r from-blue-400 via-cyan-400 to-emerald-400 text-gradient">5500+ Verified Companies</span>
 		</h1>
-		<p class="mt-5 text-sm md:text-base text-slate-600 dark:text-slate-400 max-w-2xl leading-relaxed">
+		<p class="mt-5 text-sm md:text-base text-slate-600 max-w-2xl leading-relaxed">
 			Find internships from top recruiters, startups, and global companies across 150+ domains. Apply directly to active postings and launch your career.
 		</p>
 
 		<div class="mt-8 flex flex-col sm:flex-row gap-4 items-center justify-center">
-			<a href="#directory" class="w-full sm:w-auto px-8 py-3.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-primary dark:text-primary-dark font-bold text-sm shadow-lg shadow-blue-500/20 hover:shadow-blue-500/35 hover:scale-[1.02] transition-all duration-250 cursor-pointer">
+			<a href="#directory" class="w-full sm:w-auto px-8 py-3.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-primary font-bold text-sm shadow-lg shadow-blue-500/20 hover:shadow-blue-500/35 hover:scale-[1.02] transition-all duration-250 cursor-pointer">
 				Explore Companies
 			</a>
-			<a href="/student/internships" class="w-full sm:w-auto px-8 py-3.5 rounded-xl border border-divider dark:border-divider-dark hover:bg-slate-900 text-slate-300 hover:text-primary dark:text-primary-dark font-bold text-sm hover:scale-[1.02] transition-all duration-250 cursor-pointer">
+			<a href="/student/internships" class="w-full sm:w-auto px-8 py-3.5 rounded-xl border border-divider hover:bg-slate-900 text-slate-300 hover:text-primary font-bold text-sm hover:scale-[1.02] transition-all duration-250 cursor-pointer">
 				Find Internships
 			</a>
 		</div>
@@ -218,36 +218,36 @@
 
 <!-- Statistics Grid -->
 <section class="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-	<div class="p-6 rounded-2xl bg-surface dark:bg-surface-dark/50 border border-divider dark:border-divider-dark/80 text-center backdrop-blur-sm relative group overflow-hidden">
+	<div class="p-6 rounded-2xl bg-surface border border-divider text-center backdrop-blur-sm relative group overflow-hidden">
 		<div class="absolute inset-0 bg-gradient-to-b from-blue-500/5 to-transparent opacity-0 group-hover:opacity-100 transition duration-300"></div>
-		<span class="text-[10px] font-bold text-slate-600 dark:text-slate-400 uppercase tracking-widest block">Corporate Partners</span>
+		<span class="text-[10px] font-bold text-slate-600 uppercase tracking-widest block">Corporate Partners</span>
 		<h2 class="font-display font-black text-2xl md:text-4xl text-blue-400 mt-2">{companiesCount}+</h2>
 	</div>
-	<div class="p-6 rounded-2xl bg-surface dark:bg-surface-dark/50 border border-divider dark:border-divider-dark/80 text-center backdrop-blur-sm relative group overflow-hidden">
+	<div class="p-6 rounded-2xl bg-surface border border-divider text-center backdrop-blur-sm relative group overflow-hidden">
 		<div class="absolute inset-0 bg-gradient-to-b from-emerald-500/5 to-transparent opacity-0 group-hover:opacity-100 transition duration-300"></div>
-		<span class="text-[10px] font-bold text-slate-600 dark:text-slate-400 uppercase tracking-widest block">Applications Filed</span>
+		<span class="text-[10px] font-bold text-slate-600 uppercase tracking-widest block">Applications Filed</span>
 		<h2 class="font-display font-black text-2xl md:text-4xl text-emerald-400 mt-2">{applicationsCount}+</h2>
 	</div>
-	<div class="p-6 rounded-2xl bg-surface dark:bg-surface-dark/50 border border-divider dark:border-divider-dark/80 text-center backdrop-blur-sm relative group overflow-hidden">
+	<div class="p-6 rounded-2xl bg-surface border border-divider text-center backdrop-blur-sm relative group overflow-hidden">
 		<div class="absolute inset-0 bg-gradient-to-b from-purple-500/5 to-transparent opacity-0 group-hover:opacity-100 transition duration-300"></div>
-		<span class="text-[10px] font-bold text-slate-600 dark:text-slate-400 uppercase tracking-widest block">Active Candidates</span>
+		<span class="text-[10px] font-bold text-slate-600 uppercase tracking-widest block">Active Candidates</span>
 		<h2 class="font-display font-black text-2xl md:text-4xl text-purple-400 mt-2">{studentsCount}+</h2>
 	</div>
-	<div class="p-6 rounded-2xl bg-surface dark:bg-surface-dark/50 border border-divider dark:border-divider-dark/80 text-center backdrop-blur-sm relative group overflow-hidden">
+	<div class="p-6 rounded-2xl bg-surface border border-divider text-center backdrop-blur-sm relative group overflow-hidden">
 		<div class="absolute inset-0 bg-gradient-to-b from-cyan-500/5 to-transparent opacity-0 group-hover:opacity-100 transition duration-300"></div>
-		<span class="text-[10px] font-bold text-slate-600 dark:text-slate-400 uppercase tracking-widest block">Domain Streams</span>
+		<span class="text-[10px] font-bold text-slate-600 uppercase tracking-widest block">Domain Streams</span>
 		<h2 class="font-display font-black text-2xl md:text-4xl text-cyan-400 mt-2">{domainsCount}+</h2>
 	</div>
 </section>
 
 <!-- Auto Scrolling Recruiters Marquee -->
-<section class="mb-16 py-5 border-y border-divider dark:border-divider-dark/80 bg-slate-100 dark:bg-slate-900/30 overflow-hidden w-full">
+<section class="mb-16 py-5 border-y border-divider bg-slate-100 overflow-hidden w-full">
 	<div class="max-w-6xl mx-auto px-6 flex flex-col md:flex-row items-center gap-6 w-full">
-		<div class="shrink-0 text-xs font-bold text-slate-600 dark:text-slate-400 uppercase tracking-widest">Top Recruiters:</div>
+		<div class="shrink-0 text-xs font-bold text-slate-600 uppercase tracking-widest">Top Recruiters:</div>
 		<div class="marquee-container flex-grow w-full overflow-hidden">
 			<div class="marquee-track">
 				{#each [...featuredRecruiters, ...featuredRecruiters] as recruiter}
-					<a href="?query={encodeURIComponent(recruiter)}" class="text-sm font-black font-display text-slate-600 dark:text-slate-400 hover:text-blue-400 transition-colors duration-200">
+					<a href="?query={encodeURIComponent(recruiter)}" class="text-sm font-black font-display text-slate-600 hover:text-blue-400 transition-colors duration-200">
 						{recruiter}
 					</a>
 				{/each}
@@ -261,8 +261,8 @@
 	<!-- Title and Filters -->
 	<div class="mb-8 flex flex-col xl:flex-row items-start xl:items-center justify-between gap-6">
 		<div>
-			<h2 class="font-display font-black text-2xl text-primary dark:text-primary-dark">Corporate Register</h2>
-			<p class="text-xs text-slate-600 dark:text-slate-400 mt-1">Search through verified corporate registries and find matching workspaces.</p>
+			<h2 class="font-display font-black text-2xl text-primary">Corporate Register</h2>
+			<p class="text-xs text-slate-600 mt-1">Search through verified corporate registries and find matching workspaces.</p>
 		</div>
 
 		<!-- Filter Bar -->
@@ -274,9 +274,9 @@
 					name="query"
 					value={filters.query}
 					placeholder="Search company or description..."
-					class="w-full pl-9 pr-4 py-2.5 rounded-xl border border-divider dark:border-divider-dark bg-surface dark:bg-surface-dark/50 text-xs text-primary dark:text-primary-dark focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500/20"
+					class="w-full pl-9 pr-4 py-2.5 rounded-xl border border-divider bg-surface text-xs text-primary focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500/20"
 				/>
-				<svg class="absolute left-3 top-3.5 h-3.5 w-3.5 text-slate-600 dark:text-slate-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+				<svg class="absolute left-3 top-3.5 h-3.5 w-3.5 text-slate-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 					<circle cx="11" cy="11" r="8" stroke-width="2"/>
 					<line x1="21" x2="16.65" y1="21" y2="16.65" stroke-width="2" stroke-linecap="round"/>
 				</svg>
@@ -286,7 +286,7 @@
 			<div class="min-w-[140px]">
 				<select
 					name="industry"
-					class="w-full px-3 py-2.5 rounded-xl border border-divider dark:border-divider-dark bg-surface dark:bg-surface-dark/50 text-xs text-primary dark:text-primary-dark focus:outline-none focus:border-blue-500"
+					class="w-full px-3 py-2.5 rounded-xl border border-divider bg-surface text-xs text-primary focus:outline-none focus:border-blue-500"
 				>
 					<option value="" selected={!filters.industry}>All Sectors</option>
 					{#each industries as industry}
@@ -299,7 +299,7 @@
 			<div class="min-w-[140px]">
 				<select
 					name="domain"
-					class="w-full px-3 py-2.5 rounded-xl border border-divider dark:border-divider-dark bg-surface dark:bg-surface-dark/50 text-xs text-primary dark:text-primary-dark focus:outline-none focus:border-blue-500"
+					class="w-full px-3 py-2.5 rounded-xl border border-divider bg-surface text-xs text-primary focus:outline-none focus:border-blue-500"
 				>
 					<option value="" selected={!filters.domain}>All Domains</option>
 					{#each domains as domain}
@@ -315,9 +315,9 @@
 					name="location"
 					value={filters.location}
 					placeholder="Location..."
-					class="w-full pl-9 pr-4 py-2.5 rounded-xl border border-divider dark:border-divider-dark bg-surface dark:bg-surface-dark/50 text-xs text-primary dark:text-primary-dark focus:outline-none focus:border-blue-500"
+					class="w-full pl-9 pr-4 py-2.5 rounded-xl border border-divider bg-surface text-xs text-primary focus:outline-none focus:border-blue-500"
 				/>
-				<svg class="absolute left-3 top-3.5 h-3.5 w-3.5 text-slate-600 dark:text-slate-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+				<svg class="absolute left-3 top-3.5 h-3.5 w-3.5 text-slate-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 					<path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" stroke-width="2"/>
 					<circle cx="12" cy="10" r="3" stroke-width="2"/>
 				</svg>
@@ -327,7 +327,7 @@
 			<div class="min-w-[110px]">
 				<select
 					name="mode"
-					class="w-full px-3 py-2.5 rounded-xl border border-divider dark:border-divider-dark bg-surface dark:bg-surface-dark/50 text-xs text-primary dark:text-primary-dark focus:outline-none focus:border-blue-500"
+					class="w-full px-3 py-2.5 rounded-xl border border-divider bg-surface text-xs text-primary focus:outline-none focus:border-blue-500"
 				>
 					<option value="" selected={!filters.mode}>All Modes</option>
 					<option value="Online" selected={filters.mode === 'Online'}>Online</option>
@@ -340,7 +340,7 @@
 			<div class="min-w-[130px]">
 				<select
 					name="type"
-					class="w-full px-3 py-2.5 rounded-xl border border-divider dark:border-divider-dark bg-surface dark:bg-surface-dark/50 text-xs text-primary dark:text-primary-dark focus:outline-none focus:border-blue-500"
+					class="w-full px-3 py-2.5 rounded-xl border border-divider bg-surface text-xs text-primary focus:outline-none focus:border-blue-500"
 				>
 					<option value="" selected={!filters.type}>All Types</option>
 					<option value="Free Internship" selected={filters.type === 'Free Internship'}>Free Internship</option>
@@ -352,10 +352,10 @@
 
 			<!-- Buttons -->
 			<div class="flex gap-2">
-				<button type="submit" class="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-primary dark:text-primary-dark font-bold text-xs transition-colors duration-200 cursor-pointer">
+				<button type="submit" class="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-primary font-bold text-xs transition-colors duration-200 cursor-pointer">
 					Apply Filters
 				</button>
-				<a href="/student/companies" class="px-4 py-2.5 rounded-xl border border-divider dark:border-divider-dark/50 hover:bg-slate-900 text-slate-600 dark:text-slate-400 font-bold text-xs transition duration-200 cursor-pointer flex items-center justify-center">
+				<a href="/student/companies" class="px-4 py-2.5 rounded-xl border border-divider hover:bg-slate-900 text-slate-600 font-bold text-xs transition duration-200 cursor-pointer flex items-center justify-center">
 					Reset
 				</a>
 			</div>
@@ -401,39 +401,39 @@
 
 	<!-- Company Grid (Reduced heights by 40%, premium 3-col grids) -->
 	{#if companies.length === 0}
-		<div class="p-16 rounded-3xl bg-slate-100 dark:bg-slate-900/30 border border-divider dark:border-divider-dark/80 text-center flex flex-col items-center justify-center">
+		<div class="p-16 rounded-3xl bg-slate-100 border border-divider text-center flex flex-col items-center justify-center">
 			<svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-slate-500 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 				<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
 			</svg>
-			<p class="text-sm font-bold text-slate-600 dark:text-slate-400">No matching verified partners</p>
+			<p class="text-sm font-bold text-slate-600">No matching verified partners</p>
 			<p class="text-xs text-slate-500 mt-1">Try resetting the search filters to discover more corporate agencies.</p>
 		</div>
 	{:else}
 		<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 			{#each companies as comp}
 				<!-- Slick, reduced-height card with lift up, border glow, shadow transitions -->
-				<div class="group p-5 rounded-2xl bg-surface dark:bg-surface-dark/40 hover:bg-slate-900/70 border border-divider dark:border-divider-dark/60 hover:border-blue-500/40 flex flex-col justify-between shadow-md hover:shadow-[0_0_20px_rgba(59,130,246,0.15)] hover:-translate-y-1 transition-all duration-300 min-h-[175px]">
+				<div class="group p-5 rounded-2xl bg-surface hover:bg-slate-900/70 border border-divider hover:border-blue-500/40 flex flex-col justify-between shadow-md hover:shadow-[0_0_20px_rgba(59,130,246,0.15)] hover:-translate-y-1 transition-all duration-300 min-h-[175px]">
 					<div>
 						<!-- Header -->
 						<div class="flex items-start gap-3">
 							<!-- Company Logo / Initials -->
-							<div class="h-9 w-9 shrink-0 rounded-xl bg-gradient-to-tr from-slate-800 to-slate-950 text-blue-400 border border-divider dark:border-divider-dark flex items-center justify-center font-display font-black text-sm">
+							<div class="h-9 w-9 shrink-0 rounded-xl bg-gradient-to-tr from-slate-800 to-slate-950 text-blue-400 border border-divider flex items-center justify-center font-display font-black text-sm">
 								{comp.companyName.charAt(0)}
 							</div>
 							
 							<div class="min-w-0 flex-grow">
 								<div class="flex items-center gap-1.5">
-									<h3 class="font-display font-bold text-sm text-primary dark:text-primary-dark truncate group-hover:text-blue-400 transition-colors duration-250">{comp.companyName}</h3>
+									<h3 class="font-display font-bold text-sm text-primary truncate group-hover:text-blue-400 transition-colors duration-250">{comp.companyName}</h3>
 									<!-- Verified checkmark -->
 									<span class="text-blue-400 shrink-0" title="Verified Corporate Partner">
 										<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
 									</span>
-									<span class="px-1.5 py-0.5 rounded text-[8px] font-bold bg-slate-800 text-slate-600 dark:text-slate-400 shrink-0">
+									<span class="px-1.5 py-0.5 rounded text-[8px] font-bold bg-slate-800 text-slate-600 shrink-0">
 										{comp.industryType}
 									</span>
 								</div>
 								
-								<div class="flex items-center gap-2 mt-1.5 text-[10px] text-slate-600 dark:text-slate-400 font-semibold">
+								<div class="flex items-center gap-2 mt-1.5 text-[10px] text-slate-600 font-semibold">
 									<!-- Location icon -->
 									<span class="flex items-center gap-1">
 										<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
@@ -451,13 +451,13 @@
 						</div>
 
 						<!-- Description -->
-						<p class="mt-2 text-xs text-slate-600 dark:text-slate-400 line-clamp-2 leading-relaxed font-normal">
+						<p class="mt-2 text-xs text-slate-600 line-clamp-2 leading-relaxed font-normal">
 							{comp.companyDescription}
 						</p>
 					</div>
 
 					<!-- Footer Actions (Compact layout, short spacing) -->
-					<div class="mt-3 pt-3 border-t border-divider dark:border-divider-dark/50 flex items-center justify-between">
+					<div class="mt-3 pt-3 border-t border-divider flex items-center justify-between">
 						<span class="text-[10px] text-slate-500 font-bold">
 							{comp.openingsCount > 0 ? `${comp.openingsCount} Active Listings` : 'No open opportunities'}
 						</span>
@@ -465,7 +465,7 @@
 						<div class="flex items-center gap-3">
 							<a
 								href="/student/companies/{comp.id}"
-								class="text-[10px] font-bold text-slate-600 dark:text-slate-400 hover:text-primary dark:text-primary-dark transition duration-200 cursor-pointer"
+								class="text-[10px] font-bold text-slate-600 hover:text-primary transition duration-200 cursor-pointer"
 							>
 								View Info
 							</a>
@@ -478,7 +478,7 @@
 							
 							<button
 								onclick={() => toggleSave(comp.id)}
-								class="p-1 rounded hover:bg-slate-800 transition duration-200 cursor-pointer text-slate-500 hover:text-primary dark:text-primary-dark"
+								class="p-1 rounded hover:bg-slate-800 transition duration-200 cursor-pointer text-slate-500 hover:text-primary"
 								title={savedCompanies.has(comp.id) ? 'Saved' : 'Save Company'}
 							>
 								<svg
@@ -501,20 +501,20 @@
 </section>
 
 <!-- Success Stories -->
-<section class="mb-16 border-t border-divider dark:border-divider-dark/60 pt-16">
-	<h2 class="font-display font-black text-2xl text-primary dark:text-primary-dark text-center mb-8">Success Stories</h2>
+<section class="mb-16 border-t border-divider pt-16">
+	<h2 class="font-display font-black text-2xl text-primary text-center mb-8">Success Stories</h2>
 	<div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
 		{#each successStories as story}
-			<div class="p-6 rounded-2xl bg-slate-100 dark:bg-slate-900/30 border border-divider dark:border-divider-dark/80 flex gap-4 backdrop-blur-sm hover:border-slate-700/60 transition duration-300">
+			<div class="p-6 rounded-2xl bg-slate-100 border border-divider flex gap-4 backdrop-blur-sm hover:border-slate-700/60 transition duration-300">
 				<div class="h-10 w-10 shrink-0 rounded-full bg-blue-500/10 text-blue-400 flex items-center justify-center font-bold text-xs border border-blue-500/20">
 					{story.avatar}
 				</div>
 				<div>
-					<p class="text-xs italic text-slate-600 dark:text-slate-400 leading-relaxed font-normal">
+					<p class="text-xs italic text-slate-600 leading-relaxed font-normal">
 						"{story.quote}"
 					</p>
 					<div class="mt-4">
-						<h4 class="text-xs font-bold text-primary dark:text-primary-dark">{story.name}</h4>
+						<h4 class="text-xs font-bold text-primary">{story.name}</h4>
 						<span class="text-[10px] text-slate-500 font-semibold">{story.role} • Hired by <strong class="text-blue-400">{story.company}</strong></span>
 					</div>
 				</div>
@@ -529,21 +529,21 @@
 	<!-- svelte-ignore a11y_no_static_element_interactions -->
 	<div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm" onclick={() => selectedCompanyDetail = null} role="button" tabindex="0" onkeydown={(e) => { if(e.key === 'Escape' || e.key === 'Enter' || e.key === ' ') selectedCompanyDetail = null; }}>
 		<div
-			class="w-full max-w-md rounded-2xl bg-slate-900 border border-divider dark:border-divider-dark p-6 shadow-2xl relative"
+			class="w-full max-w-md rounded-2xl bg-slate-900 border border-divider p-6 shadow-2xl relative"
 			onclick={(e) => e.stopPropagation()}
 			role="presentation"
 			onkeydown={(e) => e.stopPropagation()}
 		>
-			<button onclick={() => selectedCompanyDetail = null} aria-label="Close modal" class="absolute top-4 right-4 p-1.5 rounded-lg text-slate-600 dark:text-slate-400 hover:text-primary dark:text-primary-dark cursor-pointer transition">
+			<button onclick={() => selectedCompanyDetail = null} aria-label="Close modal" class="absolute top-4 right-4 p-1.5 rounded-lg text-slate-600 hover:text-primary cursor-pointer transition">
 				<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" x2="6" y1="6" y2="18"/><line x1="6" x2="18" y1="6" y2="18"/></svg>
 			</button>
 
 			<div class="flex items-center gap-3 mb-6">
-				<div class="h-12 w-12 rounded-xl bg-gradient-to-tr from-slate-800 to-slate-950 text-blue-400 flex items-center justify-center font-display font-black text-xl border border-divider dark:border-divider-dark">
+				<div class="h-12 w-12 rounded-xl bg-gradient-to-tr from-slate-800 to-slate-950 text-blue-400 flex items-center justify-center font-display font-black text-xl border border-divider">
 					{selectedCompanyDetail.companyName.charAt(0)}
 				</div>
 				<div>
-					<h3 class="font-display font-bold text-lg text-primary dark:text-primary-dark">{selectedCompanyDetail.companyName}</h3>
+					<h3 class="font-display font-bold text-lg text-primary">{selectedCompanyDetail.companyName}</h3>
 					<span class="text-xs text-blue-400 font-bold">{selectedCompanyDetail.industryType}</span>
 				</div>
 			</div>
@@ -557,11 +557,11 @@
 					<h4 class="font-bold text-slate-500 uppercase tracking-widest text-[9px] mb-1">Corporate Address</h4>
 					<p class="leading-relaxed">{selectedCompanyDetail.companyAddress}</p>
 				</div>
-				<div class="flex items-center justify-between pt-4 border-t border-divider dark:border-divider-dark/80">
-					<a href={selectedCompanyDetail.website} target="_blank" rel="noopener noreferrer" class="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 text-primary dark:text-primary-dark font-bold text-[10px] transition cursor-pointer">
+				<div class="flex items-center justify-between pt-4 border-t border-divider">
+					<a href={selectedCompanyDetail.website} target="_blank" rel="noopener noreferrer" class="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 text-primary font-bold text-[10px] transition cursor-pointer">
 						Visit Corporate Website
 					</a>
-					<a href={`/student/internships?query=${encodeURIComponent(selectedCompanyDetail.companyName)}`} class="px-4 py-2 rounded-lg border border-divider dark:border-divider-dark hover:bg-slate-800 font-bold text-[10px] transition cursor-pointer text-slate-300 hover:text-primary dark:text-primary-dark">
+					<a href={`/student/internships?query=${encodeURIComponent(selectedCompanyDetail.companyName)}`} class="px-4 py-2 rounded-lg border border-divider hover:bg-slate-800 font-bold text-[10px] transition cursor-pointer text-slate-300 hover:text-primary">
 						Explore Openings
 					</a>
 				</div>
@@ -571,6 +571,6 @@
 {/if}
 
 <!-- Footer -->
-<footer class="w-full py-8 border-t border-divider dark:border-divider-dark/40 text-center text-slate-500 text-[10px] mt-auto">
+<footer class="w-full py-8 border-t border-divider text-center text-slate-500 text-[10px] mt-auto">
 	<p>© 2026 Nexora Network. Hired with trust.</p>
 </footer>

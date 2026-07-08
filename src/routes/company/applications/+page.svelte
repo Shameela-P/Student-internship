@@ -51,16 +51,16 @@
 {/if}
 
 <div class="mb-8">
-	<h1 class="font-display font-black text-3xl text-primary dark:text-primary-dark tracking-tight">
+	<h1 class="font-display font-black text-3xl text-primary tracking-tight">
 		Applications Queue
 	</h1>
-	<p class="text-sm text-muted dark:text-muted-dark mt-1">
+	<p class="text-sm text-muted mt-1">
 		Review student profiles, inspect uploaded resume files, shortlist candidates, and approve placements.
 	</p>
 </div>
 
 <!-- Filters Bar -->
-<div class="p-6 rounded-3xl glass border border-slate-200/10 dark:border-slate-800/40 mb-8 flex flex-col md:flex-row gap-4 items-center justify-between">
+<div class="p-6 rounded-3xl glass border border-slate-200/10 mb-8 flex flex-col md:flex-row gap-4 items-center justify-between">
 	
 	<!-- Search input -->
 	<div class="w-full md:max-w-sm relative">
@@ -68,17 +68,17 @@
 			type="text"
 			bind:value={searchName}
 			placeholder="Search by student name or internship..."
-			class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-divider dark:border-divider-dark bg-white/50 dark:bg-slate-950/20 text-xs focus:border-indigo-500 focus:outline-none"
+			class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-divider bg-white/50 text-xs focus:border-indigo-500 focus:outline-none"
 		/>
-		<svg class="absolute left-3 top-3 h-4 w-4 text-slate-600 dark:text-slate-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><circle cx="11" cy="11" r="8" stroke-width="2"/><line x1="21" x2="16.65" y1="21" y2="16.65" stroke-width="2" stroke-linecap="round"/></svg>
+		<svg class="absolute left-3 top-3 h-4 w-4 text-slate-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><circle cx="11" cy="11" r="8" stroke-width="2"/><line x1="21" x2="16.65" y1="21" y2="16.65" stroke-width="2" stroke-linecap="round"/></svg>
 	</div>
 
 	<!-- Status Tabs -->
-	<div class="flex flex-wrap gap-1 bg-slate-100 dark:bg-slate-900/60 p-1.5 rounded-xl border border-slate-200/5 dark:border-slate-800/20">
+	<div class="flex flex-wrap gap-1 bg-slate-100 p-1.5 rounded-xl border border-slate-200/5">
 		{#each ['All', 'Pending', 'Shortlisted', 'Approved', 'Rejected'] as status}
 			<button
 				onclick={() => filterStatus = status}
-				class="px-3.5 py-1.5 rounded-lg text-xs font-bold transition duration-200 cursor-pointer {filterStatus === status ? 'bg-white dark:bg-slate-800 text-indigo-600 dark:text-white shadow-sm' : 'text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200'}"
+				class="px-3.5 py-1.5 rounded-lg text-xs font-bold transition duration-200 cursor-pointer {filterStatus === status ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-500 hover:text-slate-700 '}"
 			>
 				{status}
 			</button>
@@ -87,47 +87,47 @@
 </div>
 
 {#if filteredApps.length === 0}
-	<div class="p-12 rounded-3xl glass border border-slate-200/10 dark:border-slate-800/40 text-center">
-		<p class="text-sm font-semibold text-slate-600 dark:text-slate-400">No applications found matching the parameters.</p>
+	<div class="p-12 rounded-3xl glass border border-slate-200/10 text-center">
+		<p class="text-sm font-semibold text-slate-600">No applications found matching the parameters.</p>
 	</div>
 {:else}
 	<div class="space-y-4">
 		{#each filteredApps as app}
-			<div class="rounded-2xl glass-card border border-slate-200/15 dark:border-slate-800/40 overflow-hidden transition-all duration-200 {activeAppId === app.id ? 'ring-2 ring-indigo-500/10' : ''}">
+			<div class="rounded-2xl glass-card border border-slate-200/15 overflow-hidden transition-all duration-200 {activeAppId === app.id ? 'ring-2 ring-indigo-500/10' : ''}">
 				
 				<!-- Row summary header -->
 				<div class="p-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
 					<!-- Student and internship details -->
 					<div class="flex-grow min-w-0">
 						<div class="flex items-center gap-2 flex-wrap">
-							<h3 class="font-display font-bold text-base text-primary dark:text-primary-dark">{app.student.fullName}</h3>
-							<span class="text-[10px] text-slate-600 dark:text-slate-400 font-semibold">• {app.student.collegeName}</span>
+							<h3 class="font-display font-bold text-base text-primary">{app.student.fullName}</h3>
+							<span class="text-[10px] text-slate-600 font-semibold">• {app.student.collegeName}</span>
 						</div>
-						<p class="text-xs text-muted dark:text-muted-dark mt-1">
-							Applied for: <strong class="text-slate-700 dark:text-slate-300 font-semibold">"{app.internshipTitle}"</strong> ({app.domain})
+						<p class="text-xs text-muted mt-1">
+							Applied for: <strong class="text-slate-700 font-semibold">"{app.internshipTitle}"</strong> ({app.domain})
 						</p>
 					</div>
 
 					<!-- Status actions and tags -->
 					<div class="flex items-center gap-3 justify-between md:justify-end shrink-0">
 						<!-- Date tag -->
-						<span class="text-[10px] text-slate-600 dark:text-slate-400 font-semibold">{new Date(app.appliedDate).toLocaleDateString()}</span>
+						<span class="text-[10px] text-slate-600 font-semibold">{new Date(app.appliedDate).toLocaleDateString()}</span>
 						
 						<!-- Status Badge -->
 						{#if app.status === 'Approved'}
-							<span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">Approved</span>
+							<span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-500/10 text-emerald-600">Approved</span>
 						{:else if app.status === 'Rejected'}
-							<span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-rose-500/10 text-rose-600 dark:text-rose-400">Rejected</span>
+							<span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-rose-500/10 text-rose-600">Rejected</span>
 						{:else if app.status === 'Shortlisted'}
-							<span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-purple-500/10 text-purple-600 dark:text-purple-400">Shortlisted</span>
+							<span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-purple-500/10 text-purple-600">Shortlisted</span>
 						{:else}
-							<span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-amber-500/10 text-amber-600 dark:text-amber-400">Pending</span>
+							<span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-amber-500/10 text-amber-600">Pending</span>
 						{/if}
 
 						<!-- Toggle detailed folder action -->
 						<button
 							onclick={() => toggleDetails(app.id)}
-							class="px-3 py-1.5 rounded-lg border border-divider dark:border-divider-dark bg-white/50 dark:bg-slate-900/50 hover:bg-slate-100 dark:hover:bg-slate-900 text-xs font-bold text-indigo-500 transition cursor-pointer"
+							class="px-3 py-1.5 rounded-lg border border-divider bg-white/50 hover:bg-slate-100 text-xs font-bold text-indigo-500 transition cursor-pointer"
 						>
 							{#if activeAppId === app.id}Close{:else}View Profile{/if}
 						</button>
@@ -136,41 +136,41 @@
 
 				<!-- Drawer profile files & actions -->
 				{#if activeAppId === app.id}
-					<div class="px-5 pb-6 pt-4 border-t border-slate-200/5 dark:border-slate-800/10 bg-slate-100/10 dark:bg-slate-900/10 text-xs md:text-sm">
+					<div class="px-5 pb-6 pt-4 border-t border-slate-200/5 bg-slate-100/10 text-xs md:text-sm">
 						<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
 							<!-- Academic profile details -->
 							<div class="lg:col-span-2 space-y-4 text-xs">
-								<h4 class="font-bold text-slate-600 dark:text-slate-400 dark:text-slate-500 uppercase tracking-widest text-[10px]">Applicant Profile</h4>
+								<h4 class="font-bold text-slate-600 uppercase tracking-widest text-[10px]">Applicant Profile</h4>
 								
 								<div class="grid grid-cols-2 gap-x-6 gap-y-3">
 									<div>
-										<span class="text-slate-600 dark:text-slate-400 block">Email Address:</span>
+										<span class="text-slate-600 block">Email Address:</span>
 										<a href="mailto:{app.student.email}" class="text-indigo-500 font-semibold">{app.student.email}</a>
 									</div>
 									<div>
-										<span class="text-slate-600 dark:text-slate-400 block">Mobile Contact:</span>
-										<span class="font-semibold text-slate-700 dark:text-slate-300">{app.student.mobileNumber}</span>
+										<span class="text-slate-600 block">Mobile Contact:</span>
+										<span class="font-semibold text-slate-700">{app.student.mobileNumber}</span>
 									</div>
 									<div>
-										<span class="text-slate-600 dark:text-slate-400 block">Course & Department:</span>
-										<span class="font-semibold text-slate-700 dark:text-slate-300">{app.student.degreeCourse} ({app.student.department})</span>
+										<span class="text-slate-600 block">Course & Department:</span>
+										<span class="font-semibold text-slate-700">{app.student.degreeCourse} ({app.student.department})</span>
 									</div>
 									<div>
-										<span class="text-slate-600 dark:text-slate-400 block">Year of Study & Status:</span>
-										<span class="font-semibold text-slate-700 dark:text-slate-300">Year {app.student.yearOfStudy} • {app.student.currentStatus}</span>
+										<span class="text-slate-600 block">Year of Study & Status:</span>
+										<span class="font-semibold text-slate-700">Year {app.student.yearOfStudy} • {app.student.currentStatus}</span>
 									</div>
 									<div class="col-span-2">
-										<span class="text-slate-600 dark:text-slate-400 block">Address Location:</span>
-										<span class="font-semibold text-slate-700 dark:text-slate-300 leading-relaxed">{app.student.address}</span>
+										<span class="text-slate-600 block">Address Location:</span>
+										<span class="font-semibold text-slate-700 leading-relaxed">{app.student.address}</span>
 									</div>
 								</div>
 
 								<!-- Skills inventory -->
 								<div>
-									<span class="text-slate-600 dark:text-slate-400 block mb-1.5">Candidate Skills:</span>
+									<span class="text-slate-600 block mb-1.5">Candidate Skills:</span>
 									<div class="flex flex-wrap gap-1">
 										{#each app.student.skills as skill}
-											<span class="px-2 py-0.5 rounded bg-slate-200/50 dark:bg-slate-800/50 text-[10px] font-semibold text-slate-600 dark:text-slate-400">{skill}</span>
+											<span class="px-2 py-0.5 rounded bg-slate-200/50 text-[10px] font-semibold text-slate-600">{skill}</span>
 										{/each}
 									</div>
 								</div>
@@ -178,23 +178,23 @@
 
 							<!-- Resume & Status modifications -->
 							<div class="space-y-4">
-								<h4 class="font-bold text-slate-600 dark:text-slate-400 dark:text-slate-500 uppercase tracking-widest text-[10px]">Resume File & Hiring Action</h4>
+								<h4 class="font-bold text-slate-600 uppercase tracking-widest text-[10px]">Resume File & Hiring Action</h4>
 								
 								<!-- Resume file link -->
 								{#if app.student.resumePath}
 									<a 
 										href={app.student.resumePath.startsWith('http') ? app.student.resumePath : `/api/resumes/${app.student.resumePath}`}
 										target="_blank" 
-										class="inline-flex items-center justify-center gap-1.5 px-4 py-2 bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 font-bold text-xs rounded-lg hover:bg-indigo-100 dark:hover:bg-indigo-500/20 transition-colors mt-4 w-full"
+										class="inline-flex items-center justify-center gap-1.5 px-4 py-2 bg-indigo-50 text-indigo-600 font-bold text-xs rounded-lg hover:bg-indigo-100 transition-colors mt-4 w-full"
 									>
 										<div class="h-9 w-9 bg-indigo-500/10 text-indigo-500 rounded-lg flex items-center justify-center font-black text-xs">
 											PDF
 										</div>
 										<div class="flex-grow min-w-0">
-											<span class="text-[11px] font-bold text-slate-700 dark:text-slate-300 block truncate group-hover:text-indigo-500">
+											<span class="text-[11px] font-bold text-slate-700 block truncate group-hover:text-indigo-500">
 												View Applicant Resume
 											</span>
-											<span class="text-[9px] text-slate-600 dark:text-slate-400 block truncate">Opens secure browser view</span>
+											<span class="text-[9px] text-slate-600 block truncate">Opens secure browser view</span>
 										</div>
 									</a>
 								{:else}
@@ -204,7 +204,7 @@
 								<!-- Certificate hashes -->
 								{#if app.status === 'Approved' && app.certificateHash}
 									<div class="p-3 rounded-xl bg-pink-500/5 border border-pink-500/10 text-[10px]">
-										<span class="text-slate-600 dark:text-slate-400 block">Completion Certificate Issued:</span>
+										<span class="text-slate-600 block">Completion Certificate Issued:</span>
 										<code class="text-pink-500 font-mono font-bold truncate block mt-1">{app.certificateHash}</code>
 									</div>
 								{/if}
@@ -225,7 +225,7 @@
 									class="space-y-2"
 								>
 									<input type="hidden" name="applicationId" value={app.id} />
-									<span class="text-[10px] text-slate-600 dark:text-slate-400 font-semibold block">Change Pipeline Phase:</span>
+									<span class="text-[10px] text-slate-600 font-semibold block">Change Pipeline Phase:</span>
 									
 									<div class="grid grid-cols-2 gap-2">
 										<button
@@ -233,7 +233,7 @@
 											name="status"
 											value="Shortlisted"
 											disabled={app.status === 'Shortlisted'}
-											class="py-2.5 rounded-xl bg-purple-500/10 hover:bg-purple-500/20 text-purple-600 dark:text-purple-400 border border-purple-500/10 hover:border-purple-500/20 text-xs font-bold transition cursor-pointer disabled:opacity-50"
+											class="py-2.5 rounded-xl bg-purple-500/10 hover:bg-purple-500/20 text-purple-600 border border-purple-500/10 hover:border-purple-500/20 text-xs font-bold transition cursor-pointer disabled:opacity-50"
 										>
 											Shortlist
 										</button>
@@ -243,7 +243,7 @@
 											name="status"
 											value="Approved"
 											disabled={app.status === 'Approved'}
-											class="py-2.5 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border border-emerald-500/10 hover:border-emerald-500/20 text-xs font-bold transition cursor-pointer disabled:opacity-50"
+											class="py-2.5 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-600 border border-emerald-500/10 hover:border-emerald-500/20 text-xs font-bold transition cursor-pointer disabled:opacity-50"
 										>
 											Approve & Sign
 										</button>
@@ -253,7 +253,7 @@
 											name="status"
 											value="Rejected"
 											disabled={app.status === 'Rejected'}
-											class="py-2.5 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 text-rose-600 dark:text-rose-400 border border-rose-500/10 hover:border-rose-500/20 text-xs font-bold transition cursor-pointer disabled:opacity-50"
+											class="py-2.5 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 text-rose-600 border border-rose-500/10 hover:border-rose-500/20 text-xs font-bold transition cursor-pointer disabled:opacity-50"
 										>
 											Reject
 										</button>
@@ -263,7 +263,7 @@
 											name="status"
 											value="Pending"
 											disabled={app.status === 'Pending'}
-											class="py-2.5 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 text-amber-600 dark:text-amber-400 border border-amber-500/10 hover:border-amber-500/20 text-xs font-bold transition cursor-pointer disabled:opacity-50"
+											class="py-2.5 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 text-amber-600 border border-amber-500/10 hover:border-amber-500/20 text-xs font-bold transition cursor-pointer disabled:opacity-50"
 										>
 											Make Pending
 										</button>
@@ -287,7 +287,7 @@
 										<input type="hidden" name="applicationId" value={app.id} />
 										<button
 											type="submit"
-											class="w-full py-2.5 rounded-xl bg-pink-500/10 hover:bg-pink-500/20 text-pink-600 dark:text-pink-400 border border-pink-500/10 hover:border-pink-500/20 text-xs font-bold transition cursor-pointer flex justify-center items-center gap-1.5"
+											class="w-full py-2.5 rounded-xl bg-pink-500/10 hover:bg-pink-500/20 text-pink-600 border border-pink-500/10 hover:border-pink-500/20 text-xs font-bold transition cursor-pointer flex justify-center items-center gap-1.5"
 										>
 											<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="shrink-0"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="m9 12 2 2 4-4"/></svg>
 											Issue Completion Certificate

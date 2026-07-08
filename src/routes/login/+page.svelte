@@ -66,43 +66,43 @@
 	<div class="absolute bottom-1/4 right-1/4 w-96 h-96 rounded-full bg-emerald-500/10 blur-[120px] pointer-events-none"></div>
 
 	<!-- Card Container -->
-	<div class="w-full max-w-lg rounded-3xl glass p-8 md:p-10 shadow-2xl relative border border-slate-200/20 dark:border-slate-800/40">
+	<div class="w-full max-w-lg rounded-3xl glass p-8 md:p-10 shadow-2xl relative border border-slate-200/20">
 		
 		<!-- Back to home -->
-		<a href="/" class="inline-flex items-center gap-1 text-xs font-semibold text-slate-500 hover:text-indigo-500 dark:text-slate-400 dark:hover:text-indigo-400 mb-8 transition cursor-pointer">
+		<a href="/" class="inline-flex items-center gap-1 text-xs font-semibold text-slate-500 hover:text-indigo-500 mb-8 transition cursor-pointer">
 			<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
 			Back to home
 		</a>
 
 		<div class="text-center mb-8">
-			<h1 class="font-display font-black text-3xl text-primary dark:text-primary-dark tracking-tight">
+			<h1 class="font-display font-black text-3xl text-primary tracking-tight">
 				Welcome Back
 			</h1>
-			<p class="text-sm text-muted dark:text-muted-dark mt-2">
+			<p class="text-sm text-muted mt-2">
 				Sign in to access your Nexora dashboard.
 			</p>
 		</div>
 
 		<!-- Role Selection Tabs -->
-		<div class="grid grid-cols-3 gap-2 p-1.5 bg-slate-100 dark:bg-slate-900/60 rounded-2xl mb-8 border border-slate-200/5 dark:border-slate-800/40">
+		<div class="grid grid-cols-3 gap-2 p-1.5 bg-slate-100 rounded-2xl mb-8 border border-slate-200/5">
 			<button
 				type="button"
 				onclick={() => setRole('student')}
-				class="py-2.5 rounded-xl text-xs font-bold transition duration-200 cursor-pointer {activeRole === 'student' ? 'bg-white dark:bg-slate-800 text-indigo-600 dark:text-white shadow-sm' : 'text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200'}"
+				class="py-2.5 rounded-xl text-xs font-bold transition duration-200 cursor-pointer {activeRole === 'student' ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-500 hover:text-slate-700 '}"
 			>
 				Student
 			</button>
 			<button
 				type="button"
 				onclick={() => setRole('company')}
-				class="py-2.5 rounded-xl text-xs font-bold transition duration-200 cursor-pointer {activeRole === 'company' ? 'bg-white dark:bg-slate-800 text-indigo-600 dark:text-white shadow-sm' : 'text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200'}"
+				class="py-2.5 rounded-xl text-xs font-bold transition duration-200 cursor-pointer {activeRole === 'company' ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-500 hover:text-slate-700 '}"
 			>
 				Company
 			</button>
 			<button
 				type="button"
 				onclick={() => setRole('admin')}
-				class="py-2.5 rounded-xl text-xs font-bold transition duration-200 cursor-pointer {activeRole === 'admin' ? 'bg-white dark:bg-slate-800 text-indigo-600 dark:text-white shadow-sm' : 'text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200'}"
+				class="py-2.5 rounded-xl text-xs font-bold transition duration-200 cursor-pointer {activeRole === 'admin' ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-500 hover:text-slate-700 '}"
 			>
 				Admin
 			</button>
@@ -110,7 +110,7 @@
 
 		<!-- Success Feedback -->
 		{#if $page.url.searchParams.get('registered') === 'true'}
-			<div class="mb-6 p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-xs font-semibold flex items-center gap-2">
+			<div class="mb-6 p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 text-xs font-semibold flex items-center gap-2">
 				<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
 				Registration successful! Please sign in.
 			</div>
@@ -118,7 +118,7 @@
 
 		<!-- Error Feedback -->
 		{#if (form && form.error) || (googleError && googleError.length > 0)}
-			<div class="mb-6 p-4 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-600 dark:text-rose-400 text-sm font-semibold flex items-center gap-2 shadow-sm animate-in fade-in slide-in-from-top-2">
+			<div class="mb-6 p-4 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-600 text-sm font-semibold flex items-center gap-2 shadow-sm animate-in fade-in slide-in-from-top-2">
 				<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="shrink-0"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg>
 				{form?.error || googleError}
 			</div>
@@ -140,7 +140,7 @@
 			<input type="hidden" name="role" value={activeRole} />
 
 			<div>
-				<label for="email" class="block text-xs font-bold text-muted dark:text-muted-dark uppercase tracking-wider mb-2">
+				<label for="email" class="block text-xs font-bold text-muted uppercase tracking-wider mb-2">
 					{#if activeRole === 'company'}
 						Company Email Address
 					{:else}
@@ -153,13 +153,13 @@
 					name="email"
 					required
 					placeholder="name@example.com"
-					class="w-full px-4 py-3.5 rounded-xl border border-divider dark:border-divider-dark bg-white/50 dark:bg-slate-950/30 focus:border-indigo-500 dark:focus:border-indigo-400 focus:ring-2 focus:ring-indigo-500/10 focus:outline-none transition text-sm text-primary dark:text-primary-dark placeholder-slate-400 dark:placeholder-slate-600"
+					class="w-full px-4 py-3.5 rounded-xl border border-divider bg-white/50 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/10 focus:outline-none transition text-sm text-primary placeholder-slate-400"
 				/>
 			</div>
 
 			<div>
 				<div class="flex items-center justify-between mb-2">
-					<label for="password" class="block text-xs font-bold text-muted dark:text-muted-dark uppercase tracking-wider">
+					<label for="password" class="block text-xs font-bold text-muted uppercase tracking-wider">
 						Password
 					</label>
 				</div>
@@ -169,14 +169,14 @@
 					name="password"
 					required
 					placeholder="••••••••"
-					class="w-full px-4 py-3.5 rounded-xl border border-divider dark:border-divider-dark bg-white/50 dark:bg-slate-950/30 focus:border-indigo-500 dark:focus:border-indigo-400 focus:ring-2 focus:ring-indigo-500/10 focus:outline-none transition text-sm text-primary dark:text-primary-dark placeholder-slate-400 dark:placeholder-slate-600"
+					class="w-full px-4 py-3.5 rounded-xl border border-divider bg-white/50 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/10 focus:outline-none transition text-sm text-primary placeholder-slate-400"
 				/>
 			</div>
 
 			<button
 				type="submit"
 				disabled={loading}
-				class="w-full py-3.5 rounded-xl font-bold text-primary dark:text-primary-dark bg-surface hover:bg-surface active:scale-95 transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+				class="w-full py-3.5 rounded-xl font-bold text-primary bg-surface hover:bg-surface active:scale-95 transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
 			>
 				{#if loading}
 					<span class="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
@@ -187,16 +187,16 @@
 			</button>
 
 			<div class="relative flex items-center py-2">
-				<div class="flex-grow border-t border-divider dark:border-divider-dark"></div>
-				<span class="flex-shrink-0 mx-4 text-xs text-slate-600 dark:text-slate-400">or</span>
-				<div class="flex-grow border-t border-divider dark:border-divider-dark"></div>
+				<div class="flex-grow border-t border-divider"></div>
+				<span class="flex-shrink-0 mx-4 text-xs text-slate-600">or</span>
+				<div class="flex-grow border-t border-divider"></div>
 			</div>
 
 			<div>
-				<label for="googleRole" class="block text-xs font-bold text-muted dark:text-muted-dark uppercase tracking-wider mb-2">
+				<label for="googleRole" class="block text-xs font-bold text-muted uppercase tracking-wider mb-2">
 					ROLE (ONLY FOR FIRST-TIME GOOGLE SIGN-UP)
 				</label>
-				<select id="googleRole" bind:value={googleRole} class="w-full px-4 py-3 rounded-xl border border-divider dark:border-divider-dark bg-white/50 dark:bg-slate-950/30 focus:border-indigo-500 dark:focus:border-indigo-400 focus:outline-none transition text-sm text-primary dark:text-primary-dark cursor-pointer">
+				<select id="googleRole" bind:value={googleRole} class="w-full px-4 py-3 rounded-xl border border-divider bg-white/50 focus:border-indigo-500 focus:outline-none transition text-sm text-primary cursor-pointer">
 					<option value="student">Student / Intern</option>
 					<option value="company">Company / Employer</option>
 				</select>
@@ -206,7 +206,7 @@
 				type="button"
 				onclick={handleGoogleSignIn}
 				disabled={googleLoading}
-				class="w-full py-3.5 rounded-xl font-bold text-slate-700 bg-white border border-slate-200 hover:bg-slate-50 active:scale-95 transition-all duration-200 flex items-center justify-center gap-3 cursor-pointer shadow-sm dark:bg-slate-900 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800 disabled:opacity-50"
+				class="w-full py-3.5 rounded-xl font-bold text-slate-700 bg-white border border-slate-200 hover:bg-slate-50 active:scale-95 transition-all duration-200 flex items-center justify-center gap-3 cursor-pointer shadow-sm disabled:opacity-50"
 			>
 				{#if googleLoading}
 					<span class="h-4 w-4 border-2 border-slate-300 border-t-indigo-500 rounded-full animate-spin"></span>
@@ -225,9 +225,9 @@
 
 		<!-- Bottom Sign Up -->
 		{#if activeRole !== 'admin'}
-			<div class="mt-8 pt-6 border-t border-slate-200/10 dark:border-slate-800/40 text-center text-sm">
+			<div class="mt-8 pt-6 border-t border-slate-200/10 text-center text-sm">
 				<span class="text-slate-500">New to Nexora?</span>
-				<a href="/register?role={activeRole}" class="font-bold text-indigo-500 dark:text-indigo-400 hover:underline ml-1">
+				<a href="/register?role={activeRole}" class="font-bold text-indigo-500 hover:underline ml-1">
 					Create an Account
 				</a>
 			</div>

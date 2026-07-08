@@ -9,10 +9,10 @@
 </script>
 
 <!-- Header & Nav (Midnight Ocean dark glass style) -->
-<header class="w-full py-4 px-6 md:px-12 border-b border-divider dark:border-divider-dark bg-slate-100 dark:bg-slate-950/40 backdrop-blur-md sticky top-0 z-50 flex items-center justify-between">
+<header class="w-full py-4 px-6 md:px-12 border-b border-divider bg-slate-100 backdrop-blur-md sticky top-0 z-50 flex items-center justify-between">
 	<a href={data.user ? `/${data.user.role}` : '/'} class="flex items-center gap-3 cursor-pointer">
 		<img loading="lazy" src={logo} alt="Nexora Logo" class="h-10 w-10 drop-shadow-md" />
-		<span class="font-display font-extrabold text-2xl tracking-wide bg-gradient-to-r from-slate-900 to-slate-700 dark:from-white dark:to-slate-300 text-gradient">
+		<span class="font-display font-extrabold text-2xl tracking-wide bg-gradient-to-r from-slate-900 to-slate-700 text-gradient">
 			Nexora
 		</span>
 	</a>
@@ -22,20 +22,20 @@
 		{#if data.user}
 			<a
 				href={`/${data.user.role}`}
-				class="px-5 py-2.5 rounded-xl text-sm font-semibold text-primary dark:text-primary-dark bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 hover:shadow-lg hover:shadow-indigo-500/10 transition-all duration-300 transform hover:-translate-y-0.5 active:translate-y-0"
+				class="px-5 py-2.5 rounded-xl text-sm font-semibold text-primary bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 hover:shadow-lg hover:shadow-indigo-500/10 transition-all duration-300 transform hover:-translate-y-0.5 active:translate-y-0"
 			>
 				Go to Dashboard ({data.user.role.toUpperCase()})
 			</a>
 		{:else}
 			<a
 				href="/login"
-				class="text-sm font-semibold text-slate-350 hover:text-primary dark:text-primary-dark transition duration-200"
+				class="text-sm font-semibold text-slate-350 hover:text-primary transition duration-200"
 			>
 				Sign In
 			</a>
 			<a
 				href="/register"
-				class="px-5 py-2.5 rounded-xl text-sm font-semibold text-primary dark:text-primary-dark bg-blue-600 hover:bg-blue-500 shadow-md hover:shadow-blue-500/15 transition duration-200"
+				class="px-5 py-2.5 rounded-xl text-sm font-semibold text-primary bg-blue-600 hover:bg-blue-500 shadow-md hover:shadow-blue-500/15 transition duration-200"
 			>
 				Get Started
 			</a>
@@ -52,14 +52,14 @@
 		Trusted by 10,000+ students and 500+ companies
 	</div>
 
-	<h1 class="font-display font-black text-4xl md:text-6xl lg:text-7xl leading-tight max-w-5xl tracking-tight text-primary dark:text-primary-dark">
+	<h1 class="font-display font-black text-4xl md:text-6xl lg:text-7xl leading-tight max-w-5xl tracking-tight text-primary">
 		Launch your next opportunity with <br class="hidden md:inline" />
 		<span class="bg-gradient-to-r from-blue-400 via-purple-400 to-cyan-400 text-gradient">
 			clarity and momentum
 		</span>
 	</h1>
 
-	<p class="mt-6 text-lg text-slate-600 dark:text-slate-400 max-w-3xl leading-relaxed">
+	<p class="mt-6 text-lg text-slate-600 max-w-3xl leading-relaxed">
 		Discover vetted internships, manage applications, and connect with verified employers in one focused platform built for modern student career growth.
 	</p>
 
@@ -67,20 +67,20 @@
 		{#if !data.user}
 			<a
 				href="/register?role=student"
-				class="px-8 py-4 rounded-2xl text-base font-bold text-primary dark:text-primary-dark bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 hover:shadow-lg hover:shadow-blue-500/20 transition-all duration-300 transform hover:-translate-y-1"
+				class="px-8 py-4 rounded-2xl text-base font-bold text-primary bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 hover:shadow-lg hover:shadow-blue-500/20 transition-all duration-300 transform hover:-translate-y-1"
 			>
 				Register as Student
 			</a>
 			<a
 				href="/register?role=company"
-				class="px-8 py-4 rounded-2xl text-base font-bold text-slate-300 glass border border-divider dark:border-divider-dark hover:bg-slate-900 hover:text-primary dark:text-primary-dark hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1"
+				class="px-8 py-4 rounded-2xl text-base font-bold text-slate-300 glass border border-divider hover:bg-slate-900 hover:text-primary hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1"
 			>
 				Register as Company
 			</a>
 		{:else}
 			<a
 				href={`/${data.user.role}`}
-				class="px-8 py-4 rounded-2xl text-base font-bold text-primary dark:text-primary-dark bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 hover:shadow-lg hover:shadow-blue-500/10 transition-all duration-300 transform hover:-translate-y-1"
+				class="px-8 py-4 rounded-2xl text-base font-bold text-primary bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 hover:shadow-lg hover:shadow-blue-500/10 transition-all duration-300 transform hover:-translate-y-1"
 			>
 				Enter Dashboard
 			</a>
@@ -89,14 +89,14 @@
 </section>
 
 <!-- Stats Grid -->
-<section class="w-full bg-slate-100 dark:bg-slate-950/40 border-y border-divider dark:border-divider-dark/80 py-12 px-6 md:px-12 backdrop-blur-sm">
+<section class="w-full bg-slate-100 border-y border-divider py-12 px-6 md:px-12 backdrop-blur-sm">
 	<div class="max-w-7xl mx-auto grid grid-cols-2 lg:grid-cols-4 gap-6 md:gap-12">
 		<!-- Stat 1 -->
 		<div class="flex flex-col items-center text-center p-4">
 			<span class="font-display font-black text-3xl md:text-5xl text-blue-400">
 				{stats.activeInternships}+
 			</span>
-			<span class="text-sm font-semibold text-slate-600 dark:text-slate-400 mt-2">
+			<span class="text-sm font-semibold text-slate-600 mt-2">
 				Active Internships
 			</span>
 		</div>
@@ -105,7 +105,7 @@
 			<span class="font-display font-black text-3xl md:text-5xl text-emerald-400">
 				{stats.registeredCompanies}+
 			</span>
-			<span class="text-sm font-semibold text-slate-600 dark:text-slate-400 mt-2">
+			<span class="text-sm font-semibold text-slate-600 mt-2">
 				Verified Companies
 			</span>
 		</div>
@@ -114,7 +114,7 @@
 			<span class="font-display font-black text-3xl md:text-5xl text-purple-400">
 				{stats.totalStudents}+
 			</span>
-			<span class="text-sm font-semibold text-slate-600 dark:text-slate-400 mt-2">
+			<span class="text-sm font-semibold text-slate-600 mt-2">
 				Registered Students
 			</span>
 		</div>
@@ -123,7 +123,7 @@
 			<span class="font-display font-black text-3xl md:text-5xl text-pink-400">
 				{stats.successfulPlacements}+
 			</span>
-			<span class="text-sm font-semibold text-slate-600 dark:text-slate-400 mt-2">
+			<span class="text-sm font-semibold text-slate-600 mt-2">
 				Successful Placements
 			</span>
 		</div>
@@ -134,10 +134,10 @@
 <section class="max-w-7xl mx-auto px-6 md:px-12 py-20">
 	<div class="flex flex-col md:flex-row md:items-end justify-between mb-12">
 		<div>
-			<h2 class="font-display font-extrabold text-3xl md:text-4xl text-primary dark:text-primary-dark">
+			<h2 class="font-display font-extrabold text-3xl md:text-4xl text-primary">
 				Explore 150+ Domains
 			</h2>
-			<p class="text-slate-600 dark:text-slate-400 mt-2 max-w-xl">
+			<p class="text-slate-600 mt-2 max-w-xl">
 				Find the internship that perfectly aligns with your career targets. Discover technical, business, creative, and emerging roles.
 			</p>
 		</div>
@@ -153,10 +153,10 @@
 	<!-- Domain Cards with Vector SVGs, NO Emojis -->
 	<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
 		{#each categories as category}
-			<div class="p-6 rounded-2xl bg-surface dark:bg-surface-dark/40 border border-divider dark:border-divider-dark/50 hover:border-blue-500/35 transition duration-300 hover:scale-[1.01] flex flex-col justify-between h-40">
+			<div class="p-6 rounded-2xl bg-surface border border-divider hover:border-blue-500/35 transition duration-300 hover:scale-[1.01] flex flex-col justify-between h-40">
 				<div class="flex items-center justify-between">
 					<!-- Render clean vectors instead of emojis -->
-					<div class="p-2 bg-slate-950 rounded-xl text-blue-400 border border-divider dark:border-divider-dark">
+					<div class="p-2 bg-slate-950 rounded-xl text-blue-400 border border-divider">
 						{#if category.type === 'software'}
 							<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" /></svg>
 						{:else if category.type === 'engineering'}
@@ -172,7 +172,7 @@
 					</span>
 				</div>
 				<div>
-					<h3 class="font-display font-bold text-base text-primary dark:text-primary-dark">
+					<h3 class="font-display font-bold text-base text-primary">
 						{category.name}
 					</h3>
 					<span class="text-xs text-slate-500 block mt-0.5">
@@ -187,17 +187,17 @@
 <!-- Featured Postings -->
 <section class="max-w-7xl mx-auto px-6 md:px-12 pb-24">
 	<div class="text-center mb-12">
-		<h2 class="font-display font-extrabold text-3xl md:text-4xl text-primary dark:text-primary-dark">
+		<h2 class="font-display font-extrabold text-3xl md:text-4xl text-primary">
 			Featured Internships
 		</h2>
-		<p class="text-slate-600 dark:text-slate-400 mt-2 max-w-xl mx-auto">
+		<p class="text-slate-600 mt-2 max-w-xl mx-auto">
 			Apply to some of the highest-rated opportunities from certified companies on Nexora.
 		</p>
 	</div>
 
 	<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
 		{#each featured as internship}
-			<div class="p-8 rounded-2xl bg-surface dark:bg-surface-dark/40 hover:bg-slate-900/60 border border-divider dark:border-divider-dark/50 hover:border-blue-500/20 hover:shadow-blue-500/5 transition duration-300 relative group overflow-hidden">
+			<div class="p-8 rounded-2xl bg-surface hover:bg-slate-900/60 border border-divider hover:border-blue-500/20 hover:shadow-blue-500/5 transition duration-300 relative group overflow-hidden">
 				<div class="absolute top-0 right-0 w-24 h-24 rounded-full bg-gradient-to-bl from-blue-500/5 to-transparent blur-md pointer-events-none group-hover:scale-150 transition duration-500"></div>
 
 				<div>
@@ -206,25 +206,25 @@
 							<span class="px-3 py-1 rounded-full text-[10px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 uppercase tracking-wider">
 								{internship.type}
 							</span>
-							<h3 class="font-display font-bold text-xl text-primary dark:text-primary-dark mt-3.5 group-hover:text-blue-400 transition duration-200">
+							<h3 class="font-display font-bold text-xl text-primary mt-3.5 group-hover:text-blue-400 transition duration-200">
 								{internship.title}
 							</h3>
-							<p class="text-xs font-semibold text-slate-600 dark:text-slate-400 mt-0.5">
+							<p class="text-xs font-semibold text-slate-600 mt-0.5">
 								{internship.companyName}
 							</p>
 						</div>
 						<!-- Mock Logo Placeholder -->
-						<div class="h-10 w-10 rounded-xl bg-slate-950 border border-divider dark:border-divider-dark/50 flex items-center justify-center font-display font-black text-slate-500 text-sm shrink-0">
+						<div class="h-10 w-10 rounded-xl bg-slate-950 border border-divider flex items-center justify-center font-display font-black text-slate-500 text-sm shrink-0">
 							{internship.companyName.charAt(0)}
 						</div>
 					</div>
 
-					<p class="mt-4 text-xs text-slate-600 dark:text-slate-400 line-clamp-3 leading-relaxed font-normal">
+					<p class="mt-4 text-xs text-slate-600 line-clamp-3 leading-relaxed font-normal">
 						{internship.description}
 					</p>
 
 					<!-- Metas, NO Emojis -->
-					<div class="flex flex-wrap gap-x-6 gap-y-2 mt-6 text-[11px] font-bold text-slate-600 dark:text-slate-400 border-t border-divider dark:border-divider-dark/50 pt-4">
+					<div class="flex flex-wrap gap-x-6 gap-y-2 mt-6 text-[11px] font-bold text-slate-600 border-t border-divider pt-4">
 						<div class="flex items-center gap-1.5">
 							<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="text-slate-500"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
 							{internship.location} ({internship.mode})
@@ -241,9 +241,9 @@
 					</div>
 				</div>
 
-				<div class="mt-8 pt-4 border-t border-divider dark:border-divider-dark/50 flex items-center justify-between">
+				<div class="mt-8 pt-4 border-t border-divider flex items-center justify-between">
 					<span class="text-[10px] text-slate-500 font-bold">
-						Apply by: <strong class="text-slate-600 dark:text-slate-400">{internship.lastDateToApply}</strong>
+						Apply by: <strong class="text-slate-600">{internship.lastDateToApply}</strong>
 					</span>
 					<a
 						href="/register?role=student"
@@ -260,26 +260,26 @@
 
 
 <!-- Footer -->
-<footer class="w-full bg-slate-100 dark:bg-slate-950/60 border-t border-divider dark:border-divider-dark/50 pt-16 pb-8">
+<footer class="w-full bg-slate-100 border-t border-divider pt-16 pb-8">
 	<div class="max-w-7xl mx-auto px-6 md:px-12">
 		<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-8 mb-16">
 			<!-- Left Section -->
 			<div class="flex flex-col gap-4">
 				<div class="flex items-center gap-3">
 					<img loading="lazy" src={logo} alt="Nexora Logo" class="h-10 w-10 drop-shadow-sm" />
-					<span class="font-display font-black text-2xl tracking-wide bg-gradient-to-r from-slate-900 to-slate-700 dark:from-white dark:to-slate-300 text-gradient">
+					<span class="font-display font-black text-2xl tracking-wide bg-gradient-to-r from-slate-900 to-slate-700 text-gradient">
 						Nexora
 					</span>
 				</div>
-				<p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed max-w-xs mt-2">
+				<p class="text-sm text-slate-600 leading-relaxed max-w-xs mt-2">
 					Connecting students with leading companies through internships and career opportunities.
 				</p>
 			</div>
 
 			<!-- Quick Links -->
 			<div class="flex flex-col gap-4">
-				<h4 class="font-display font-bold text-lg text-primary dark:text-primary-dark mb-2">Quick Links</h4>
-				<nav class="flex flex-col gap-3 text-sm text-slate-600 dark:text-slate-400 font-medium">
+				<h4 class="font-display font-bold text-lg text-primary mb-2">Quick Links</h4>
+				<nav class="flex flex-col gap-3 text-sm text-slate-600 font-medium">
 					<a href="/" class="hover:text-blue-500 hover:translate-x-1 transition-all duration-300 w-fit">Home</a>
 					<a href="/about" class="hover:text-blue-500 hover:translate-x-1 transition-all duration-300 w-fit">About</a>
 					<a href="/features" class="hover:text-blue-500 hover:translate-x-1 transition-all duration-300 w-fit">Features</a>
@@ -291,8 +291,8 @@
 
 			<!-- Resources -->
 			<div class="flex flex-col gap-4">
-				<h4 class="font-display font-bold text-lg text-primary dark:text-primary-dark mb-2">Resources</h4>
-				<nav class="flex flex-col gap-3 text-sm text-slate-600 dark:text-slate-400 font-medium">
+				<h4 class="font-display font-bold text-lg text-primary mb-2">Resources</h4>
+				<nav class="flex flex-col gap-3 text-sm text-slate-600 font-medium">
 					<a href="/privacy" class="hover:text-blue-500 hover:translate-x-1 transition-all duration-300 w-fit">Privacy Policy</a>
 					<a href="/terms" class="hover:text-blue-500 hover:translate-x-1 transition-all duration-300 w-fit">Terms & Conditions</a>
 					<a href="/help" class="hover:text-blue-500 hover:translate-x-1 transition-all duration-300 w-fit">Help Center</a>
@@ -303,8 +303,8 @@
 			<!-- Contact Info & Social -->
 			<div class="flex flex-col gap-6">
 				<div>
-					<h4 class="font-display font-bold text-lg text-primary dark:text-primary-dark mb-4">Contact</h4>
-					<div class="flex flex-col gap-3 text-sm text-slate-600 dark:text-slate-400 font-medium">
+					<h4 class="font-display font-bold text-lg text-primary mb-4">Contact</h4>
+					<div class="flex flex-col gap-3 text-sm text-slate-600 font-medium">
 						<a href="mailto:shameela5qts@gmail.com" class="flex items-center gap-3 hover:text-blue-500 transition-colors duration-300">
 							<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
 							shameela5qts@gmail.com
@@ -317,15 +317,15 @@
 				</div>
 				
 				<div>
-					<h4 class="font-display font-bold text-sm text-primary dark:text-primary-dark mb-3">Follow Us</h4>
+					<h4 class="font-display font-bold text-sm text-primary mb-3">Follow Us</h4>
 					<div class="flex items-center gap-4">
-						<a href="https://github.com" target="_blank" rel="noopener noreferrer" class="p-2 rounded-lg bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-blue-500 hover:text-white transition-all duration-300 transform hover:-translate-y-1" aria-label="GitHub">
+						<a href="https://github.com" target="_blank" rel="noopener noreferrer" class="p-2 rounded-lg bg-slate-200 text-slate-600 hover:bg-blue-500 hover:text-white transition-all duration-300 transform hover:-translate-y-1" aria-label="GitHub">
 							<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-7-2"/></svg>
 						</a>
-						<a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" class="p-2 rounded-lg bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-blue-500 hover:text-white transition-all duration-300 transform hover:-translate-y-1" aria-label="LinkedIn">
+						<a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" class="p-2 rounded-lg bg-slate-200 text-slate-600 hover:bg-blue-500 hover:text-white transition-all duration-300 transform hover:-translate-y-1" aria-label="LinkedIn">
 							<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect width="4" height="12" x="2" y="9"/><circle cx="4" cy="4" r="2"/></svg>
 						</a>
-						<a href="mailto:shameela5qts@gmail.com" class="p-2 rounded-lg bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-blue-500 hover:text-white transition-all duration-300 transform hover:-translate-y-1" aria-label="Gmail">
+						<a href="mailto:shameela5qts@gmail.com" class="p-2 rounded-lg bg-slate-200 text-slate-600 hover:bg-blue-500 hover:text-white transition-all duration-300 transform hover:-translate-y-1" aria-label="Gmail">
 							<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 13V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v12c0 1.1.9 2 2 2h8"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/><path d="m16 19 2 2 4-4"/></svg>
 						</a>
 					</div>
@@ -334,12 +334,12 @@
 		</div>
 
 		<!-- Bottom Bar -->
-		<div class="pt-8 border-t border-divider dark:border-divider-dark flex flex-col md:flex-row items-center justify-between gap-4">
+		<div class="pt-8 border-t border-divider flex flex-col md:flex-row items-center justify-between gap-4">
 			<p class="text-xs text-slate-500 font-medium">
 				&copy; {new Date().getFullYear()} Nexora. All Rights Reserved.
 			</p>
 			<p class="text-xs text-slate-500 font-medium flex items-center gap-1">
-				Designed and Developed by <span class="font-bold text-slate-700 dark:text-slate-300">Shameela and Team</span>
+				Designed and Developed by <span class="font-bold text-slate-700">Shameela and Team</span>
 			</p>
 		</div>
 	</div>

@@ -8,7 +8,7 @@
 	<div class="absolute bottom-1/4 right-1/4 w-[50vw] h-[50vw] rounded-full bg-purple-500/10 blur-[150px] mix-blend-screen animate-pulse-slow" style="animation-delay: 2s;"></div>
 
 	<!-- Flowing lines -->
-	<div class="absolute inset-0 opacity-[0.15] dark:opacity-30">
+	<div class="absolute inset-0 opacity-[0.15]">
 		<svg class="w-full h-full" xmlns="http://www.w3.org/2000/svg">
 			<defs>
 				<linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">

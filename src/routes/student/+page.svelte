@@ -7,12 +7,12 @@
 <!-- Greeting Section -->
 <div class="mb-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
 	<div>
-		<h1 class="font-display font-black text-3xl md:text-4xl text-slate-900 dark:text-white tracking-tight">
+		<h1 class="font-display font-black text-3xl md:text-4xl text-slate-900 tracking-tight">
 			Welcome, {student.fullName}!
 		</h1>
 		<p class="text-sm text-slate-500 mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-1">
 			<span>{student.degreeCourse} in {student.department}</span>
-			<span class="h-1.5 w-1.5 rounded-full bg-slate-350 dark:bg-slate-700"></span>
+			<span class="h-1.5 w-1.5 rounded-full bg-slate-350"></span>
 			<span>{student.collegeName}</span>
 		</p>
 	</div>
@@ -31,25 +31,25 @@
 
 <!-- Statistics Cards -->
 <div class="grid grid-cols-2 lg:grid-cols-4 gap-5 mb-10">
-	<div class="p-6 rounded-2xl bg-white dark:bg-slate-900/40 border border-slate-200/50 dark:border-slate-800/40 hover:scale-[1.01] transition duration-200">
+	<div class="p-6 rounded-2xl bg-white border border-slate-200/50 hover:scale-[1.01] transition duration-200">
 		<span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Applied</span>
-		<h2 class="font-display font-black text-3xl text-indigo-600 dark:text-indigo-400 mt-3">{stats?.totalApplied || 0}</h2>
+		<h2 class="font-display font-black text-3xl text-indigo-600 mt-3">{stats?.totalApplied || 0}</h2>
 		<p class="text-xs text-slate-500 mt-1">Total applications submitted</p>
 	</div>
 
-	<div class="p-6 rounded-2xl bg-white dark:bg-slate-900/40 border border-slate-200/50 dark:border-slate-800/40 hover:scale-[1.01] transition duration-200">
+	<div class="p-6 rounded-2xl bg-white border border-slate-200/50 hover:scale-[1.01] transition duration-200">
 		<span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Approved</span>
 		<h2 class="font-display font-black text-3xl text-emerald-500 mt-3">{stats?.approvedCount || 0}</h2>
 		<p class="text-xs text-slate-500 mt-1">Hired & active contracts</p>
 	</div>
 
-	<div class="p-6 rounded-2xl bg-white dark:bg-slate-900/40 border border-slate-200/50 dark:border-slate-800/40 hover:scale-[1.01] transition duration-200">
+	<div class="p-6 rounded-2xl bg-white border border-slate-200/50 hover:scale-[1.01] transition duration-200">
 		<span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Pending</span>
 		<h2 class="font-display font-black text-3xl text-amber-500 mt-3">{stats?.pendingCount || 0}</h2>
 		<p class="text-xs text-slate-500 mt-1">Under review / Shortlisted</p>
 	</div>
 
-	<div class="p-6 rounded-2xl bg-white dark:bg-slate-900/40 border border-slate-200/50 dark:border-slate-800/40 hover:scale-[1.01] transition duration-200">
+	<div class="p-6 rounded-2xl bg-white border border-slate-200/50 hover:scale-[1.01] transition duration-200">
 		<span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Certificates</span>
 		<h2 class="font-display font-black text-3xl text-pink-500 mt-3">{stats?.certificatesCount || 0}</h2>
 		<p class="text-xs text-slate-500 mt-1">Issued completion documents</p>
@@ -59,10 +59,10 @@
 <!-- Recommendation System Block -->
 <div class="mb-10">
 	<div class="flex items-center justify-between mb-6">
-		<h2 class="font-display font-bold text-xl text-slate-900 dark:text-white">
+		<h2 class="font-display font-bold text-xl text-slate-900">
 			Recommended for Your Skill Set
 		</h2>
-		<a href="/student/internships" class="text-xs font-bold text-indigo-500 dark:text-indigo-400 hover:underline">
+		<a href="/student/internships" class="text-xs font-bold text-indigo-500 hover:underline">
 			Browse All Postings
 		</a>
 	</div>
@@ -70,13 +70,13 @@
 	{#await data.lazy.recommendations}
 		<!-- Loading skeleton for recommendations -->
 		<div class="grid grid-cols-1 md:grid-cols-3 gap-6 animate-pulse">
-			<div class="h-44 bg-slate-200/60 dark:bg-slate-800/60 rounded-2xl"></div>
-			<div class="h-44 bg-slate-200/60 dark:bg-slate-800/60 rounded-2xl"></div>
-			<div class="h-44 bg-slate-200/60 dark:bg-slate-800/60 rounded-2xl"></div>
+			<div class="h-44 bg-slate-200/60 rounded-2xl"></div>
+			<div class="h-44 bg-slate-200/60 rounded-2xl"></div>
+			<div class="h-44 bg-slate-200/60 rounded-2xl"></div>
 		</div>
 	{:then recommendations}
 		{#if recommendations.length === 0}
-			<div class="p-8 rounded-2xl bg-white dark:bg-slate-900/40 border border-slate-200/50 dark:border-slate-800/40 text-center">
+			<div class="p-8 rounded-2xl bg-white border border-slate-200/50 text-center">
 				<p class="text-sm text-slate-500">
 					No matching active recommendations found. Try adding more skills to your profile.
 				</p>
@@ -87,7 +87,7 @@
 		{:else}
 			<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
 				{#each recommendations as intern}
-					<div class="p-6 rounded-2xl bg-white dark:bg-slate-900/40 border border-slate-200/50 dark:border-slate-800/40 hover:border-indigo-500/20 transition-all duration-300 flex flex-col justify-between relative overflow-hidden group">
+					<div class="p-6 rounded-2xl bg-white border border-slate-200/50 hover:border-indigo-500/20 transition-all duration-300 flex flex-col justify-between relative overflow-hidden group">
 						<div class="absolute top-4 right-4 py-1.5 px-3 rounded-full text-[10px] font-black tracking-wider flex items-center gap-1.5 {intern.matchScore >= 80 ? 'bg-emerald-500/10 text-emerald-500' : 'bg-amber-500/10 text-amber-500'}">
 							<span class="h-1.5 w-1.5 rounded-full {intern.matchScore >= 80 ? 'bg-emerald-500' : 'bg-amber-500'}"></span>
 							{intern.matchScore}% MATCH
@@ -95,13 +95,13 @@
 
 						<div class="pt-4">
 							<span class="text-xs text-slate-500 block truncate">{intern.domain}</span>
-							<h3 class="font-display font-bold text-base text-slate-900 dark:text-white mt-2 group-hover:text-indigo-500 dark:group-hover:text-indigo-400 transition truncate">
+							<h3 class="font-display font-bold text-base text-slate-900 mt-2 group-hover:text-indigo-500 transition truncate">
 								{intern.title}
 							</h3>
 							<span class="text-xs font-semibold text-slate-550 block mt-1">{intern.companyName}</span>
 
 							<div class="flex items-center gap-4 mt-5 text-[11px] font-bold text-slate-500">
-								<span class="bg-slate-200/50 dark:bg-slate-800/50 px-2 py-1 rounded">{intern.mode}</span>
+								<span class="bg-slate-200/50 px-2 py-1 rounded">{intern.mode}</span>
 								{#if intern.stipendAmount > 0}
 									<span class="text-emerald-500">₹{intern.stipendAmount}/mo</span>
 								{:else}
@@ -110,11 +110,11 @@
 							</div>
 						</div>
 
-						<div class="mt-6 pt-4 border-t border-slate-100 dark:border-slate-800/40 flex items-center justify-between">
+						<div class="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between">
 							<span class="text-[10px] text-slate-500">Apply by: {intern.lastDateToApply}</span>
 							<a
 								href="/student/internships"
-								class="text-xs font-bold text-indigo-500 dark:text-indigo-400 hover:text-indigo-600 flex items-center gap-1 cursor-pointer"
+								class="text-xs font-bold text-indigo-500 hover:text-indigo-600 flex items-center gap-1 cursor-pointer"
 							>
 								Apply
 								<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
@@ -129,19 +129,19 @@
 
 <!-- My Applications section -->
 <div>
-	<h2 class="font-display font-bold text-xl text-slate-900 dark:text-white mb-6">
+	<h2 class="font-display font-bold text-xl text-slate-900 mb-6">
 		My Internship Applications
 	</h2>
 
 	{#await data.lazy.applications}
 		<!-- Loading skeleton for applications -->
 		<div class="space-y-4 animate-pulse">
-			<div class="h-28 bg-slate-200/60 dark:bg-slate-800/60 rounded-2xl"></div>
-			<div class="h-28 bg-slate-200/60 dark:bg-slate-800/60 rounded-2xl"></div>
+			<div class="h-28 bg-slate-200/60 rounded-2xl"></div>
+			<div class="h-28 bg-slate-200/60 rounded-2xl"></div>
 		</div>
 	{:then applications}
 		{#if applications.length === 0}
-			<div class="p-12 rounded-3xl bg-white dark:bg-slate-900/40 border border-slate-200/50 dark:border-slate-800/40 text-center flex flex-col items-center">
+			<div class="p-12 rounded-3xl bg-white border border-slate-200/50 text-center flex flex-col items-center">
 				<div class="h-12 w-12 rounded-full bg-indigo-500/10 text-indigo-500 flex items-center justify-center mb-4">
 					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="16" height="16" x="4" y="4" rx="2"/><rect width="12" height="12" x="4" y="4" rx="2"/></svg>
 				</div>
@@ -157,25 +157,25 @@
 		{:else}
 			<div class="space-y-4">
 				{#each applications as app}
-					<div class="p-6 rounded-2xl bg-white dark:bg-slate-900/40 border border-slate-200/50 dark:border-slate-800/40 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+					<div class="p-6 rounded-2xl bg-white border border-slate-200/50 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
 						
 						<!-- Left info -->
 						<div class="flex-grow min-w-0">
 							<div class="flex flex-wrap items-center gap-2">
 								<span class="text-xs font-bold uppercase tracking-wider text-slate-500">{app.domain}</span>
-								<span class="h-1 w-1 rounded-full bg-slate-350 dark:bg-slate-700"></span>
+								<span class="h-1 w-1 rounded-full bg-slate-350"></span>
 								<span class="text-xs text-slate-500">{app.mode} • {app.duration}</span>
 							</div>
-							<h3 class="font-display font-bold text-lg text-slate-900 dark:text-white mt-1.5 truncate">
+							<h3 class="font-display font-bold text-lg text-slate-900 mt-1.5 truncate">
 								{app.internshipTitle}
 							</h3>
 							<span class="text-xs font-semibold text-slate-550 block mt-0.5">{app.companyName}</span>
 						</div>
 
 						<!-- Middle: Application Tracker -->
-						<div class="flex items-center gap-4 lg:gap-8 bg-slate-100/50 dark:bg-slate-900/40 px-5 py-3 rounded-2xl border border-slate-200/5 dark:border-slate-800/20 max-w-md w-full">
+						<div class="flex items-center gap-4 lg:gap-8 bg-slate-100/50 px-5 py-3 rounded-2xl border border-slate-200/5 max-w-md w-full">
 							<div class="flex items-center justify-between w-full relative">
-								<div class="absolute top-[9px] left-3 right-3 h-0.5 bg-slate-250 dark:bg-slate-800 z-0"></div>
+								<div class="absolute top-[9px] left-3 right-3 h-0.5 bg-slate-250 z-0"></div>
 
 								<!-- Step 1: Submitted -->
 								<div class="flex flex-col items-center z-10 text-center">
@@ -188,7 +188,7 @@
 									{#if app.status === 'Shortlisted' || app.status === 'Approved' || app.status === 'Rejected'}
 										<span class="h-4.5 w-4.5 rounded-full flex items-center justify-center text-[9px] font-black bg-indigo-600 text-white ring-4 ring-indigo-500/10">✓</span>
 									{:else}
-										<span class="h-4.5 w-4.5 rounded-full flex items-center justify-center text-[9px] font-bold bg-slate-200 dark:bg-slate-800 text-slate-600">2</span>
+										<span class="h-4.5 w-4.5 rounded-full flex items-center justify-center text-[9px] font-bold bg-slate-200 text-slate-600">2</span>
 									{/if}
 									<span class="text-[9px] font-bold text-slate-500 mt-1.5">Review</span>
 								</div>
@@ -203,7 +203,7 @@
 											<span class="h-4.5 w-4.5 rounded-full flex items-center justify-center text-[9px] font-black bg-rose-500 text-white ring-4 ring-rose-500/10">✕</span>
 											<span class="text-[9px] font-bold text-rose-500 mt-1.5">Closed</span>
 										{:else}
-											<span class="h-4.5 w-4.5 rounded-full flex items-center justify-center text-[9px] font-bold bg-slate-200 dark:bg-slate-800 text-slate-600">3</span>
+											<span class="h-4.5 w-4.5 rounded-full flex items-center justify-center text-[9px] font-bold bg-slate-200 text-slate-600">3</span>
 											<span class="text-[9px] font-bold text-slate-500 mt-1.5">Outcome</span>
 										{/if}
 									{/if}

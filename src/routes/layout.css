@@ -10,13 +10,9 @@
 
 	/* Semantic Design Tokens */
 	--color-surface: #FFFFFF;
-	--color-surface-dark: #0F172A;
 	--color-primary: #111827;
-	--color-primary-dark: #F8FAFC;
 	--color-muted: #6B7280;
-	--color-muted-dark: #9CA3AF;
 	--color-divider: #E5E7EB;
-	--color-divider-dark: #1E293B;
 }
 
 @keyframes float {
@@ -33,16 +29,29 @@ html, body {
 	font-family: var(--font-sans);
 	transition: background-color 0.3s ease, color 0.3s ease;
 	scroll-behavior: smooth;
-	@apply bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100;
+	background-color: #FFFFFF;
+	color: #374151;
 }
 
 /* Premium Card & Layouts */
 .glass {
-	@apply bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm rounded-[14px] transition-all duration-300;
+	background-color: #FFFFFF;
+	border: 1px solid #E5E7EB;
+	box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+	border-radius: 14px;
+	transition: all 0.3s ease;
 }
 
 .glass-card {
-	@apply bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md transition-all duration-300 rounded-[14px];
+	background-color: #FFFFFF;
+	border: 1px solid #E5E7EB;
+	box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+	transition: all 0.3s ease;
+	border-radius: 14px;
+}
+
+.glass-card:hover {
+	box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
 }
 
 /* Premium card hover actions */
@@ -52,7 +61,8 @@ html, body {
 
 .premium-card-hover:hover {
 	transform: translateY(-4px) scale(1.01);
-	@apply border-indigo-500/30 shadow-[0_10px_25px_-5px_rgba(79,70,229,0.1)];
+	border-color: rgba(79, 70, 229, 0.3);
+	box-shadow: 0 10px 25px -5px rgba(79, 70, 229, 0.1);
 }
 
 /* Scrollbars */
@@ -66,11 +76,12 @@ html, body {
 }
 
 ::-webkit-scrollbar-thumb {
-	@apply bg-slate-200 dark:bg-slate-850 rounded-full;
+	background-color: #E5E7EB;
+	border-radius: 9999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-	@apply bg-slate-300 dark:bg-slate-800;
+	background-color: #D1D5DB;
 }
 
 /* Custom utility styles */
