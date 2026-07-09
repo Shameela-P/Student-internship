@@ -66,10 +66,24 @@ export const actions = {
 			throw redirect(303, '/company');
 		} 
 		else if (role === 'admin') {
+			import('fs').then(fs => fs.appendFileSync('login_debug.log', `[ADMIN] Logging in: ${email}\n`));
 			const admins = await queryDocumentsPaginated('admins', 'email', email, 1);
+			import('fs').then(fs => fs.appendFileSync('login_debug.log', `[ADMIN] Admins fetched: ${JSON.stringify(admins)}\n`));
+			
 			const admin = admins.find(a => a.email.toLowerCase() === email.toLowerCase());
-			if (!admin) return fail(400, { success: false, error: 'Invalid credentials' });
-			if (!verifyPassword(password, admin.password)) return fail(400, { success: false, error: 'Invalid credentials' });
+			import('fs').then(fs => fs.appendFileSync('login_debug.log', `[ADMIN] Found admin: ${JSON.stringify(admin)}\n`));
+			
+			if (!admin) {
+				import('fs').then(fs => fs.appendFileSync('login_debug.log', `[ADMIN] Failed: Admin not found\n`));
+				return fail(400, { success: false, error: 'Invalid credentials' });
+			}
+			
+			const isPasswordValid = verifyPassword(password, admin.password);
+			import('fs').then(fs => fs.appendFileSync('login_debug.log', `[ADMIN] Password valid: ${isPasswordValid}\n`));
+			
+			if (!isPasswordValid) {
+				return fail(400, { success: false, error: 'Invalid credentials' });
+			}
 
 			setAuthCookies({ id: admin.id, email: admin.email, name: admin.fullName, role: 'admin' });
 			logAction('ADMIN_LOGIN', 'Super administrator logged in.');

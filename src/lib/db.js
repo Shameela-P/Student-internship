@@ -420,15 +420,16 @@ export async function queryDocumentsPaginated(collectionName, field, value, limi
         }
         return result.reverse();
     } catch (e) {
-        if (e.message && e.message.includes('Index not defined')) {
-            console.warn(`Index not defined for ${collectionName} on ${field}. Falling back to manual filter...`);
+        console.warn(`Query failed for ${collectionName} on ${field} === ${value}. Error: ${e.message || e}. Falling back to manual filter...`);
+        try {
             // Fallback: fetch latest limited records (or full if small) to filter manually
             const fallbackLimit = 500; 
             const data = await getPaginated(collectionName, fallbackLimit);
             return data.filter(item => item && item[field] === value).slice(0, limit);
+        } catch (fallbackError) {
+            console.error(`Fallback failed for ${collectionName}:`, fallbackError);
+            return [];
         }
-        console.error(`Error querying ${collectionName} where ${field} === ${value}`, e);
-        return [];
     }
 }
 
