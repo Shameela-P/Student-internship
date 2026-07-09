@@ -84,7 +84,7 @@
 	</div>
 
 	<!-- Formal Completion Certificate Card -->
-	<div class="flex-grow flex items-center justify-center p-2 md:p-6 select-none">
+	<div class="grow flex items-center justify-center p-2 md:p-6 select-none">
 		<div class="print-section w-full max-w-4xl rounded-2xl bg-surface border-8 border-double border-divider p-8 md:p-16 shadow-2xl relative flex flex-col justify-between aspect-[1.414/1] text-slate-850 overflow-hidden">
 			
 			<!-- Decorative Gold Corner Overlays -->
@@ -101,7 +101,7 @@
 			<!-- Top Header -->
 			<div class="text-center relative z-10">
 				<div class="flex items-center justify-center gap-2 mb-3">
-					<div class="h-8 w-8 rounded-lg bg-gradient-to-tr from-blue-600 to-cyan-500 flex items-center justify-center font-display text-primary font-black text-base shadow-sm">
+					<div class="h-8 w-8 rounded-lg bg-linear-to-tr from-blue-600 to-cyan-500 flex items-center justify-center font-display text-primary font-black text-base shadow-sm">
 						N
 					</div>
 					<span class="font-display font-black text-lg tracking-wider uppercase text-primary">Nexora Network</span>
@@ -113,7 +113,7 @@
 			<div class="text-center my-6 md:my-10 relative z-10">
 				<p class="text-xs font-semibold italic text-slate-600">This is proudly presented to</p>
 				
-				<h2 class="font-display font-black text-3xl md:text-5xl my-4 bg-gradient-to-r from-amber-600 to-amber-500 text-gradient tracking-tight">
+				<h2 class="font-display font-black text-3xl md:text-5xl my-4 bg-linear-to-r from-amber-600 to-amber-500 text-gradient tracking-tight">
 					{data.student.fullName}
 				</h2>
 
@@ -135,7 +135,7 @@
 
 				<!-- Middle Verification Seal -->
 				<div class="flex flex-col items-center">
-					<div class="h-14 w-14 rounded-full bg-gradient-to-tr from-amber-500 to-amber-400 border-4 border-double border-white shadow-lg flex items-center justify-center font-display font-black text-primary text-[10px]">
+					<div class="h-14 w-14 rounded-full bg-linear-to-tr from-amber-500 to-amber-400 border-4 border-double border-white shadow-lg flex items-center justify-center font-display font-black text-primary text-[10px]">
 						VERIFIED
 					</div>
 					<span class="text-[8px] font-bold text-slate-500 mt-2 tracking-wider">NEXORA ECOSYSTEM VALIDATED</span>

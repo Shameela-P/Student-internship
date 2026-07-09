@@ -164,7 +164,7 @@
 					<div class="space-y-4">
 						{#each queue as comp}
 							<div class="p-5 rounded-2xl bg-slate-50/50 border border-slate-200/5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-								<div class="min-w-0 flex-grow">
+								<div class="min-w-0 grow">
 									<h4 class="font-bold text-sm text-slate-800">{comp.companyName}</h4>
 									<span class="text-xs text-slate-500 block truncate mt-0.5">{comp.companyEmail} • {comp.industryType}</span>
 									<a href={comp.website} target="_blank" rel="noopener noreferrer" class="text-[10px] text-indigo-500 font-semibold hover:underline block mt-1">
@@ -232,7 +232,7 @@
 				Live system activities and transaction logs.
 			</p>
 
-			<div class="flex-grow overflow-y-auto max-h-[400px] pr-2 space-y-4">
+			<div class="grow overflow-y-auto max-h-[400px] pr-2 space-y-4">
 				{#each logs as log}
 					{@const actionColor = log.action.includes('FRAUD') || log.action.includes('BLOCK') ? 'text-rose-500 bg-rose-500/10' : log.action.includes('CREATE') || log.action.includes('REGISTER') ? 'text-emerald-500 bg-emerald-500/10' : 'text-indigo-500 bg-indigo-500/10'}
 					<div class="p-4 bg-slate-50/50 border border-slate-200/5 rounded-2xl text-xs flex flex-col gap-2 hover:border-slate-350 transition">

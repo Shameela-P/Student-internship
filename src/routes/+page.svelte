@@ -12,7 +12,7 @@
 <header class="w-full py-4 px-6 md:px-12 border-b border-divider bg-slate-100 backdrop-blur-md sticky top-0 z-50 flex items-center justify-between">
 	<a href={data.user ? `/${data.user.role}` : '/'} class="flex items-center gap-3 cursor-pointer">
 		<img loading="lazy" src={logo} alt="Nexora Logo" class="h-10 w-10 drop-shadow-md" />
-		<span class="font-display font-extrabold text-2xl tracking-wide bg-gradient-to-r from-slate-900 to-slate-700 text-gradient">
+		<span class="font-display font-extrabold text-2xl tracking-wide bg-linear-to-r from-slate-900 to-slate-700 text-gradient">
 			Nexora
 		</span>
 	</a>
@@ -22,7 +22,7 @@
 		{#if data.user}
 			<a
 				href={`/${data.user.role}`}
-				class="px-5 py-2.5 rounded-xl text-sm font-semibold text-primary bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 hover:shadow-lg hover:shadow-indigo-500/10 transition-all duration-300 transform hover:-translate-y-0.5 active:translate-y-0"
+				class="px-5 py-2.5 rounded-xl text-sm font-semibold text-primary bg-linear-to-r from-blue-600 via-indigo-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 hover:shadow-lg hover:shadow-indigo-500/10 transition-all duration-300 transform hover:-translate-y-0.5 active:translate-y-0"
 			>
 				Go to Dashboard ({data.user.role.toUpperCase()})
 			</a>
@@ -54,7 +54,7 @@
 
 	<h1 class="font-display font-black text-4xl md:text-6xl lg:text-7xl leading-tight max-w-5xl tracking-tight text-primary">
 		Launch your next opportunity with <br class="hidden md:inline" />
-		<span class="bg-gradient-to-r from-blue-400 via-purple-400 to-cyan-400 text-gradient">
+		<span class="bg-linear-to-r from-blue-400 via-purple-400 to-cyan-400 text-gradient">
 			clarity and momentum
 		</span>
 	</h1>
@@ -67,7 +67,7 @@
 		{#if !data.user}
 			<a
 				href="/register?role=student"
-				class="px-8 py-4 rounded-2xl text-base font-bold text-primary bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 hover:shadow-lg hover:shadow-blue-500/20 transition-all duration-300 transform hover:-translate-y-1"
+				class="px-8 py-4 rounded-2xl text-base font-bold text-primary bg-linear-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 hover:shadow-lg hover:shadow-blue-500/20 transition-all duration-300 transform hover:-translate-y-1"
 			>
 				Register as Student
 			</a>
@@ -80,7 +80,7 @@
 		{:else}
 			<a
 				href={`/${data.user.role}`}
-				class="px-8 py-4 rounded-2xl text-base font-bold text-primary bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 hover:shadow-lg hover:shadow-blue-500/10 transition-all duration-300 transform hover:-translate-y-1"
+				class="px-8 py-4 rounded-2xl text-base font-bold text-primary bg-linear-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 hover:shadow-lg hover:shadow-blue-500/10 transition-all duration-300 transform hover:-translate-y-1"
 			>
 				Enter Dashboard
 			</a>
@@ -198,7 +198,7 @@
 	<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
 		{#each featured as internship}
 			<div class="p-8 rounded-2xl bg-surface hover:bg-slate-900/60 border border-divider hover:border-blue-500/20 hover:shadow-blue-500/5 transition duration-300 relative group overflow-hidden">
-				<div class="absolute top-0 right-0 w-24 h-24 rounded-full bg-gradient-to-bl from-blue-500/5 to-transparent blur-md pointer-events-none group-hover:scale-150 transition duration-500"></div>
+				<div class="absolute top-0 right-0 w-24 h-24 rounded-full bg-linear-to-bl from-blue-500/5 to-transparent blur-md pointer-events-none group-hover:scale-150 transition duration-500"></div>
 
 				<div>
 					<div class="flex items-start justify-between">
@@ -267,7 +267,7 @@
 			<div class="flex flex-col gap-4">
 				<div class="flex items-center gap-3">
 					<img loading="lazy" src={logo} alt="Nexora Logo" class="h-10 w-10 drop-shadow-sm" />
-					<span class="font-display font-black text-2xl tracking-wide bg-gradient-to-r from-slate-900 to-slate-700 text-gradient">
+					<span class="font-display font-black text-2xl tracking-wide bg-linear-to-r from-slate-900 to-slate-700 text-gradient">
 						Nexora
 					</span>
 				</div>

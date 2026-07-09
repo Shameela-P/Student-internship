@@ -41,7 +41,7 @@
 	</div>
 
 	<!-- Main Content Area -->
-	<div class="flex-grow flex gap-6 overflow-hidden">
+	<div class="grow flex gap-6 overflow-hidden">
 		<!-- Left Pane: Template List -->
 		<div class="w-1/3 flex flex-col gap-4 overflow-y-auto pr-2 pb-4">
 			{#each templates as template}
@@ -59,7 +59,7 @@
 		</div>
 
 		<!-- Right Pane: Editor -->
-		<div class="flex-grow glass-card rounded-3xl border border-divider p-8 overflow-y-auto">
+		<div class="grow glass-card rounded-3xl border border-divider p-8 overflow-y-auto">
 			{#if selectedTemplate}
 				<div class="space-y-6">
 					<div>

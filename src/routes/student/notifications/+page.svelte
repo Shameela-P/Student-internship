@@ -110,9 +110,8 @@
 			<div class="rounded-2xl bg-white border transition-all duration-300 overflow-hidden {activeIndex === idx ? 'border-indigo-500 shadow-md' : 'border-slate-200 '}">
 				<!-- Summary Row -->
 				<div class="w-full p-4 flex items-center justify-between gap-4 hover:bg-slate-50/50 transition duration-150">
-					<button
-						onclick={() => toggleDetails(idx)}
-						class="flex-grow text-left flex items-start gap-3.5 focus:outline-none cursor-pointer"
+					<button aria-label="Toggle details" onclick={() => toggleDetails(idx)}
+						class="grow text-left flex items-start gap-3.5 focus:outline-none cursor-pointer"
 					>
 						<!-- Type-specific Icon -->
 						<div class="h-10 w-10 rounded-full flex items-center justify-center shrink-0 {isCritical ? 'bg-rose-50 text-rose-600' : isSuccess ? 'bg-emerald-50 text-emerald-600' : 'bg-indigo-50 text-indigo-600'}">
@@ -125,7 +124,7 @@
 							{/if}
 						</div>
 
-						<div class="min-w-0 flex-grow pt-0.5">
+						<div class="min-w-0 grow pt-0.5">
 							<div class="flex items-center gap-2 flex-wrap">
 								<span class="text-[10px] font-bold uppercase tracking-wider {isCritical ? 'text-rose-600' : isSuccess ? 'text-emerald-600' : 'text-indigo-600'}">
 									{isCritical ? 'CRITICAL ALERT' : isSuccess ? 'Confirmation' : 'System Mail'}
@@ -151,8 +150,7 @@
 							</button>
 						{/if}
 						
-						<button
-							onclick={() => toggleDetails(idx)}
+						<button aria-label="Toggle details" onclick={() => toggleDetails(idx)}
 							class="text-slate-400 p-1 rounded-lg hover:bg-slate-100 transition duration-150 cursor-pointer"
 						>
 							<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="transform transition duration-200 {activeIndex === idx ? 'rotate-90' : ''}"><path d="m9 18 6-6-6-6"/></svg>

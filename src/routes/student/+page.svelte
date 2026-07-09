@@ -160,7 +160,7 @@
 					<div class="p-6 rounded-2xl bg-white border border-slate-200/50 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
 						
 						<!-- Left info -->
-						<div class="flex-grow min-w-0">
+						<div class="grow min-w-0">
 							<div class="flex flex-wrap items-center gap-2">
 								<span class="text-xs font-bold uppercase tracking-wider text-slate-500">{app.domain}</span>
 								<span class="h-1 w-1 rounded-full bg-slate-350"></span>

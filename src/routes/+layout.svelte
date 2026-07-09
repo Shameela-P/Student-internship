@@ -16,7 +16,7 @@
 	<div class="absolute bottom-[-10%] right-[-10%] w-[60%] h-[60%] rounded-full bg-emerald-500/5 blur-[180px] pointer-events-none"></div>
 
 	<!-- Main Router Output -->
-	<main class="flex-grow flex flex-col relative z-10">
+	<main class="grow flex flex-col relative z-10">
 		{@render children()}
 	</main>
 </div>

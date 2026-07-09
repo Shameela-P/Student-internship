@@ -10,7 +10,7 @@
 			Platform Features
 		</span>
 		<h1 class="font-display font-black text-4xl md:text-6xl text-slate-900 tracking-tight">
-			Everything You Need to <span class="bg-gradient-to-r from-blue-400 to-indigo-400 text-gradient">Succeed</span>
+			Everything You Need to <span class="bg-linear-to-r from-blue-400 to-indigo-400 text-gradient">Succeed</span>
 		</h1>
 		<p class="mt-6 text-base text-slate-600 leading-relaxed">
 			Nexora provides dedicated dashboards and communication pipelines tailored for students, companies, and platform administrators.

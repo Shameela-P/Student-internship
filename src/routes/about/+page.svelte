@@ -10,7 +10,7 @@
 			Our Mission
 		</span>
 		<h1 class="font-display font-black text-4xl md:text-6xl text-slate-900 tracking-tight">
-			Connecting Talent with <span class="bg-gradient-to-r from-blue-400 to-indigo-400 text-gradient">Industry Leaders</span>
+			Connecting Talent with <span class="bg-linear-to-r from-blue-400 to-indigo-400 text-gradient">Industry Leaders</span>
 		</h1>
 		<p class="mt-6 text-base text-slate-600 leading-relaxed">
 			Nexora is a centralized internship nexus designed to simplify the recruitment lifecycle for students, universities, and enterprise employers. We bridge the gap between academic theory and practical corporate experience.

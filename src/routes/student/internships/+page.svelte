@@ -150,11 +150,11 @@
 			<!-- Action buttons -->
 			<div class="col-span-2 lg:col-span-1 flex gap-2">
 				<noscript>
-					<button type="submit" class="flex-grow py-2.5 px-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-primary font-bold text-xs transition duration-200 cursor-pointer">
+					<button type="submit" class="grow py-2.5 px-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-primary font-bold text-xs transition duration-200 cursor-pointer">
 						Apply
 					</button>
 				</noscript>
-				<a href="/student/internships" class="flex-grow px-3 py-2.5 rounded-xl border border-divider hover:bg-slate-900 text-xs font-semibold text-slate-600 hover:text-primary flex items-center justify-center cursor-pointer transition">
+				<a href="/student/internships" class="grow px-3 py-2.5 rounded-xl border border-divider hover:bg-slate-900 text-xs font-semibold text-slate-600 hover:text-primary flex items-center justify-center cursor-pointer transition">
 					Reset Filters
 				</a>
 			</div>
@@ -177,12 +177,12 @@
 			<div class="group p-6 rounded-2xl bg-surface hover:bg-slate-900/60 border border-divider hover:border-blue-500/30 shadow-md hover:shadow-blue-500/5 hover:-translate-y-1 transition duration-300 flex flex-col justify-between relative overflow-hidden">
 				
 				<!-- Featured glow -->
-				<div class="absolute top-0 right-0 w-20 h-20 rounded-full bg-gradient-to-bl from-blue-500/5 to-transparent blur-md pointer-events-none group-hover:scale-150 transition duration-500"></div>
+				<div class="absolute top-0 right-0 w-20 h-20 rounded-full bg-linear-to-bl from-blue-500/5 to-transparent blur-md pointer-events-none group-hover:scale-150 transition duration-500"></div>
 
 				<div>
 					<!-- Card Header -->
 					<div class="flex items-start justify-between">
-						<div class="min-w-0 flex-grow pr-2">
+						<div class="min-w-0 grow pr-2">
 							<div class="flex flex-wrap items-center gap-1.5">
 								<!-- FREE / PAID / STIPEND Badges in modern styling -->
 								{#if intern.type.includes('Free')}
@@ -316,7 +316,7 @@
 				<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" x2="6" y1="6" y2="18"/><line x1="6" x2="18" y1="6" y2="18"/></svg>
 			</button>
 
-			<div class="p-8 border-b border-slate-200/50 bg-gradient-to-br from-indigo-50/50 to-transparent">
+			<div class="p-8 border-b border-slate-200/50 bg-linear-to-br from-indigo-50/50 to-transparent">
 				<span class="inline-flex px-2.5 py-1 rounded-md bg-indigo-100 text-indigo-700 text-[10px] font-extrabold tracking-wide uppercase mb-3">{selectedInternship.domain}</span>
 				<h2 class="font-display font-black text-2xl md:text-3xl text-primary leading-tight">
 					Apply for {selectedInternship.title}
@@ -375,7 +375,7 @@
 					<div class="h-10 w-10 bg-indigo-100 text-indigo-600 rounded-xl flex items-center justify-center font-black text-xs shrink-0">
 						PDF
 					</div>
-					<div class="flex-grow min-w-0">
+					<div class="grow min-w-0">
 						<span class="text-sm font-bold text-primary block truncate">Attached Resume</span>
 						<span class="text-xs text-muted truncate block mt-0.5">{student.resumeUrl ? 'Resume attached and ready' : 'No resume link set yet'}</span>
 					</div>
@@ -421,7 +421,7 @@
 					<button
 						type="submit"
 						disabled={applyLoading || !student.resumeUrl}
-						class="flex-1 py-3.5 rounded-xl font-bold text-white bg-gradient-to-r from-indigo-600 to-indigo-500 hover:from-indigo-500 hover:to-indigo-400 shadow-lg shadow-indigo-500/25 hover:shadow-indigo-500/40 disabled:opacity-50 disabled:grayscale transition-all cursor-pointer flex items-center justify-center gap-2"
+						class="flex-1 py-3.5 rounded-xl font-bold text-white bg-linear-to-r from-indigo-600 to-indigo-500 hover:from-indigo-500 hover:to-indigo-400 shadow-lg shadow-indigo-500/25 hover:shadow-indigo-500/40 disabled:opacity-50 disabled:grayscale transition-all cursor-pointer flex items-center justify-center gap-2"
 					>
 						{#if applyLoading}
 							<span class="h-5 w-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>

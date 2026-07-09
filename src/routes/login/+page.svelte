@@ -187,9 +187,9 @@
 			</button>
 
 			<div class="relative flex items-center py-2">
-				<div class="flex-grow border-t border-divider"></div>
-				<span class="flex-shrink-0 mx-4 text-xs text-slate-600">or</span>
-				<div class="flex-grow border-t border-divider"></div>
+				<div class="grow border-t border-divider"></div>
+				<span class="shrink-0 mx-4 text-xs text-slate-600">or</span>
+				<div class="grow border-t border-divider"></div>
 			</div>
 
 			<div>

@@ -24,7 +24,7 @@
 			{#if company.companyLogo}
 				<img src={company.companyLogo} alt={company.companyName} class="w-24 h-24 rounded-2xl object-cover border border-slate-200 shadow-md mb-4" />
 			{:else}
-				<div class="w-24 h-24 rounded-2xl bg-gradient-to-br from-blue-500/20 to-cyan-500/20 flex items-center justify-center border border-blue-500/20 mb-4 shadow-inner">
+				<div class="w-24 h-24 rounded-2xl bg-linear-to-br from-blue-500/20 to-cyan-500/20 flex items-center justify-center border border-blue-500/20 mb-4 shadow-inner">
 					<span class="text-3xl font-black text-blue-500">{company.companyName.charAt(0).toUpperCase()}</span>
 				</div>
 			{/if}

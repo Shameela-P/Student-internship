@@ -186,7 +186,7 @@
 	);
 </script>
 
-<div class="flex-grow flex flex-col md:flex-row h-[78vh] rounded-2xl bg-white border border-slate-200 overflow-hidden shadow-sm">
+<div class="grow flex flex-col md:flex-row h-[78vh] rounded-2xl bg-white border border-slate-200 overflow-hidden shadow-sm">
 	
 	<!-- Conversations Sidebar -->
 	<div class="w-full md:w-80 border-r border-slate-200 bg-slate-50 flex flex-col justify-between shrink-0">
@@ -203,7 +203,7 @@
 			</div>
 
 			<!-- Threads List -->
-			<div class="divide-y divide-slate-150 overflow-y-auto flex-grow">
+			<div class="divide-y divide-slate-150 overflow-y-auto grow">
 				{#if threads.length === 0}
 					<div class="p-8 text-center text-slate-500 text-xs font-semibold">
 						No active message threads yet. Click the edit icon to compose a chat.
@@ -218,7 +218,7 @@
 								{thread.name.charAt(0)}
 								<span class="absolute bottom-0 right-0 h-2.5 w-2.5 bg-emerald-500 rounded-full border-2 border-white"></span>
 							</div>
-							<div class="min-w-0 flex-grow">
+							<div class="min-w-0 grow">
 								<div class="flex items-center justify-between">
 									<h4 class="text-xs font-bold text-slate-850 truncate">{thread.name}</h4>
 									<span class="text-[9px] text-slate-400 font-semibold">{new Date(thread.lastTimestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
@@ -239,7 +239,7 @@
 	</div>
 
 	<!-- Main Chat Panel -->
-	<div class="flex-grow flex flex-col bg-white">
+	<div class="grow flex flex-col bg-white">
 		{#if activeEmail}
 			<!-- Header -->
 			<div class="p-4 border-b border-slate-200 flex items-center justify-between bg-slate-50">
@@ -259,7 +259,7 @@
 			<!-- Message Thread list -->
 			<div 
 				bind:this={chatContainer}
-				class="flex-grow p-6 overflow-y-auto space-y-4 bg-white"
+				class="grow p-6 overflow-y-auto space-y-4 bg-white"
 			>
 				{#if activeMessages.length === 0}
 					<div class="h-full flex flex-col items-center justify-center text-center p-8">
@@ -320,7 +320,7 @@
 						onkeydown={handleKeydown}
 						required
 						autocomplete="off"
-						class="flex-grow px-4 py-2.5 text-xs font-semibold rounded-xl bg-white border border-slate-200 text-slate-800 focus:outline-none focus:border-indigo-500"
+						class="grow px-4 py-2.5 text-xs font-semibold rounded-xl bg-white border border-slate-200 text-slate-800 focus:outline-none focus:border-indigo-500"
 					/>
 					
 					<button 
@@ -332,7 +332,7 @@
 				</form>
 			</div>
 		{:else}
-			<div class="flex-grow flex flex-col items-center justify-center text-center p-8 bg-slate-50/50">
+			<div class="grow flex flex-col items-center justify-center text-center p-8 bg-slate-50/50">
 				<div class="h-12 w-12 rounded-full bg-indigo-50 text-indigo-600 flex items-center justify-center mb-4">
 					<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
 				</div>
@@ -347,7 +347,7 @@
 {#if showNewChatModal}
 	<div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm" onclick={() => showNewChatModal = false} role="button" tabindex="0" onkeydown={(e) => { if(e.key === 'Escape') showNewChatModal = false; }}>
 		<div class="w-full max-w-md rounded-2xl bg-white border border-slate-200 p-6 shadow-2xl relative" onclick={(e) => e.stopPropagation()} role="presentation">
-			<button onclick={() => showNewChatModal = false} class="absolute top-4 right-4 p-1.5 rounded-lg text-slate-400 hover:bg-slate-100 transition cursor-pointer">
+			<button aria-label="Close modal" onclick={() => showNewChatModal = false} class="absolute top-4 right-4 p-1.5 rounded-lg text-slate-400 hover:bg-slate-100 transition cursor-pointer">
 				<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" x2="6" y1="6" y2="18"/><line x1="6" x2="18" y1="6" y2="18"/></svg>
 			</button>
 

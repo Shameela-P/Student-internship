@@ -78,7 +78,7 @@
 		</div>
 
 		<!-- Nav Links -->
-		<nav class="flex-grow p-4 space-y-1 mt-4 overflow-y-auto">
+		<nav class="grow p-4 space-y-1 mt-4 overflow-y-auto">
 			<a href="/student" class={getLinkClass('/student')}>
 				<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
 				Overview
@@ -133,7 +133,7 @@
 						{student.fullName.charAt(0)}
 					{/if}
 				</div>
-				<div class="flex-grow min-w-0">
+				<div class="grow min-w-0">
 					<h4 class="text-sm font-bold text-slate-850 truncate">{student.fullName}</h4>
 					<span class="text-xs text-slate-550 truncate block font-semibold">Student</span>
 				</div>
@@ -198,8 +198,8 @@
 	{/if}
 
 	<!-- Right Side Scrollable Page Content Container -->
-	<div class="flex-grow md:ml-64 p-6 md:p-10 min-h-screen relative flex flex-col">
-		<div class="max-w-6xl w-full mx-auto flex-grow flex flex-col">
+	<div class="grow md:ml-64 p-6 md:p-10 min-h-screen relative flex flex-col">
+		<div class="max-w-6xl w-full mx-auto grow flex flex-col">
 			{@render children()}
 		</div>
 	</div>

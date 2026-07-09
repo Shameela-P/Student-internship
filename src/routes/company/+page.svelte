@@ -97,7 +97,7 @@
 							</div>
 							<div class="h-3.5 w-full bg-slate-100 rounded-full overflow-hidden border border-slate-200/5">
 								<div
-									class="h-full bg-gradient-to-r from-indigo-500 to-indigo-600 rounded-full transition-all duration-500"
+									class="h-full bg-linear-to-r from-indigo-500 to-indigo-600 rounded-full transition-all duration-500"
 									style="width: {percentage}%"
 								></div>
 							</div>
@@ -167,7 +167,7 @@
 			<div class="space-y-4">
 				{#each recentApps as app}
 					<div class="p-6 rounded-2xl bg-white border border-slate-200/50 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-						<div class="flex-grow min-w-0">
+						<div class="grow min-w-0">
 							<span class="text-xs font-bold uppercase tracking-wider text-slate-500">{app.domain}</span>
 							<h3 class="font-display font-bold text-lg text-slate-900 mt-1.5 truncate">
 								{app.studentName}

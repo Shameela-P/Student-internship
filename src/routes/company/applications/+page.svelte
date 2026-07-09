@@ -98,7 +98,7 @@
 				<!-- Row summary header -->
 				<div class="p-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
 					<!-- Student and internship details -->
-					<div class="flex-grow min-w-0">
+					<div class="grow min-w-0">
 						<div class="flex items-center gap-2 flex-wrap">
 							<h3 class="font-display font-bold text-base text-primary">{app.student.fullName}</h3>
 							<span class="text-[10px] text-slate-600 font-semibold">• {app.student.collegeName}</span>
@@ -190,7 +190,7 @@
 										<div class="h-9 w-9 bg-indigo-500/10 text-indigo-500 rounded-lg flex items-center justify-center font-black text-xs">
 											LINK
 										</div>
-										<div class="flex-grow min-w-0">
+										<div class="grow min-w-0">
 											<span class="text-[11px] font-bold text-slate-700 block truncate group-hover:text-indigo-500">
 												View Applicant Resume
 											</span>

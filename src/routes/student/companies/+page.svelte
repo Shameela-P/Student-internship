@@ -138,7 +138,7 @@
 </style>
 
 <!-- Hero Section -->
-<section class="relative py-20 px-6 rounded-3xl overflow-hidden bg-gradient-to-br from-slate-900 via-slate-950 to-slate-900 border border-divider mb-12 text-center shadow-2xl">
+<section class="relative py-20 px-6 rounded-3xl overflow-hidden bg-linear-to-br from-slate-900 via-slate-950 to-slate-900 border border-divider mb-12 text-center shadow-2xl">
 	<!-- Background Glows -->
 	<div class="absolute top-[-30%] left-[-20%] w-[60%] h-[60%] rounded-full bg-blue-500/10 blur-[120px] pointer-events-none animate-pulse-slow"></div>
 	<div class="absolute bottom-[-20%] right-[-10%] w-[50%] h-[50%] rounded-full bg-cyan-500/5 blur-[120px] pointer-events-none animate-pulse-slow" style="animation-delay: 2s;"></div>
@@ -199,7 +199,7 @@
 		</div>
 
 		<h1 class="font-display font-black text-4xl md:text-6xl text-primary leading-tight tracking-tight">
-			Explore <span class="bg-gradient-to-r from-blue-400 via-cyan-400 to-emerald-400 text-gradient">5500+ Verified Companies</span>
+			Explore <span class="bg-linear-to-r from-blue-400 via-cyan-400 to-emerald-400 text-gradient">5500+ Verified Companies</span>
 		</h1>
 		<p class="mt-5 text-sm md:text-base text-slate-600 max-w-2xl leading-relaxed">
 			Find internships from top recruiters, startups, and global companies across 150+ domains. Apply directly to active postings and launch your career.
@@ -219,22 +219,22 @@
 <!-- Statistics Grid -->
 <section class="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
 	<div class="p-6 rounded-2xl bg-surface border border-divider text-center backdrop-blur-sm relative group overflow-hidden">
-		<div class="absolute inset-0 bg-gradient-to-b from-blue-500/5 to-transparent opacity-0 group-hover:opacity-100 transition duration-300"></div>
+		<div class="absolute inset-0 bg-linear-to-b from-blue-500/5 to-transparent opacity-0 group-hover:opacity-100 transition duration-300"></div>
 		<span class="text-[10px] font-bold text-slate-600 uppercase tracking-widest block">Corporate Partners</span>
 		<h2 class="font-display font-black text-2xl md:text-4xl text-blue-400 mt-2">{companiesCount}+</h2>
 	</div>
 	<div class="p-6 rounded-2xl bg-surface border border-divider text-center backdrop-blur-sm relative group overflow-hidden">
-		<div class="absolute inset-0 bg-gradient-to-b from-emerald-500/5 to-transparent opacity-0 group-hover:opacity-100 transition duration-300"></div>
+		<div class="absolute inset-0 bg-linear-to-b from-emerald-500/5 to-transparent opacity-0 group-hover:opacity-100 transition duration-300"></div>
 		<span class="text-[10px] font-bold text-slate-600 uppercase tracking-widest block">Applications Filed</span>
 		<h2 class="font-display font-black text-2xl md:text-4xl text-emerald-400 mt-2">{applicationsCount}+</h2>
 	</div>
 	<div class="p-6 rounded-2xl bg-surface border border-divider text-center backdrop-blur-sm relative group overflow-hidden">
-		<div class="absolute inset-0 bg-gradient-to-b from-purple-500/5 to-transparent opacity-0 group-hover:opacity-100 transition duration-300"></div>
+		<div class="absolute inset-0 bg-linear-to-b from-purple-500/5 to-transparent opacity-0 group-hover:opacity-100 transition duration-300"></div>
 		<span class="text-[10px] font-bold text-slate-600 uppercase tracking-widest block">Active Candidates</span>
 		<h2 class="font-display font-black text-2xl md:text-4xl text-purple-400 mt-2">{studentsCount}+</h2>
 	</div>
 	<div class="p-6 rounded-2xl bg-surface border border-divider text-center backdrop-blur-sm relative group overflow-hidden">
-		<div class="absolute inset-0 bg-gradient-to-b from-cyan-500/5 to-transparent opacity-0 group-hover:opacity-100 transition duration-300"></div>
+		<div class="absolute inset-0 bg-linear-to-b from-cyan-500/5 to-transparent opacity-0 group-hover:opacity-100 transition duration-300"></div>
 		<span class="text-[10px] font-bold text-slate-600 uppercase tracking-widest block">Domain Streams</span>
 		<h2 class="font-display font-black text-2xl md:text-4xl text-cyan-400 mt-2">{domainsCount}+</h2>
 	</div>
@@ -244,7 +244,7 @@
 <section class="mb-16 py-5 border-y border-divider bg-slate-100 overflow-hidden w-full">
 	<div class="max-w-6xl mx-auto px-6 flex flex-col md:flex-row items-center gap-6 w-full">
 		<div class="shrink-0 text-xs font-bold text-slate-600 uppercase tracking-widest">Top Recruiters:</div>
-		<div class="marquee-container flex-grow w-full overflow-hidden">
+		<div class="marquee-container grow w-full overflow-hidden">
 			<div class="marquee-track">
 				{#each [...featuredRecruiters, ...featuredRecruiters] as recruiter}
 					<a href="?query={encodeURIComponent(recruiter)}" class="text-sm font-black font-display text-slate-600 hover:text-blue-400 transition-colors duration-200">
@@ -268,7 +268,7 @@
 		<!-- Filter Bar -->
 		<form method="GET" class="w-full xl:max-w-5xl flex flex-wrap items-center gap-3">
 			<!-- Name Query -->
-			<div class="relative flex-grow min-w-[200px]">
+			<div class="relative grow min-w-[200px]">
 				<input
 					type="text"
 					name="query"
@@ -417,11 +417,11 @@
 						<!-- Header -->
 						<div class="flex items-start gap-3">
 							<!-- Company Logo / Initials -->
-							<div class="h-9 w-9 shrink-0 rounded-xl bg-gradient-to-tr from-slate-800 to-slate-950 text-blue-400 border border-divider flex items-center justify-center font-display font-black text-sm">
+							<div class="h-9 w-9 shrink-0 rounded-xl bg-linear-to-tr from-slate-800 to-slate-950 text-blue-400 border border-divider flex items-center justify-center font-display font-black text-sm">
 								{comp.companyName.charAt(0)}
 							</div>
 							
-							<div class="min-w-0 flex-grow">
+							<div class="min-w-0 grow">
 								<div class="flex items-center gap-1.5">
 									<h3 class="font-display font-bold text-sm text-primary truncate group-hover:text-blue-400 transition-colors duration-250">{comp.companyName}</h3>
 									<!-- Verified checkmark -->
@@ -539,7 +539,7 @@
 			</button>
 
 			<div class="flex items-center gap-3 mb-6">
-				<div class="h-12 w-12 rounded-xl bg-gradient-to-tr from-slate-800 to-slate-950 text-blue-400 flex items-center justify-center font-display font-black text-xl border border-divider">
+				<div class="h-12 w-12 rounded-xl bg-linear-to-tr from-slate-800 to-slate-950 text-blue-400 flex items-center justify-center font-display font-black text-xl border border-divider">
 					{selectedCompanyDetail.companyName.charAt(0)}
 				</div>
 				<div>
