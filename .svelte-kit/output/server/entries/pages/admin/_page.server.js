@@ -1,4 +1,4 @@
-import { c as updateDocument, i as getCollection, o as logAction } from "../../../chunks/db.js";
+import { a as getCounts, c as logAction, d as updateDocument, s as getPaginated, u as queryDocumentsPaginated } from "../../../chunks/db.js";
 import { a as requireRole } from "../../../chunks/auth.js";
 import { error, fail } from "@sveltejs/kit";
 //#region src/routes/admin/+page.server.js
@@ -7,36 +7,26 @@ async function load({ cookies }) {
 		return {
 			user: requireRole(cookies, ["admin"]),
 			lazy: { dashboardData: (async () => {
-				const [studentsData, companiesData, internshipsData, applicationsData, systemLogsData] = await Promise.all([
-					getCollection("students"),
-					getCollection("companies"),
-					getCollection("internships"),
-					getCollection("applications"),
-					getCollection("systemLogs")
+				const [counts, pendingCompanies, systemLogsData] = await Promise.all([
+					getCounts(),
+					queryDocumentsPaginated("companies", "status", "Pending", 50),
+					getPaginated("systemLogs", 30)
 				]);
-				const totalStudents = studentsData.length;
-				const totalCompanies = companiesData.length;
-				const pendingCompanies = companiesData.filter((c) => c.status === "Pending");
-				const activeInternships = internshipsData.filter((i) => i.status === "Active").length;
-				const totalApplications = applicationsData.length;
-				const placementsCount = applicationsData.filter((a) => a.status === "Approved").length;
-				const certificatesGenerated = applicationsData.filter((a) => a.certificateHash).length;
-				const activeCompanies = companiesData.filter((c) => c.status === "Approved" && !c.isSuspended).slice(0, 100).map((c) => ({
+				const activeCompanies = (await queryDocumentsPaginated("companies", "status", "Approved", 20)).filter((c) => !c.isSuspended).map((c) => ({
 					id: c.id,
 					companyName: c.companyName,
 					companyEmail: c.companyEmail,
 					industryType: c.industryType
 				}));
-				const logs = systemLogsData.slice(0, 30);
 				return {
 					stats: {
-						totalStudents,
-						totalCompanies,
+						totalStudents: counts.students || 0,
+						totalCompanies: counts.companies || 0,
 						pendingCompaniesCount: pendingCompanies.length,
-						activeInternships,
-						totalApplications,
-						successfulPlacements: placementsCount,
-						certificatesGenerated
+						activeInternships: counts.internships || 0,
+						totalApplications: counts.applications || 0,
+						successfulPlacements: 0,
+						certificatesGenerated: 0
 					},
 					verificationQueue: pendingCompanies.map((c) => ({
 						id: c.id,
@@ -47,7 +37,7 @@ async function load({ cookies }) {
 						createdAt: c.createdAt
 					})),
 					activeCompanies,
-					logs
+					logs: systemLogsData
 				};
 			})() }
 		};

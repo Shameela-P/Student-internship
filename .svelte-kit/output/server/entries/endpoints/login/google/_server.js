@@ -1,4 +1,4 @@
-import { c as updateDocument, i as getCollection, n as addDocument, o as logAction } from "../../../../chunks/db.js";
+import { c as logAction, d as updateDocument, i as getCollection, n as addDocument } from "../../../../chunks/db.js";
 import { n as createToken } from "../../../../chunks/auth.js";
 import { json } from "@sveltejs/kit";
 //#region src/routes/login/google/+server.js

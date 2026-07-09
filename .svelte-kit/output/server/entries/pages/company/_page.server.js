@@ -1,4 +1,4 @@
-import { a as getDocument, s as queryDocuments } from "../../../chunks/db.js";
+import { l as queryDocuments, o as getDocument } from "../../../chunks/db.js";
 import { a as requireRole } from "../../../chunks/auth.js";
 import { error } from "@sveltejs/kit";
 //#region src/routes/company/+page.server.js

@@ -1,7 +1,7 @@
 import { t as app } from "./firebase.js";
 import fs from "fs";
 import path from "path";
-import { child, get, getDatabase, ref, remove, set, update } from "firebase/database";
+import { child, equalTo, get, getDatabase, limitToLast, orderByChild, query, ref, remove, set, update } from "firebase/database";
 import "crypto";
 //#region src/lib/db.js
 var dbRef = ref(getDatabase(app), "/");
@@ -777,10 +777,23 @@ function invalidateCache(collectionName = null) {
 async function getCollection(collectionName) {
 	const now = Date.now();
 	if (cache[collectionName] && cacheTimestamps[collectionName] && now - cacheTimestamps[collectionName] < CACHE_DURATION) return [...cache[collectionName]];
-	const timeout = new Promise((_, reject) => setTimeout(() => reject(/* @__PURE__ */ new Error(`Firebase timeout fetching '${collectionName}'`)), 1e4));
+	const timeout = new Promise((_, reject) => setTimeout(() => reject(/* @__PURE__ */ new Error(`Firebase timeout fetching '${collectionName}'`)), 15e3));
 	let snapshot;
 	try {
-		snapshot = await Promise.race([get(child(dbRef, collectionName)), timeout]);
+		let dbQuery = child(dbRef, collectionName);
+		if ([
+			"internships",
+			"companies",
+			"students",
+			"applications",
+			"notifications",
+			"messages",
+			"systemLogs"
+		].includes(collectionName)) {
+			console.warn(`WARNING: getCollection('${collectionName}') called on a large collection. Limiting to 500 records to prevent OOM/timeouts. Use getPaginated() or queryDocumentsPaginated() instead.`);
+			dbQuery = query(child(dbRef, collectionName), limitToLast(500));
+		}
+		snapshot = await Promise.race([get(dbQuery), timeout]);
 	} catch (err) {
 		console.error(`getCollection('${collectionName}') failed:`, err.message);
 		return [];
@@ -798,16 +811,31 @@ async function getCollection(collectionName) {
 * Fetch a specific item from a collection by its array index OR by its unique 'id' property.
 */
 async function getDocument(collectionName, id) {
-	return (await getCollection(collectionName)).find((item) => item && item.id === id) || null;
+	const results = await queryDocumentsPaginated(collectionName, "id", id, 1);
+	if (results.length > 0) return results[0];
+	const snap = await get(child(dbRef, `${collectionName}/${id}`));
+	if (snap.exists()) return snap.val();
+	return null;
 }
 /**
 * Add a new item to an array collection.
 */
 async function addDocument(collectionName, data) {
-	const collection = await getCollection(collectionName);
-	collection.push(data);
-	await set(child(dbRef, collectionName), collection);
+	const snap = await get(child(dbRef, collectionName));
+	let newIndex = 0;
+	if (snap.exists()) {
+		const val = snap.val();
+		if (Array.isArray(val)) newIndex = val.length;
+		else if (typeof val === "object") newIndex = Math.max(...Object.keys(val).map(Number)) + 1;
+	}
+	await set(child(dbRef, `${collectionName}/${newIndex}`), data);
 	invalidateCache(collectionName);
+	if ([
+		"companies",
+		"students",
+		"internships",
+		"applications"
+	].includes(collectionName)) await updateCount(collectionName, 1);
 }
 /**
 * Update an existing item in a collection.
@@ -846,8 +874,79 @@ async function updateEntireDatabase(data) {
 */
 async function queryDocuments(collectionName, field, value) {
 	try {
-		return (await getCollection(collectionName)).filter((item) => item && item[field] === value);
+		const snapshot = await get(query(child(dbRef, collectionName), orderByChild(field), equalTo(value)));
+		if (!snapshot.exists()) return [];
+		const data = snapshot.val();
+		let result = [];
+		if (Array.isArray(data)) result = data.filter((item) => item !== null && item[field] === value);
+		else if (typeof data === "object") result = Object.values(data).filter((item) => item !== null && item[field] === value);
+		return result;
 	} catch (e) {
+		if (e.message && e.message.includes("Index not defined")) {
+			console.warn(`Index not defined for ${collectionName} on ${field}. Falling back to manual filter...`);
+			const snapshot = await get(child(dbRef, collectionName));
+			if (!snapshot.exists()) return [];
+			const data = snapshot.val();
+			let result = [];
+			if (Array.isArray(data)) result = data;
+			else if (typeof data === "object") result = Object.values(data);
+			return result.filter((item) => item && item[field] === value);
+		}
+		console.error(`Error querying ${collectionName} where ${field} === ${value}`, e);
+		return [];
+	}
+}
+/**
+* Fetch database metadata counts
+*/
+async function getCounts() {
+	const snapshot = await get(child(dbRef, "metadata/counts"));
+	if (snapshot.exists()) return snapshot.val();
+	return {
+		companies: 0,
+		students: 0,
+		internships: 0,
+		applications: 0
+	};
+}
+/**
+* Increment or decrement counts in metadata
+*/
+async function updateCount(type, amount) {
+	const counts = await getCounts();
+	counts[type] = (counts[type] || 0) + amount;
+	if (counts[type] < 0) counts[type] = 0;
+	await set(child(dbRef, "metadata/counts"), counts);
+}
+/**
+* Fetch a paginated chunk of a collection
+*/
+async function getPaginated(collectionName, limit = 20) {
+	const snapshot = await get(query(child(dbRef, collectionName), limitToLast(limit)));
+	if (!snapshot.exists()) return [];
+	const data = snapshot.val();
+	let result = [];
+	if (Array.isArray(data)) result = data.filter((item) => item !== null);
+	else if (typeof data === "object") result = Object.values(data).filter((item) => item !== null);
+	return result.reverse();
+}
+/**
+* Fetch documents where a specific field equals a value, with pagination limit
+*/
+async function queryDocumentsPaginated(collectionName, field, value, limit = 20) {
+	try {
+		const snapshot = await get(query(child(dbRef, collectionName), orderByChild(field), equalTo(value), limitToLast(limit)));
+		if (!snapshot.exists()) return [];
+		const data = snapshot.val();
+		let result = [];
+		if (Array.isArray(data)) result = data.filter((item) => item !== null && item[field] === value);
+		else if (typeof data === "object") result = Object.values(data).filter((item) => item !== null && item[field] === value);
+		return result.reverse();
+	} catch (e) {
+		if (e.message && e.message.includes("Index not defined")) {
+			console.warn(`Index not defined for ${collectionName} on ${field}. Falling back to manual filter...`);
+			return (await getPaginated(collectionName, 500)).filter((item) => item && item[field] === value).slice(0, limit);
+		}
 		console.error(`Error querying ${collectionName} where ${field} === ${value}`, e);
 		return [];
 	}
@@ -867,9 +966,9 @@ async function logAction(action, details, user = "System", role = "System", emai
 		ip,
 		timestamp: (/* @__PURE__ */ new Date()).toISOString()
 	};
-	const logs = await getCollection("systemLogs");
+	const logs = await getPaginated("systemLogs", 50);
 	logs.unshift(newLog);
-	if (logs.length > 500) logs.length = 500;
+	if (logs.length > 50) logs.length = 50;
 	await set(child(dbRef, "systemLogs"), logs);
 }
 function ensureMockResumes() {
@@ -886,4 +985,4 @@ function ensureMockResumes() {
 }
 ensureMockResumes();
 //#endregion
-export { getDocument as a, updateDocument as c, getCollection as i, updateEntireDatabase as l, addDocument as n, logAction as o, deleteDocument as r, queryDocuments as s, DOMAINS as t };
+export { getCounts as a, logAction as c, updateDocument as d, updateEntireDatabase as f, getCollection as i, queryDocuments as l, addDocument as n, getDocument as o, deleteDocument as r, getPaginated as s, DOMAINS as t, queryDocumentsPaginated as u };

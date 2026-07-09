@@ -1,4 +1,4 @@
-import { c as updateDocument, i as getCollection, n as addDocument } from "../../../../chunks/db.js";
+import { d as updateDocument, i as getCollection, n as addDocument } from "../../../../chunks/db.js";
 import { a as requireRole } from "../../../../chunks/auth.js";
 import { fail } from "@sveltejs/kit";
 //#region src/routes/student/messages/+page.server.js

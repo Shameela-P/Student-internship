@@ -1,4 +1,4 @@
-import { getDatabase, ref, get, child, update, set, remove, query, orderByChild, equalTo } from "firebase/database";
+import { getDatabase, ref, get, child, update, set, remove, query, orderByChild, equalTo, limitToFirst, limitToLast, startAt, startAfter } from "firebase/database";
 import { app } from "./firebase.js";
 import crypto from 'crypto';
 
@@ -209,14 +209,23 @@ export async function getCollection(collectionName) {
 		return [...cache[collectionName]]; // Return copy to prevent accidental mutation
 	}
 
-	// 10 second timeout to prevent indefinite hangs on Firebase permission errors
+	// 15 second timeout to prevent indefinite hangs on Firebase permission errors
 	const timeout = new Promise((_, reject) =>
-		setTimeout(() => reject(new Error(`Firebase timeout fetching '${collectionName}'`)), 10000)
+		setTimeout(() => reject(new Error(`Firebase timeout fetching '${collectionName}'`)), 15000)
 	);
 
 	let snapshot;
 	try {
-		snapshot = await Promise.race([get(child(dbRef, collectionName)), timeout]);
+        let dbQuery = child(dbRef, collectionName);
+        
+        // Safety guard: prevent fetching entire massive collections at once if using getCollection directly
+        const massiveCollections = ['internships', 'companies', 'students', 'applications', 'notifications', 'messages', 'systemLogs'];
+        if (massiveCollections.includes(collectionName)) {
+            console.warn(`WARNING: getCollection('${collectionName}') called on a large collection. Limiting to 500 records to prevent OOM/timeouts. Use getPaginated() or queryDocumentsPaginated() instead.`);
+            dbQuery = query(child(dbRef, collectionName), limitToLast(500));
+        }
+
+		snapshot = await Promise.race([get(dbQuery), timeout]);
 	} catch (err) {
 		console.error(`getCollection('${collectionName}') failed:`, err.message);
 		return []; // Return empty array — do not crash the page
@@ -242,8 +251,14 @@ export async function getCollection(collectionName) {
  * Fetch a specific item from a collection by its array index OR by its unique 'id' property.
  */
 export async function getDocument(collectionName, id) {
-	const collection = await getCollection(collectionName);
-	return collection.find(item => item && item.id === id) || null;
+	const results = await queryDocumentsPaginated(collectionName, 'id', id, 1);
+    if (results.length > 0) return results[0];
+    
+    // Fallback in case it's actually an index or different schema
+    const snap = await get(child(dbRef, `${collectionName}/${id}`));
+    if (snap.exists()) return snap.val();
+
+    return null;
 }
 
 export async function getCachedCompanies() {
@@ -254,10 +269,22 @@ export async function getCachedCompanies() {
  * Add a new item to an array collection.
  */
 export async function addDocument(collectionName, data) {
-	const collection = await getCollection(collectionName);
-	collection.push(data);
-	await set(child(dbRef, collectionName), collection);
+    // Determine count to append
+    const snap = await get(child(dbRef, collectionName));
+    let newIndex = 0;
+    if (snap.exists()) {
+        const val = snap.val();
+        if (Array.isArray(val)) newIndex = val.length;
+        else if (typeof val === 'object') newIndex = Math.max(...Object.keys(val).map(Number)) + 1;
+    }
+    
+	await set(child(dbRef, `${collectionName}/${newIndex}`), data);
 	invalidateCache(collectionName);
+    
+    // Update counts
+    if (['companies', 'students', 'internships', 'applications'].includes(collectionName)) {
+        await updateCount(collectionName, 1);
+    }
 }
 
 /**
@@ -298,13 +325,34 @@ export async function updateEntireDatabase(data) {
  * Fetch documents where a specific field equals a value
  */
 export async function queryDocuments(collectionName, field, value) {
-	try {
-		const collection = await getCollection(collectionName);
-		return collection.filter(item => item && item[field] === value);
-	} catch (e) {
-		console.error(`Error querying ${collectionName} where ${field} === ${value}`, e);
-		return [];
-	}
+    try {
+        const dbQuery = query(child(dbRef, collectionName), orderByChild(field), equalTo(value));
+        const snapshot = await get(dbQuery);
+        if (!snapshot.exists()) return [];
+        
+        const data = snapshot.val();
+        let result = [];
+        if (Array.isArray(data)) {
+            result = data.filter(item => item !== null && item[field] === value);
+        } else if (typeof data === 'object') {
+            result = Object.values(data).filter(item => item !== null && item[field] === value);
+        }
+        return result;
+    } catch (e) {
+        if (e.message && e.message.includes('Index not defined')) {
+            console.warn(`Index not defined for ${collectionName} on ${field}. Falling back to manual filter...`);
+            // Fetch everything and filter
+            const snapshot = await get(child(dbRef, collectionName));
+            if (!snapshot.exists()) return [];
+            const data = snapshot.val();
+            let result = [];
+            if (Array.isArray(data)) result = data;
+            else if (typeof data === 'object') result = Object.values(data);
+            return result.filter(item => item && item[field] === value);
+        }
+        console.error(`Error querying ${collectionName} where ${field} === ${value}`, e);
+        return [];
+    }
 }
 
 /**
@@ -313,6 +361,75 @@ export async function queryDocuments(collectionName, field, value) {
 export async function overwriteEntireDatabase(data) {
 	await set(dbRef, data);
 	invalidateCache();
+}
+
+/**
+ * Fetch database metadata counts
+ */
+export async function getCounts() {
+    const snapshot = await get(child(dbRef, 'metadata/counts'));
+    if (snapshot.exists()) {
+        return snapshot.val();
+    }
+    return { companies: 0, students: 0, internships: 0, applications: 0 };
+}
+
+/**
+ * Increment or decrement counts in metadata
+ */
+export async function updateCount(type, amount) {
+    const counts = await getCounts();
+    counts[type] = (counts[type] || 0) + amount;
+    if (counts[type] < 0) counts[type] = 0;
+    await set(child(dbRef, 'metadata/counts'), counts);
+}
+
+/**
+ * Fetch a paginated chunk of a collection
+ */
+export async function getPaginated(collectionName, limit = 20) {
+    const dbQuery = query(child(dbRef, collectionName), limitToLast(limit));
+    const snapshot = await get(dbQuery);
+    if (!snapshot.exists()) return [];
+    
+    const data = snapshot.val();
+    let result = [];
+    if (Array.isArray(data)) {
+        result = data.filter(item => item !== null);
+    } else if (typeof data === 'object') {
+        result = Object.values(data).filter(item => item !== null);
+    }
+    return result.reverse(); // newest first typically
+}
+
+/**
+ * Fetch documents where a specific field equals a value, with pagination limit
+ */
+export async function queryDocumentsPaginated(collectionName, field, value, limit = 20) {
+    try {
+        const dbQuery = query(child(dbRef, collectionName), orderByChild(field), equalTo(value), limitToLast(limit));
+        const snapshot = await get(dbQuery);
+        if (!snapshot.exists()) return [];
+        
+        const data = snapshot.val();
+        let result = [];
+        if (Array.isArray(data)) {
+            result = data.filter(item => item !== null && item[field] === value);
+        } else if (typeof data === 'object') {
+            result = Object.values(data).filter(item => item !== null && item[field] === value);
+        }
+        return result.reverse();
+    } catch (e) {
+        if (e.message && e.message.includes('Index not defined')) {
+            console.warn(`Index not defined for ${collectionName} on ${field}. Falling back to manual filter...`);
+            // Fallback: fetch latest limited records (or full if small) to filter manually
+            const fallbackLimit = 500; 
+            const data = await getPaginated(collectionName, fallbackLimit);
+            return data.filter(item => item && item[field] === value).slice(0, limit);
+        }
+        console.error(`Error querying ${collectionName} where ${field} === ${value}`, e);
+        return [];
+    }
 }
 
 /**
@@ -331,10 +448,14 @@ export async function logAction(action, details, user = 'System', role = 'System
 		timestamp: new Date().toISOString()
 	};
 	
-	const logs = await getCollection('systemLogs');
+	// Instead of getting the whole collection, just append and rely on a cron or limit logic later if needed
+    // But since it's an array, we must fetch the length or just use getPaginated to manage.
+    // For now, we'll fetch only the last 50, prepend, and overwrite the array from start (not ideal for scale)
+    // Actually, writing directly with push/append is better, but since it's an array based schema:
+	const logs = await getPaginated('systemLogs', 50);
 	logs.unshift(newLog);
-	if (logs.length > 500) {
-		logs.length = 500; // truncate
+	if (logs.length > 50) {
+		logs.length = 50; // truncate
 	}
 	await set(child(dbRef, 'systemLogs'), logs);
 }

@@ -1,5 +1,5 @@
 import { fail, redirect } from '@sveltejs/kit';
-import { logAction, getCollection } from '$lib/db';
+import { logAction, getCollection, queryDocumentsPaginated } from '$lib/db';
 import { verifyPassword, createToken, createRefreshToken, verifyToken } from '$lib/auth';
 import { dev } from '$app/environment';
 
@@ -26,13 +26,6 @@ export const actions = {
 			return fail(400, { success: false, error: 'All fields are required' });
 		}
 
-		const [studentsData, companiesData, adminsData] = await Promise.all([
-		getCollection('students'),
-		getCollection('companies'),
-		getCollection('admins')
-	]);
-	const db = { students: studentsData, companies: companiesData, admins: adminsData };
-
 		const setAuthCookies = (payload) => {
 			const token = createToken(payload);
 			const refresh = createRefreshToken(payload);
@@ -41,15 +34,16 @@ export const actions = {
 				path: '/',
 				httpOnly: true,
 				secure: !dev,
-				sameSite: 'lax' // lax for standard SvelteKit dev compatibility, strict in prod
+				sameSite: 'lax'
 			};
 
-			cookies.set('nexora_session', token, { ...cookieOpts, maxAge: 60 * 60 * 24 }); // 1 day
-			cookies.set('nexora_refresh', refresh, { ...cookieOpts, maxAge: 60 * 60 * 24 * 7 }); // 7 days
+			cookies.set('nexora_session', token, { ...cookieOpts, maxAge: 60 * 60 * 24 });
+			cookies.set('nexora_refresh', refresh, { ...cookieOpts, maxAge: 60 * 60 * 24 * 7 });
 		};
 
 		if (role === 'student') {
-			const student = db.students.find(s => s.email.toLowerCase() === email.toLowerCase());
+			const students = await queryDocumentsPaginated('students', 'email', email, 1);
+			const student = students.find(s => s.email.toLowerCase() === email.toLowerCase());
 			if (!student) return fail(400, { success: false, error: 'Invalid email or password' });
 			if (student.isBlocked) return fail(403, { success: false, error: 'Your student account has been blocked by administrators' });
 			if (!verifyPassword(password, student.password)) return fail(400, { success: false, error: 'Invalid email or password' });
@@ -60,7 +54,8 @@ export const actions = {
 			throw redirect(303, '/student');
 		} 
 		else if (role === 'company') {
-			const company = db.companies.find(c => c.companyEmail.toLowerCase() === email.toLowerCase());
+			const companies = await queryDocumentsPaginated('companies', 'companyEmail', email, 1);
+			const company = companies.find(c => c.companyEmail.toLowerCase() === email.toLowerCase());
 			if (!company) return fail(400, { success: false, error: 'Invalid email or password' });
 			if (company.isSuspended) return fail(403, { success: false, error: 'Your company profile has been suspended due to fraudulent flag warnings' });
 			if (!verifyPassword(password, company.password)) return fail(400, { success: false, error: 'Invalid email or password' });
@@ -71,7 +66,8 @@ export const actions = {
 			throw redirect(303, '/company');
 		} 
 		else if (role === 'admin') {
-			const admin = db.admins.find(a => a.email.toLowerCase() === email.toLowerCase());
+			const admins = await queryDocumentsPaginated('admins', 'email', email, 1);
+			const admin = admins.find(a => a.email.toLowerCase() === email.toLowerCase());
 			if (!admin) return fail(400, { success: false, error: 'Invalid credentials' });
 			if (!verifyPassword(password, admin.password)) return fail(400, { success: false, error: 'Invalid credentials' });
 

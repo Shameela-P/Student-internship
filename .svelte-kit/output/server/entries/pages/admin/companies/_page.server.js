@@ -1,4 +1,4 @@
-import { c as updateDocument, i as getCollection, o as logAction } from "../../../../chunks/db.js";
+import { c as logAction, d as updateDocument, i as getCollection } from "../../../../chunks/db.js";
 import { a as requireRole } from "../../../../chunks/auth.js";
 //#region src/routes/admin/companies/+page.server.js
 async function load({ cookies }) {

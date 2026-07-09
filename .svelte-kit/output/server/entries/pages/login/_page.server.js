@@ -1,4 +1,4 @@
-import { i as getCollection, o as logAction } from "../../../chunks/db.js";
+import { c as logAction, u as queryDocumentsPaginated } from "../../../chunks/db.js";
 import { n as createToken, o as verifyPassword, s as verifyToken, t as createRefreshToken } from "../../../chunks/auth.js";
 import { fail, redirect } from "@sveltejs/kit";
 //#region src/routes/login/+page.server.js
@@ -19,16 +19,6 @@ var actions = { default: async ({ request, cookies }) => {
 		success: false,
 		error: "All fields are required"
 	});
-	const [studentsData, companiesData, adminsData] = await Promise.all([
-		getCollection("students"),
-		getCollection("companies"),
-		getCollection("admins")
-	]);
-	const db = {
-		students: studentsData,
-		companies: companiesData,
-		admins: adminsData
-	};
 	const setAuthCookies = (payload) => {
 		const token = createToken(payload);
 		const refresh = createRefreshToken(payload);
@@ -48,7 +38,7 @@ var actions = { default: async ({ request, cookies }) => {
 		});
 	};
 	if (role === "student") {
-		const student = db.students.find((s) => s.email.toLowerCase() === email.toLowerCase());
+		const student = (await queryDocumentsPaginated("students", "email", email, 1)).find((s) => s.email.toLowerCase() === email.toLowerCase());
 		if (!student) return fail(400, {
 			success: false,
 			error: "Invalid email or password"
@@ -71,7 +61,7 @@ var actions = { default: async ({ request, cookies }) => {
 		logAction("STUDENT_LOGIN", "Logged in via Credentials", student.fullName, "Student", student.email, "Dashboard", ip);
 		throw redirect(303, "/student");
 	} else if (role === "company") {
-		const company = db.companies.find((c) => c.companyEmail.toLowerCase() === email.toLowerCase());
+		const company = (await queryDocumentsPaginated("companies", "companyEmail", email, 1)).find((c) => c.companyEmail.toLowerCase() === email.toLowerCase());
 		if (!company) return fail(400, {
 			success: false,
 			error: "Invalid email or password"
@@ -94,7 +84,7 @@ var actions = { default: async ({ request, cookies }) => {
 		logAction("COMPANY_LOGIN", "Logged in via Credentials", company.companyName, "Company", company.companyEmail, "Dashboard", ip);
 		throw redirect(303, "/company");
 	} else if (role === "admin") {
-		const admin = db.admins.find((a) => a.email.toLowerCase() === email.toLowerCase());
+		const admin = (await queryDocumentsPaginated("admins", "email", email, 1)).find((a) => a.email.toLowerCase() === email.toLowerCase());
 		if (!admin) return fail(400, {
 			success: false,
 			error: "Invalid credentials"

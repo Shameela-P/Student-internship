@@ -1,4 +1,4 @@
-import { a as getDocument, i as getCollection, s as queryDocuments } from "../../../chunks/db.js";
+import { l as queryDocuments, o as getDocument, u as queryDocumentsPaginated } from "../../../chunks/db.js";
 import { a as requireRole } from "../../../chunks/auth.js";
 import { error } from "@sveltejs/kit";
 //#region src/routes/student/+page.server.js
@@ -34,9 +34,9 @@ async function load({ cookies }) {
 					return studentApps;
 				})(),
 				recommendations: (async () => {
-					const allInternships = await getCollection("internships");
+					const activeInternships = await queryDocumentsPaginated("internships", "status", "Active", 50);
 					const studentSkills = student.skills.map((s) => s.toLowerCase());
-					const recommendationsPromises = allInternships.filter((i) => i.status === "Active").slice(0, 100).map(async (internship) => {
+					const recommendationsPromises = activeInternships.slice(0, 100).map(async (internship) => {
 						const company = await getDocument("companies", internship.companyId);
 						if (!company || company.isSuspended || company.status !== "Approved") return null;
 						const requiredSkills = internship.skillsRequired.map((s) => s.toLowerCase());

@@ -1,4 +1,4 @@
-import { a as getDocument, i as getCollection, n as addDocument, o as logAction, t as DOMAINS } from "../../../../chunks/db.js";
+import { c as logAction, n as addDocument, o as getDocument, t as DOMAINS, u as queryDocumentsPaginated } from "../../../../chunks/db.js";
 import { a as requireRole } from "../../../../chunks/auth.js";
 import { fail } from "@sveltejs/kit";
 //#region src/routes/student/internships/+page.server.js
@@ -16,8 +16,10 @@ async function load({ cookies, url }) {
 	const filterDuration = url.searchParams.get("duration") || "";
 	const filterJobOpp = url.searchParams.get("jobOpportunity") || "";
 	const filterCert = url.searchParams.get("certificateAvailable") || "";
-	const [internshipsData, companiesData] = await Promise.all([getCollection("internships"), getCollection("companies")]);
-	const studentApps = await getCollection("applications").then((apps) => apps.filter((a) => a.studentId === student.id).map((a) => a.internshipId));
+	const internshipsData = await queryDocumentsPaginated("internships", "status", "Active", 200);
+	const companyIds = [...new Set(internshipsData.map((i) => i.companyId))];
+	const companiesData = await Promise.all(companyIds.map((id) => getDocument("companies", id)));
+	const studentApps = (await queryDocumentsPaginated("applications", "studentId", student.id, 100)).map((a) => a.internshipId);
 	const appliedSet = new Set(studentApps);
 	const companyMap = new Map(companiesData.map((c) => [c.id, c]));
 	return {
@@ -82,7 +84,7 @@ var actions = { apply: async ({ request, cookies }) => {
 		success: false,
 		error: "The company hosting this internship has been suspended"
 	});
-	if ((await getCollection("applications").then((apps) => apps.filter((a) => a.studentId === student.id && a.internshipId === internship.id))).length > 0) return fail(400, {
+	if ((await queryDocumentsPaginated("applications", "studentId", student.id, 100)).some((a) => a.internshipId === internship.id)) return fail(400, {
 		success: false,
 		error: "You have already applied to this internship"
 	});

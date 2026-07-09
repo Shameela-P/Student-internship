@@ -1,4 +1,4 @@
-import { logAction, getCollection, updateEntireDatabase, updateDocument } from '$lib/db';
+import { logAction, getCollection, updateEntireDatabase, updateDocument, getCounts, getPaginated, queryDocumentsPaginated } from '$lib/db';
 import { requireRole } from '$lib/auth';
 import { fail, error } from '@sveltejs/kit';
 
@@ -11,43 +11,30 @@ export async function load({ cookies }) {
 			user: sessionUser,
 			lazy: {
 				dashboardData: (async () => {
-					const [studentsData, companiesData, internshipsData, applicationsData, systemLogsData] = await Promise.all([
-						getCollection('students'),
-						getCollection('companies'),
-						getCollection('internships'),
-						getCollection('applications'),
-						getCollection('systemLogs')
+					const [counts, pendingCompanies, systemLogsData] = await Promise.all([
+						getCounts(),
+						queryDocumentsPaginated('companies', 'status', 'Pending', 50),
+						getPaginated('systemLogs', 30)
 					]);
 
-					const totalStudents = studentsData.length;
-					const totalCompanies = companiesData.length;
-					const pendingCompanies = companiesData.filter(c => c.status === 'Pending');
-					const activeInternships = internshipsData.filter(i => i.status === 'Active').length;
-					const totalApplications = applicationsData.length;
-					
-					const placementsCount = applicationsData.filter(a => a.status === 'Approved').length;
-					const certificatesGenerated = applicationsData.filter(a => a.certificateHash).length;
-
-					// Active companies for moderation (limit to 100 for memory)
-					const activeCompanies = companiesData.filter(c => c.status === 'Approved' && !c.isSuspended).slice(0, 100).map(c => ({
+					// We can fetch a sample of active companies for moderation (e.g. latest 20)
+					const activeCompaniesFull = await queryDocumentsPaginated('companies', 'status', 'Approved', 20);
+					const activeCompanies = activeCompaniesFull.filter(c => !c.isSuspended).map(c => ({
 						id: c.id,
 						companyName: c.companyName,
 						companyEmail: c.companyEmail,
 						industryType: c.industryType
 					}));
 
-					// Audit Logs stream (only top 30)
-					const logs = systemLogsData.slice(0, 30);
-
 					return {
 						stats: {
-							totalStudents,
-							totalCompanies,
+							totalStudents: counts.students || 0,
+							totalCompanies: counts.companies || 0,
 							pendingCompaniesCount: pendingCompanies.length,
-							activeInternships,
-							totalApplications,
-							successfulPlacements: placementsCount,
-							certificatesGenerated
+							activeInternships: counts.internships || 0,
+							totalApplications: counts.applications || 0,
+							successfulPlacements: 0, // In a real system, track this in metadata/counts as well
+							certificatesGenerated: 0
 						},
 						verificationQueue: pendingCompanies.map(c => ({
 							id: c.id,
@@ -58,7 +45,7 @@ export async function load({ cookies }) {
 							createdAt: c.createdAt
 						})),
 						activeCompanies,
-						logs
+						logs: systemLogsData
 					};
 				})()
 			}

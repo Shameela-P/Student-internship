@@ -1,4 +1,4 @@
-import { getDocument, queryDocuments, getCollection } from '$lib/db';
+import { getDocument, queryDocuments, getCollection, queryDocumentsPaginated } from '$lib/db';
 import { requireRole } from '$lib/auth';
 import { error } from '@sveltejs/kit';
 
@@ -44,11 +44,9 @@ export async function load({ cookies }) {
 					return studentApps;
 				})(),
 				recommendations: (async () => {
-					const allInternships = await getCollection('internships');
+					// Use a paginated query to get a slice of active internships for recommendations
+					const activeInternships = await queryDocumentsPaginated('internships', 'status', 'Active', 50);
 					const studentSkills = student.skills.map(s => s.toLowerCase());
-					
-					// Limit scanning payload to active internships
-					const activeInternships = allInternships.filter(i => i.status === 'Active');
 					
 					const recommendationsPromises = activeInternships.slice(0, 100).map(async internship => {
 						const company = await getDocument('companies', internship.companyId);

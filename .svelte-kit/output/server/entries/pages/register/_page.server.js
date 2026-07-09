@@ -1,5 +1,5 @@
 import "../../../chunks/firebase.js";
-import { i as getCollection, l as updateEntireDatabase, o as logAction } from "../../../chunks/db.js";
+import { c as logAction, i as getCollection, n as addDocument, u as queryDocumentsPaginated } from "../../../chunks/db.js";
 import { i as hashPassword, s as verifyToken } from "../../../chunks/auth.js";
 import { fail, redirect } from "@sveltejs/kit";
 import "path";
@@ -44,26 +44,18 @@ var actions = {
 				error: "Please provide a valid publicly accessible HTTPS Resume URL"
 			});
 		}
-		const [studentsData, companiesData, adminsData, notificationsData, emailTemplatesData] = await Promise.all([
-			getCollection("students"),
-			getCollection("companies"),
-			getCollection("admins"),
-			getCollection("notifications"),
+		const [students, companies, admins, emailTemplatesData] = await Promise.all([
+			queryDocumentsPaginated("students", "email", email, 1),
+			queryDocumentsPaginated("companies", "companyEmail", email, 1),
+			queryDocumentsPaginated("admins", "email", email, 1),
 			getCollection("emailTemplates")
 		]);
-		const db = {
-			students: studentsData,
-			companies: companiesData,
-			admins: adminsData,
-			notifications: notificationsData,
-			emailTemplates: emailTemplatesData
-		};
-		if (db.students.some((s) => s.email.toLowerCase() === email) || db.companies.some((c) => c.companyEmail.toLowerCase() === email) || db.admins.some((a) => a.email.toLowerCase() === email)) return fail(400, {
+		if (students.length > 0 || companies.length > 0 || admins.length > 0) return fail(400, {
 			success: false,
 			error: "This email is already registered on Nexora"
 		});
 		const skills = skillsRaw.split(",").map((s) => s.trim()).filter(Boolean);
-		const newStudent = {
+		await addDocument("students", {
 			id: `stud_${Date.now()}`,
 			fullName,
 			email,
@@ -80,16 +72,15 @@ var actions = {
 			resumeUrl,
 			isBlocked: false,
 			createdAt: (/* @__PURE__ */ new Date()).toISOString()
-		};
-		db.students.push(newStudent);
-		const template = db.emailTemplates.find((t) => t.id === "temp_student_reg");
+		});
+		const template = emailTemplatesData.find((t) => t.id === "temp_student_reg");
 		let subject = "Welcome to Nexora";
 		let body = `Hi ${fullName}, welcome to Nexora! Your profile has been registered.`;
 		if (template) {
 			subject = template.subject;
 			body = template.body.replace("{name}", fullName).replace("{degree}", degreeCourse).replace("{college}", collegeName);
 		}
-		db.notifications.unshift({
+		await addDocument("notifications", {
 			id: `notif_${Date.now()}`,
 			recipientEmail: email,
 			recipientRole: "student",
@@ -98,7 +89,6 @@ var actions = {
 			date: (/* @__PURE__ */ new Date()).toISOString(),
 			read: false
 		});
-		await updateEntireDatabase(db);
 		logAction("STUDENT_REGISTER", `New student ${fullName} (${email}) registered.`);
 		throw redirect(303, "/login?registered=true");
 	},
@@ -117,25 +107,17 @@ var actions = {
 			success: false,
 			error: "Please fill out all required company profile fields"
 		});
-		const [studentsData, companiesData, adminsData, notificationsData, emailTemplatesData] = await Promise.all([
-			getCollection("students"),
-			getCollection("companies"),
-			getCollection("admins"),
-			getCollection("notifications"),
+		const [students, companies, admins, emailTemplatesData] = await Promise.all([
+			queryDocumentsPaginated("students", "email", companyEmail, 1),
+			queryDocumentsPaginated("companies", "companyEmail", companyEmail, 1),
+			queryDocumentsPaginated("admins", "email", companyEmail, 1),
 			getCollection("emailTemplates")
 		]);
-		const db = {
-			students: studentsData,
-			companies: companiesData,
-			admins: adminsData,
-			notifications: notificationsData,
-			emailTemplates: emailTemplatesData
-		};
-		if (db.students.some((s) => s.email.toLowerCase() === companyEmail) || db.companies.some((c) => c.companyEmail.toLowerCase() === companyEmail) || db.admins.some((a) => a.email.toLowerCase() === companyEmail)) return fail(400, {
+		if (students.length > 0 || companies.length > 0 || admins.length > 0) return fail(400, {
 			success: false,
 			error: "This email is already registered on Nexora"
 		});
-		const newCompany = {
+		await addDocument("companies", {
 			id: `comp_${Date.now()}`,
 			companyName,
 			companyEmail,
@@ -149,16 +131,15 @@ var actions = {
 			status: "Approved",
 			isSuspended: false,
 			createdAt: (/* @__PURE__ */ new Date()).toISOString()
-		};
-		db.companies.push(newCompany);
-		const template = db.emailTemplates.find((t) => t.id === "temp_company_reg");
+		});
+		const template = emailTemplatesData.find((t) => t.id === "temp_company_reg");
 		let subject = "Nexora Company Application";
 		let body = `Dear HR at ${companyName}, your registration is pending review.`;
 		if (template) {
 			subject = template.subject;
 			body = template.body.replace("{companyName}", companyName);
 		}
-		db.notifications.unshift({
+		await addDocument("notifications", {
 			id: `notif_${Date.now()}`,
 			recipientEmail: companyEmail,
 			recipientRole: "company",
@@ -167,7 +148,6 @@ var actions = {
 			date: (/* @__PURE__ */ new Date()).toISOString(),
 			read: false
 		});
-		await updateEntireDatabase(db);
 		logAction("COMPANY_REGISTER", `New company ${companyName} (${companyEmail}) submitted for approval.`);
 		throw redirect(303, "/login?registered=true");
 	}

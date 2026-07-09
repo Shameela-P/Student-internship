@@ -1,4 +1,4 @@
-import { logAction, DOMAINS, getDocument, getCollection, addDocument } from '$lib/db';
+import { logAction, DOMAINS, getDocument, getCollection, addDocument, queryDocumentsPaginated, getPaginated } from '$lib/db';
 import { requireRole } from '$lib/auth';
 import { fail } from '@sveltejs/kit';
 
@@ -21,18 +21,16 @@ export async function load({ cookies, url }) {
 	const filterJobOpp = url.searchParams.get('jobOpportunity') || '';
 	const filterCert = url.searchParams.get('certificateAvailable') || '';
 
-	// We need full internships and companies collections for the explore/search page
-	// since we're browsing ALL active internships across all companies.
-	// Cache is active (2 mins), so repeat navigations use the cache.
-	const [internshipsData, companiesData] = await Promise.all([
-		getCollection('internships'),
-		getCollection('companies')
-	]);
+	// Use paginated query instead of loading the entire database for search
+	const internshipsData = await queryDocumentsPaginated('internships', 'status', 'Active', 200);
+    
+    // Batch fetch only needed companies
+    const companyIds = [...new Set(internshipsData.map(i => i.companyId))];
+    const companiesData = await Promise.all(companyIds.map(id => getDocument('companies', id)));
 
-	// Get student's existing applications (targeted query — only their IDs)
-	const studentApps = await getCollection('applications').then(apps => 
-		apps.filter(a => a.studentId === student.id).map(a => a.internshipId)
-	);
+	// Get student's existing applications (targeted query)
+	const rawApps = await queryDocumentsPaginated('applications', 'studentId', student.id, 100);
+	const studentApps = rawApps.map(a => a.internshipId);
 	const appliedSet = new Set(studentApps);
 
 	// Map company profiles for quick lookup
@@ -125,10 +123,9 @@ export const actions = {
 		}
 
 		// Check for duplicate application using targeted query
-		const existingApps = await getCollection('applications').then(apps => 
-			apps.filter(a => a.studentId === student.id && a.internshipId === internship.id)
-		);
-		if (existingApps.length > 0) {
+		const existingApps = await queryDocumentsPaginated('applications', 'studentId', student.id, 100);
+        const hasApplied = existingApps.some(a => a.internshipId === internship.id);
+		if (hasApplied) {
 			return fail(400, { success: false, error: 'You have already applied to this internship' });
 		}
 
